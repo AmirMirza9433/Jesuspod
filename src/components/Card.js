@@ -25,12 +25,15 @@ const Card = ({
   gap,
   width = "48%",
   onPress,
+  item,
 }) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
       activeOpacity={0.9}
-      onPress={onPress ? onPress : () => navigation.navigate("ProductDetail")}
+      onPress={
+        onPress ? onPress : () => navigation.navigate("ProductDetail", { item })
+      }
       style={[
         styles.container,
         {

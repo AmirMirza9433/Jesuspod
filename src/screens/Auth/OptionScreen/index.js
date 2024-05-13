@@ -1,11 +1,9 @@
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import React, { useEffect } from "react";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { Platform, StyleSheet, Text, View } from "react-native";
+import firestore from "@react-native-firebase/firestore";
+import React, { useEffect, useState } from "react";
+import auth from "@react-native-firebase/auth";
+import { useDispatch } from "react-redux";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomButton from "../../../components/CustomButton";
@@ -16,19 +14,59 @@ import SignupModal from "./molecules/SignupModal";
 import ForgotModal from "./molecules/ForgotModal";
 import LoginModal from "./molecules/LoginModal";
 
+import { setToken } from "../../../store/reducer/AuthConfig";
+import { setUser } from "../../../store/reducer/usersSlice";
 import { getToken } from "../../../utils/constants";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import { useState } from "react";
 
 const OptionScreen = () => {
+  const dispatch = useDispatch();
   const [loginModal, setLoginModal] = useState(false);
   const [signupModal, setSignupModal] = useState(false);
   const [forgotModal, setForgotModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     getToken();
   }, []);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "957417392617-5v5s6f5sgu1osqsf43aeccvliqqg674m.apps.googleusercontent.com",
+    });
+  }, []);
+
+  const googleSignIn = async () => {
+    setLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices();
+      await GoogleSignin.signOut();
+      const userInfo = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo?.idToken
+      );
+      const payload = {
+        email: userInfo?.user?.email,
+        userName: userInfo?.user?.name,
+        userImage: userInfo?.user?.photo,
+        userId: userInfo?.user?.id,
+      };
+      auth().signInWithCredential(googleCredential);
+      await firestore()
+        .collection("users")
+        .doc(userInfo?.user?.id)
+        .set(payload);
+      dispatch(setToken(userInfo?.user?.id));
+      dispatch(setUser(payload));
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("================error", error);
+    }
+  };
   return (
     <ScreenWrapper
       statusBarColor={
@@ -68,6 +106,7 @@ const OptionScreen = () => {
           marginTop={5}
         />
         <CustomButton
+          onPress={googleSignIn}
           backgroundColor="transparent"
           color={COLORS.black}
           title="Continue with Google"
@@ -76,7 +115,9 @@ const OptionScreen = () => {
           iconname="google"
           iconfamily="AntDesign"
           iconColor={COLORS.white}
-          icon={true}
+          indicatorcolor={COLORS.primaryColor}
+          icon
+          loading={loading}
           marginTop={40}
         />
 

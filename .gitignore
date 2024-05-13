@@ -30,8 +30,9 @@ build/
 local.properties
 *.iml
 *.hprof
+*.apk
+*output-metadata.json
 .cxx/
-*.keystore
 !debug.keystore
 
 # node.js

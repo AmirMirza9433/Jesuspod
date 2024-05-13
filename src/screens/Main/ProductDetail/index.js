@@ -14,7 +14,9 @@ import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 
-const ProductDetail = ({ navigation }) => {
+const ProductDetail = ({ navigation, route }) => {
+  const data = route?.params?.item;
+  console.log("============data", data[0]);
   const [isFav, setFav] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("Episodes");
   return (
@@ -134,7 +136,7 @@ const ProductDetail = ({ navigation }) => {
       </View>
       <View style={{ paddingHorizontal: 20, paddingBottom: 10 }}>
         <FlatList
-          data={[0, 1, 2, 3, 4, 5, 6]}
+          data={data}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(_, i) => i.toString()}
           renderItem={({ item, index }) => (
