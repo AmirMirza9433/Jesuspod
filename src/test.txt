@@ -1,0 +1,19 @@
+const episodeData = {
+  "comments": ["https://riverchurchpodcast.podbean.com/e/blessing-to-overflow-rodney-howard-browne/#comments"],
+  "content:encoded": ["What a powerful Main Event service! Please watch the replay to find out more about God's greatest purpose for you! Just as God called Moses to deliver His people from slavery, YOU also have a special assignment on your life. As you step into it, divine increase will burst forth! Get ready––for May is the third month of the HEAPS, and your month for total breakthrough! “In the treasury of Heaven, there is no lack.” -Dr. Rodney Howard-Browne ✨"],
+  "description": ["What a powerful Main Event service! Please watch the replay to find out more about God's greatest purpose for you! Just as God called Moses to deliver His people from slavery, YOU also have a special assignment on your life. As you step into it, divine increase will burst forth! Get ready––for May is the third month of the HEAPS, and your month for total breakthrough! “In the treasury of Heaven, there is no lack.” -Dr. Rodney Howard-Browne ✨"],
+  "enclosure": [{"$": [Object]}],
+  "guid": [{"$": [Object], "_": "riverchurchpodcast.podbean.com/5c258b83-94c3-3877-a881-94eaaebfcf29"}],
+  "itunes:author": ["Dr. Rodney Howard Browne"],
+  "itunes:block": ["No"],
+  "itunes:duration": ["22:53"],
+  "itunes:episode": ["306"],
+  "itunes:episodeType": ["full"],
+  "itunes:explicit": ["false"],
+  "itunes:subtitle": ["What a powerful Main Event service! Please watch the replay to find out more about God's greatest purpose for you! Just as God called Moses to deliver His people from slavery, YOU also have a special assignment on your life. As you step into it, divi..."],
+  "itunes:summary": ["What a powerful Main Event service! Please watch the replay to find out more about God's greatest purpose for you! Just as God called Moses to deliver His people from slavery, YOU also have a special assignment on your life. As you step into it, divine increase will burst forth! Get ready––for May is the third month of the HEAPS, and your month for total breakthrough! “In the treasury of Heaven, there is no lack.” -Dr. Rodney Howard-Browne ✨"],
+  "itunes:title": ["Blessing to Overflow | Rodney Howard-Browne"],
+  "link": ["https://riverchurchpodcast.podbean.com/e/blessing-to-overflow-rodney-howard-browne/"],
+  "pubDate": ["Wed, 08 May 2024 13:23:53 -0300"],
+  "title": ["Blessing to Overflow | Rodney Howard-Browne"]
+};

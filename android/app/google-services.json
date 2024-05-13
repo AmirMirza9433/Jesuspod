@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "957417392617",
+    "firebase_url": "https://jesuspod-d08c7-default-rtdb.firebaseio.com",
+    "project_id": "jesuspod-d08c7",
+    "storage_bucket": "jesuspod-d08c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957417392617:android:c45278874576a085796378",
+        "android_client_info": {
+          "package_name": "com.jesuspod.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957417392617-5v5s6f5sgu1osqsf43aeccvliqqg674m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkmtaNe5fOA7ErOHruvAD9l05w_IBllnU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957417392617-5v5s6f5sgu1osqsf43aeccvliqqg674m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "957417392617-tsdj1hg3n1f7ld890dvekhkil1rbjvcc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jesus.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
