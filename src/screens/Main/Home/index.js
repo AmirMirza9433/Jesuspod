@@ -1,8 +1,6 @@
-import { FlatList, StyleSheet, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { parseString } from "react-native-xml2js";
+import { FlatList, RefreshControl, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import axios from "axios";
+import React from "react";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomButton from "../../../components/CustomButton";
@@ -16,50 +14,8 @@ import { Fonts } from "../../../utils/fonts";
 
 const Home = ({ navigation }) => {
   const userData = useSelector((state) => state.user.users);
-  const [channels, setChannels] = useState([]);
-
-  useEffect(() => {
-    const fetchPodcasts = async () => {
-      try {
-        const urls = [
-          "https://feed.podbean.com/allnationschurchdublin/feed.xml",
-          "https://anchor.fm/s/682886c/podcast/rss",
-          // "https://feeds.buzzsprout.com/121969.rss",
-          "https://mercyculture.podbean.com/feed.xml",
-          "https://freshstartaz.podbean.com/feed.xml",
-          "https://feeds.transistor.fm/redemption-to-the-nations-church",
-        ];
-
-        const responses = await Promise.all(urls.map((url) => axios.get(url)));
-
-        const channelsData = await Promise.all(
-          responses.map((response) => {
-            const xmlData = response.data;
-            return new Promise((resolve, reject) => {
-              parseString(xmlData, (err, res) => {
-                if (err) {
-                  reject(err);
-                } else {
-                  resolve({
-                    image:
-                      res?.rss?.channel?.[0]?.["itunes:image"]?.[0]?.$.href,
-                    items: res?.rss?.channel?.[0]?.item,
-                    title: res?.rss?.channel?.[0]?.title,
-                  });
-                }
-              });
-            });
-          })
-        );
-
-        setChannels(channelsData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchPodcasts();
-  }, []);
+  const mainLoading = useSelector((state) => state.user.mainLoading);
+  const channels = useSelector((state) => state.user.channels);
 
   return (
     <ScreenWrapper
@@ -140,6 +96,13 @@ const Home = ({ navigation }) => {
         fontSize={16}
       />
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={mainLoading}
+            onRefresh={() => {}}
+            colors={[COLORS.primaryColor]}
+          />
+        }
         data={channels}
         showsVerticalScrollIndicator={false}
         keyExtractor={(_, i) => i.toString()}
@@ -149,11 +112,7 @@ const Home = ({ navigation }) => {
             width="100%"
             image={item.image}
             item={item.items}
-            // heading={item?.title}
             title={item.title}
-            // des={item?.description}
-            // author={item?.["itunes:author"]}
-            // time={item?.["itunes:duration"]}
           />
         )}
       />

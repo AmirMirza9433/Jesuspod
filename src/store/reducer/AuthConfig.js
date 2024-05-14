@@ -1,11 +1,11 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  token: '',
+  token: "",
   isOnBoarding: false,
 };
 export const authConfigsSlice = createSlice({
-  name: 'authConfigs',
+  name: "authConfigs",
   initialState: initialState,
   reducers: {
     setToken(state, action) {
@@ -15,9 +15,9 @@ export const authConfigsSlice = createSlice({
       state.isOnBoarding = action.payload;
     },
     logout(state, action) {
-      state.token = '';
+      state.token = "";
     },
   },
 });
 
-export const {setToken, setOnBoarding, logout} = authConfigsSlice.actions;
+export const { setToken, setOnBoarding, logout } = authConfigsSlice.actions;

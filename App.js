@@ -7,6 +7,8 @@ import { Provider } from "react-redux";
 
 import Routes from "./src/Routes";
 
+import BrainBox from "./src/components/BrainBox";
+
 import Notification from "./Notification";
 
 import { getToken } from "./src/utils/constants";
@@ -44,7 +46,9 @@ const App = () => {
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
           <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
-          <Routes />
+          <BrainBox>
+            <Routes />
+          </BrainBox>
           {isVisible && (
             <Notification
               isVisible={isVisible}
