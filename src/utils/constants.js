@@ -78,3 +78,32 @@ export const formatPrice = (number) => {
     scaled % 1 === 0 ? scaled.toFixed(0) : scaled.toFixed(1);
   return formattedNumber + suffix;
 };
+const urls = [
+  "https://feed.podbean.com/riverchurchpodcast/feed.xml",
+  "https://feed.podbean.com/allnationschurchdublin/feed.xml",
+  "https://anchor.fm/s/682886c/podcast/rss",
+  "https://mercyculture.podbean.com/feed.xml",
+  "https://freshstartaz.podbean.com/feed.xml",
+  "http://feeds.feedburner.com/LineOfFireRadio",
+  "https://feeds.simplecast.com/WWr9c8Mo",
+  "https://DavidHernandezMinistries.podbean.com/feed.xml",
+  "https://copelandnetworkaudiopodcast.libsyn.com/rss",
+  "https://www.bennyhinn.org/feed/benny-hinn-ministries-fresh-manna/",
+  // "https://copelandnetworkaudiopodcast.libsyn.com/rss",
+  "https://feeds.castos.com/0r98",
+  "http://bwm.downloadsvr.com/podcast_audio.xml",
+  "http://www.jerrysavelle.org/rssfeeds/tvaudio.xml",
+  "https://anchor.fm/s/6c7c87f8/podcast/rss",
+  "https://feed.podbean.com/wdbministries/feed.xml",
+  "https://anchor.fm/s/718ad498/podcast/rss",
+  "https://careynieuwhof.libsyn.com/rss",
+  "https://feeds.simplecast.com/atgtihd0",
+  "https://feeds.soundcloud.com/users/soundcloud:users:409240443/sounds.rss",
+  "https://h3leadership.libsyn.com/rss",
+  "https://freedailybiblestudy.com/feed/podcast/",
+  "https://www.omnycontent.com/d/playlist/5e27a451-e6e6-4c51-aa03-a7370003783c/7608f244-e104-4c65-a371-af5b00f8e73d/702576b7-8f9f-42e2-b078-af5b00f90f90/podcast.rss",
+  "https://omny.fm/shows/chapter-a-day-audio-bible/playlists/podcast.rss",
+  "https://dailybiblereading.libsyn.com/rss",
+  "https://anchor.fm/s/ecddbdb8/podcast/rss",
+  // "https://momsinprayer.libsyn.com/rss",
+];

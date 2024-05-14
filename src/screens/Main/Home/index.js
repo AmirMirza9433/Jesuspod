@@ -1,6 +1,6 @@
 import { FlatList, RefreshControl, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomButton from "../../../components/CustomButton";
@@ -10,12 +10,27 @@ import Header from "../../../components/Header";
 import Card from "../../../components/Card";
 
 import { COLORS } from "../../../utils/COLORS";
+import { getAllDocs } from "../../../Firebase";
 import { Fonts } from "../../../utils/fonts";
 
 const Home = ({ navigation }) => {
   const userData = useSelector((state) => state.user.users);
-  const mainLoading = useSelector((state) => state.user.mainLoading);
-  const channels = useSelector((state) => state.user.channels);
+  const [loading, setLoading] = useState(false);
+  const [channels, setChannels] = useState([]);
+  const getChannels = async () => {
+    setLoading(true);
+    try {
+      const res = await getAllDocs("channels");
+      setChannels(res?.[0]?.channels);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("=========error:", error);
+    }
+  };
+  useEffect(() => {
+    getChannels();
+  }, []);
 
   return (
     <ScreenWrapper
@@ -98,20 +113,20 @@ const Home = ({ navigation }) => {
       <FlatList
         refreshControl={
           <RefreshControl
-            refreshing={mainLoading}
-            onRefresh={() => {}}
+            refreshing={loading}
+            onRefresh={getChannels}
             colors={[COLORS.primaryColor]}
           />
         }
         data={channels}
         showsVerticalScrollIndicator={false}
         keyExtractor={(_, i) => i.toString()}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <Card
             imageHeight={183}
             width="100%"
             image={item.image}
-            item={item.items}
+            item={item}
             title={item.title}
           />
         )}

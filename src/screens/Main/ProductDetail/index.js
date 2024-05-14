@@ -1,5 +1,12 @@
-import { StyleSheet, View, ImageBackground, FlatList } from "react-native";
-import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  ImageBackground,
+  FlatList,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomButton from "../../../components/CustomButton";
@@ -13,15 +20,44 @@ import { ToastMessage } from "../../../utils/ToastMessage";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import axios from "axios";
+import { parseString } from "react-native-xml2js";
 
 const ProductDetail = ({ navigation, route }) => {
-  const data = route?.params?.item;
-  console.log("============data", data[0]);
+  const channel = route?.params?.item;
   const [isFav, setFav] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [podcasts, setPodcasts] = useState([]);
+  console.log("=======podcasts", podcasts[0]);
   const [selectedStatus, setSelectedStatus] = useState("Episodes");
+  const get = async () => {
+    setLoading(true);
+    const response = await axios.get(channel?.url);
+    try {
+      const xmlData = response.data;
+      parseString(xmlData, (err, res) => {
+        setPodcasts(res.rss.channel[0].item);
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    get();
+  }, [channel?.url]);
   return (
     <ScreenWrapper
       scrollEnabled
+      refreshControl={
+        <RefreshControl
+          refreshing={loading}
+          onRefresh={get}
+          colors={[COLORS.primaryColor]}
+        />
+      }
       statusBarColor="transparent"
       transclucent
       paddingHorizontal={0.1}
@@ -29,26 +65,39 @@ const ProductDetail = ({ navigation, route }) => {
         <BackHeader
           color={COLORS.white}
           style={{ position: "absolute", zIndex: 999, top: 20 }}
-          onDotPress={() => {}}
           onSharePress={() => {}}
         />
       )}
     >
-      <View style={styles.headerImage}>
+      <ImageBackground
+        resizeMode="cover"
+        source={{ uri: channel.image }}
+        style={styles.headerImage}
+      >
         <ImageBackground
           resizeMode="cover"
           source={images.gradient}
           style={styles.headerContent}
         >
           <CustomText
-            label="True Crime Chronicles"
+            label={channel?.title || ""}
             fontFamily={Fonts.bold}
-            fontSize={24}
+            fontSize={22}
             color={COLORS.white}
             marginBottom={10}
+            marginTop={20}
           />
-          <View style={styles.row}>
-            {["30 Episodes", "True Crime", "120K Listening"].map((item, i) => (
+          <CustomText
+            label={`${podcasts?.length || 0} Episodes`}
+            fontFamily={Fonts.semiBold}
+            color={COLORS.white}
+          />
+          {/* <View style={styles.row}>
+            {[
+              `${podcasts?.length || 0} Episodes`,
+              "True Crime",
+              "120K Listening",
+            ].map((item, i) => (
               <React.Fragment key={item}>
                 <CustomText
                   label={item}
@@ -64,8 +113,8 @@ const ProductDetail = ({ navigation, route }) => {
                 )}
               </React.Fragment>
             ))}
-          </View>
-          <View style={[styles.row, { marginVertical: 15 }]}>
+          </View> */}
+          {/* <View style={[styles.row, { marginVertical: 15 }]}>
             <View style={styles.profile} />
             <CustomText
               label="True Crime Chronicles"
@@ -73,9 +122,9 @@ const ProductDetail = ({ navigation, route }) => {
               color={COLORS.white}
               marginLeft={15}
             />
-          </View>
+          </View> */}
         </ImageBackground>
-      </View>
+      </ImageBackground>
       <View
         style={[styles.row, { padding: 20, justifyContent: "space-between" }]}
       >
@@ -135,25 +184,27 @@ const ProductDetail = ({ navigation, route }) => {
         ))}
       </View>
       <View style={{ paddingHorizontal: 20, paddingBottom: 10 }}>
-        <FlatList
-          data={data}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(_, i) => i.toString()}
-          renderItem={({ item, index }) => (
-            <Card
-              onPress={() => navigation.navigate("PlayerScreen")}
-              flex="row"
-              align="center"
-              title="EPS 5 | Future Innovations"
-              des="TechTalk Live  by Tech Pioneers"
-              author="Live Apr 4th - 10:00 AM"
-              imageHeight={80}
-              imageWith={80}
-              gap={10}
-              width="100%"
-            />
-          )}
-        />
+        <ScrollView horizontal scrollEnabled={false}>
+          <FlatList
+            data={podcasts}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(_, i) => i.toString()}
+            renderItem={({ item, index }) => (
+              <Card
+                onPress={() => navigation.navigate("PlayerScreen")}
+                flex="row"
+                align="center"
+                title="EPS 5 | Future Innovations"
+                des="TechTalk Live  by Tech Pioneers"
+                author="Live Apr 4th - 10:00 AM"
+                imageHeight={80}
+                imageWith={80}
+                gap={10}
+                width="100%"
+              />
+            )}
+          />
+        </ScrollView>
       </View>
     </ScreenWrapper>
   );
