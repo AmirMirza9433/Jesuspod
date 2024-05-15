@@ -1,12 +1,15 @@
-import {
-  StyleSheet,
-  View,
-  ImageBackground,
-  FlatList,
-  ScrollView,
-  RefreshControl,
-} from "react-native";
 import React, { useEffect, useState } from "react";
+import { parseString } from "react-native-xml2js";
+import axios from "axios";
+import {
+  ImageBackground,
+  RefreshControl,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  FlatList,
+  View,
+} from "react-native";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomButton from "../../../components/CustomButton";
@@ -20,16 +23,15 @@ import { ToastMessage } from "../../../utils/ToastMessage";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import axios from "axios";
-import { parseString } from "react-native-xml2js";
+
+const { width } = Dimensions.get("window");
 
 const ProductDetail = ({ navigation, route }) => {
   const channel = route?.params?.item;
   const [isFav, setFav] = useState(false);
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
-  console.log("=======podcasts", podcasts[0]);
-  const [selectedStatus, setSelectedStatus] = useState("Episodes");
+
   const get = async () => {
     setLoading(true);
     const response = await axios.get(channel?.url);
@@ -51,13 +53,6 @@ const ProductDetail = ({ navigation, route }) => {
   return (
     <ScreenWrapper
       scrollEnabled
-      refreshControl={
-        <RefreshControl
-          refreshing={loading}
-          onRefresh={get}
-          colors={[COLORS.primaryColor]}
-        />
-      }
       statusBarColor="transparent"
       transclucent
       paddingHorizontal={0.1}
@@ -173,34 +168,36 @@ const ProductDetail = ({ navigation, route }) => {
           />
         </View>
       </View>
-      <View style={styles.tab}>
-        {["Episodes", "About", "Similar"].map((item, index) => (
-          <Category
-            key={index}
-            name={item}
-            selected={selectedStatus === item}
-            onSelect={() => setSelectedStatus(item)}
-          />
-        ))}
-      </View>
-      <View style={{ paddingHorizontal: 20, paddingBottom: 10 }}>
+      <View style={styles.listContainer}>
         <ScrollView horizontal scrollEnabled={false}>
           <FlatList
+            refreshControl={
+              <RefreshControl
+                refreshing={loading}
+                onRefresh={get}
+                colors={[COLORS.primaryColor]}
+              />
+            }
             data={podcasts}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, i) => i.toString()}
             renderItem={({ item, index }) => (
               <Card
-                onPress={() => navigation.navigate("PlayerScreen")}
+                onPress={() =>
+                  navigation.navigate("PlayerScreen", { item, channel })
+                }
                 flex="row"
                 align="center"
-                title="EPS 5 | Future Innovations"
-                des="TechTalk Live  by Tech Pioneers"
-                author="Live Apr 4th - 10:00 AM"
+                title={item?.title}
+                decNumLine={2}
+                des={item?.description}
+                author={`Episode ${item?.["itunes:episode"]}`}
                 imageHeight={80}
                 imageWith={80}
                 gap={10}
-                width="100%"
+                width={width - 40}
+                textWidth="75%"
+                justifyContent="space-between"
               />
             )}
           />
@@ -263,12 +260,10 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: COLORS.gray,
   },
-  tab: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray,
+  listContainer: {
+    borderTopWidth: 1,
+    borderTopColor: COLORS.gray,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
   },
 });

@@ -8,12 +8,13 @@ import Icons from "./Icons";
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
 import ImageFast from "./ImageFast";
+import { images } from "../assets/images";
 
 const Card = ({
   imageHeight,
   imageWith = "100%",
   title,
-  image,
+  image = "",
   heading,
   des,
   author,
@@ -26,6 +27,9 @@ const Card = ({
   width = "48%",
   onPress,
   item,
+  textWidth,
+  justifyContent,
+  decNumLine = 1,
 }) => {
   const navigation = useNavigation();
   return (
@@ -42,16 +46,15 @@ const Card = ({
           alignItems: align,
           gap: gap,
           width,
+          justifyContent,
         },
       ]}
     >
       <ImageFast
+        resizeMode="cover"
         style={[styles.thumb, { height: imageHeight, width: imageWith }]}
-        source={{ uri: image }}
+        source={!image ? images.appLogo : { uri: image }}
       />
-      {/* <View
-        
-      ></View> */}
       {live ? (
         <View style={styles.livePod}>
           <Icons
@@ -77,44 +80,51 @@ const Card = ({
           />
         </View>
       )}
-      <View>
+      <View style={{ width: textWidth }}>
         {heading ? (
           <CustomText
             label={heading}
             fontFamily={Fonts.semiBold}
             fontSize={12}
-            numberOfLines={2}
+            numberOfLines={1}
             color={COLORS.primaryColor}
             marginTop={5}
             marginLeft={2}
           />
         ) : null}
+        {title ? (
+          <CustomText
+            label={title}
+            fontFamily={Fonts.bold}
+            fontSize={14}
+            color={COLORS.black}
+            marginTop={5}
+            numberOfLines={1}
+            marginLeft={2}
+          />
+        ) : null}
 
-        <CustomText
-          label={title}
-          fontFamily={Fonts.bold}
-          fontSize={14}
-          color={COLORS.black}
-          marginTop={5}
-          marginLeft={2}
-        />
-        <CustomText
-          label={des}
-          fontFamily={Fonts.semiBold}
-          fontSize={12}
-          numberOfLines={1}
-          color={COLORS.gray}
-          marginTop={5}
-          marginLeft={2}
-        />
-        <CustomText
-          label={author}
-          fontFamily={Fonts.medium}
-          fontSize={12}
-          color={COLORS.black}
-          marginTop={5}
-          marginLeft={2}
-        />
+        {des ? (
+          <CustomText
+            label={des}
+            fontFamily={Fonts.semiBold}
+            fontSize={12}
+            numberOfLines={decNumLine}
+            color={COLORS.gray}
+            marginTop={5}
+            marginLeft={2}
+          />
+        ) : null}
+        {author ? (
+          <CustomText
+            label={author}
+            fontFamily={Fonts.medium}
+            fontSize={12}
+            color={COLORS.black}
+            marginTop={5}
+            marginLeft={2}
+          />
+        ) : null}
       </View>
     </TouchableOpacity>
   );
@@ -123,11 +133,11 @@ export default Card;
 const styles = StyleSheet.create({
   container: {
     marginTop: 15,
+    width: "100%",
   },
   thumb: {
     backgroundColor: COLORS.gray,
     borderRadius: 16,
-    width: "100%",
   },
   length: {
     position: "absolute",

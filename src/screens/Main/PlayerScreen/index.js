@@ -1,18 +1,21 @@
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { Dimensions, StyleSheet, View } from "react-native";
 import React, { useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
 import Video from "react-native-video";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomText from "../../../components/CustomText";
 import BackHeader from "../../../components/BackHeader";
 import Icons from "../../../components/Icons";
+import Card from "../../../components/Card";
 
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import Card from "../../../components/Card";
 
-const PlayerScreen = () => {
+const { width } = Dimensions.get("window");
+const PlayerScreen = ({ route }) => {
+  const item = route.params?.item;
+  const channel = route.params?.channel;
   const ref = useRef(null);
   const [percentage, setPercentage] = useState(0);
   const [onProgress, setOnProgress] = useState({});
@@ -34,19 +37,17 @@ const PlayerScreen = () => {
   };
 
   const skipForward = () => {
-    ref?.current?.seek(onProgress.currentTime + 10); // Seek 10 seconds forward
+    ref?.current?.seek(onProgress.currentTime + 10);
   };
 
   const skipBackward = () => {
-    ref?.current?.seek(Math.max(0, onProgress.currentTime - 10)); // Seek 10 seconds backward, ensuring the current time does not go below 0
+    ref?.current?.seek(Math.max(0, onProgress.currentTime - 10));
   };
 
   return (
     <ScreenWrapper
       scrollEnabled
-      headerUnScrollable={() => (
-        <BackHeader title="Now Playing" onDotPress={() => {}} />
-      )}
+      headerUnScrollable={() => <BackHeader title="Now Playing" />}
     >
       <View style={styles.mainContainer}>
         <View style={styles.headerImage}>
@@ -65,7 +66,7 @@ const PlayerScreen = () => {
           />
         </View>
         <CustomText
-          label="EPS 01 | The Mysterious Disappearance"
+          label={`EPS ${item?.["itunes:episode"]} | ${item?.title}`}
           fontFamily={Fonts.bold}
           fontSize={20}
           textAlign="center"
@@ -148,13 +149,16 @@ const PlayerScreen = () => {
       <Card
         flex="row"
         align="center"
-        title="EPS 5 | Future Innovations"
-        des="TechTalk Live  by Tech Pioneers"
-        author="Live Apr 4th - 10:00 AM"
+        title={channel?.title}
+        image={channel?.image}
+        decNumLine={2}
+        author={`Episode ${item?.["itunes:episode"]}`}
         imageHeight={80}
         imageWith={80}
-        gap={15}
-        width="100%"
+        gap={10}
+        width={width - 40}
+        textWidth="75%"
+        justifyContent="space-between"
       />
     </ScreenWrapper>
   );
