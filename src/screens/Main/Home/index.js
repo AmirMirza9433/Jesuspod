@@ -12,11 +12,14 @@ import Card from "../../../components/Card";
 import { COLORS } from "../../../utils/COLORS";
 import { getAllDocs } from "../../../Firebase";
 import { Fonts } from "../../../utils/fonts";
+import TopCart from "./molecules/TopCart";
+import Tab from "../../../components/Tab";
 
 const Home = ({ navigation }) => {
   const userData = useSelector((state) => state.user.users);
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
+  const [tab, setTab] = useState("For you");
   const getChannels = async () => {
     setLoading(true);
     try {
@@ -34,6 +37,7 @@ const Home = ({ navigation }) => {
 
   return (
     <ScreenWrapper
+      paddingHorizontal={0.1}
       headerUnScrollable={() => (
         <View style={{ padding: 20 }}>
           <Header
@@ -42,113 +46,49 @@ const Home = ({ navigation }) => {
             userProfile={userData?.userImage}
             title={userData?.userName}
             subTitle="Enjoy your favorite podcast!"
-            onSettingPress={false}
             notiIcon
           />
           <SearchInput placeholder="Search" />
         </View>
       )}
     >
-      {/* <View style={styles.topChart}>
-        <View>
-          <CustomText
-            label={"Top Chart of the Week"}
-            color={COLORS.primaryColor}
-            fontFamily={Fonts.bold}
-            fontSize={16}
-          />
-          <CustomText
-            label={"True Crime Chronicles"}
-            color={COLORS.black}
-            fontFamily={Fonts.bold}
-            fontSize={16}
-            marginTop={15}
-          />
-
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-              marginTop: 5,
-              alignItems: "center",
-            }}
-          >
-            <CustomText
-              label={"by Detective Joan"}
-              color={COLORS.gray}
-              fontFamily={Fonts.bold}
-              fontSize={12}
-            />
-
-            <CustomText
-              label={"120K Listening"}
-              color={COLORS.gray}
-              fontFamily={Fonts.bold}
-              fontSize={12}
-            />
-          </View>
-          <CustomButton
-            title="Play Now"
-            width="50%"
-            alignSelf="start"
-            height={34}
-            icon
-            iconColor={COLORS.white}
-            iconfamily="Feather"
-            iconname="play-circle"
-            iconGap={10}
-            marginTop={15}
-            iconFontSize={20}
-            btnFont={Fonts.regular}
-            fontSize={12}
-          />
-        </View>
-        <View style={styles.topImage} />
-      </View> */}
-
-      <FlatList
-        refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={getChannels}
-            colors={[COLORS.primaryColor]}
-          />
-        }
-        data={channels}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(_, i) => i.toString()}
-        renderItem={({ item }) => (
-          <Card
-            imageHeight={183}
-            width="100%"
-            image={item.image}
-            item={item}
-            title={item.title}
-          />
-        )}
+      <Tab
+        array={["For you", "Podcast", "Radio"]}
+        value={tab}
+        setVale={setTab}
+        paddingHorizontal={20}
       />
+      <TopCart />
+      <View>
+        <FlatList
+          horizontal
+          contentContainerStyle={{ paddingHorizontal: 15 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={getChannels}
+              colors={[COLORS.primaryColor]}
+            />
+          }
+          data={channels}
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(_, i) => i.toString()}
+          renderItem={({ item, index }) => (
+            <Card
+              imageHeight={183}
+              width={183}
+              image={item.image}
+              marginRight={10}
+              item={item}
+              title={item.title}
+            />
+          )}
+        />
+      </View>
     </ScreenWrapper>
   );
 };
 
 export default Home;
 
-const styles = StyleSheet.create({
-  topChart: {
-    backgroundColor: COLORS.orange,
-    borderRadius: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 15,
-    overflow: "hidden",
-  },
-
-  topImage: {
-    height: 125,
-    width: 150,
-    backgroundColor: COLORS.gray,
-    borderTopLeftRadius: 16,
-    borderBottomLeftRadius: 16,
-    right: -30,
-  },
-});
+const styles = StyleSheet.create({});

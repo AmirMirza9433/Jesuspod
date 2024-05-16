@@ -30,6 +30,7 @@ const Card = ({
   textWidth,
   justifyContent,
   decNumLine = 1,
+  marginLeft,
 }) => {
   const navigation = useNavigation();
   return (
@@ -42,6 +43,7 @@ const Card = ({
         styles.container,
         {
           marginRight: marginRight || 0,
+          marginLeft: marginLeft || 0,
           flexDirection: flex,
           alignItems: align,
           gap: gap,

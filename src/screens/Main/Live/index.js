@@ -20,7 +20,6 @@ const Live = () => {
             hideBackArrow
             title="Live Podcast"
             subTitle={"Experience Real-Time Podcasting"}
-            onSettingPress={false}
             searchIcon
             profile
           />

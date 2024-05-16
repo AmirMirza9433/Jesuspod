@@ -1,26 +1,24 @@
-import { StyleSheet, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 
 import CustomText from "./CustomText";
 import Icons from "./Icons";
 
-import { images } from "../assets/images";
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
 
 const BackHeader = ({
   title,
-  onSettingPress,
   onBackPress,
-  onDotPress,
+  onHeartPress,
   onSharePress,
-  style,
   color,
+  isHeart = false,
 }) => {
   const navigation = useNavigation();
   return (
-    <View style={[styles.mainContainer, style]}>
+    <View style={[styles.mainContainer]}>
       <Icons
         family="Ionicons"
         name="arrow-back"
@@ -36,14 +34,6 @@ const BackHeader = ({
       />
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        {onSettingPress ? (
-          <TouchableOpacity onPress={onSettingPress} activeOpacity={0.6}>
-            <Image
-              source={images.setting}
-              style={[styles.icon, { tintColor: color || COLORS.black }]}
-            />
-          </TouchableOpacity>
-        ) : null}
         {onSharePress ? (
           <Icons
             family="Feather"
@@ -54,13 +44,16 @@ const BackHeader = ({
             style={{ marginRight: 15 }}
           />
         ) : null}
-        {onDotPress ? (
-          <TouchableOpacity onPress={onDotPress} activeOpacity={0.6}>
-            <Image
-              source={images.more}
-              style={[styles.icon, { tintColor: color || COLORS.black }]}
-            />
-          </TouchableOpacity>
+
+        {onHeartPress ? (
+          <Icons
+            family="AntDesign"
+            name={isHeart ? "heart" : "hearto"}
+            size={22}
+            color={color ? color : isHeart ? COLORS.red : COLORS.black}
+            onPress={onHeartPress}
+            style={{ marginRight: 15 }}
+          />
         ) : null}
       </View>
     </View>

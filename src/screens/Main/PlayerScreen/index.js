@@ -1,19 +1,21 @@
-import React, { useRef, useState, useEffect } from "react";
-import { StyleSheet, View, Animated } from "react-native";
-import Video from "react-native-video";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { StyleSheet, View } from "react-native";
+import React, { useRef, useState } from "react";
+import Video from "react-native-video";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomText from "../../../components/CustomText";
 import BackHeader from "../../../components/BackHeader";
-import Icons from "../../../components/Icons";
 import ImageFast from "../../../components/ImageFast";
+import Icons from "../../../components/Icons";
 
+import { deleteSingleDoc, saveDoc } from "../../../Firebase";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
+  console.log("==============", item?.guid?.[0]?._);
   const channel = route.params?.channel;
   const ref = useRef(null);
   const [percentage, setPercentage] = useState(0);
@@ -22,7 +24,7 @@ const PlayerScreen = ({ route }) => {
   const [musicTime, setMusicTime] = useState("00:00");
   const [durationTimeShow, setDurationTimeShow] = useState("00:00");
   const [loading, setLoading] = useState(true);
-  const rotationValue = useRef(new Animated.Value(0)).current;
+  const [isLike, setLike] = useState(false);
 
   const convertSecond = (d) => {
     d = Number(d);
@@ -37,32 +39,6 @@ const PlayerScreen = ({ route }) => {
     );
   };
 
-  useEffect(() => {
-    let intervalId;
-    if (!pause) {
-      intervalId = setInterval(() => {
-        rotateImage();
-      }, 300);
-    } else {
-      clearInterval(intervalId);
-    }
-
-    return () => clearInterval(intervalId);
-  }, [pause]);
-
-  const rotateImage = () => {
-    Animated.timing(rotationValue, {
-      toValue: rotationValue._value + 1,
-      duration: 20,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const rotateInterpolate = rotationValue.interpolate({
-    inputRange: [0, 360],
-    outputRange: ["0deg", "720deg"],
-  });
-
   const skipForward = () => {
     ref?.current?.seek(onProgress.currentTime + 10);
   };
@@ -70,23 +46,44 @@ const PlayerScreen = ({ route }) => {
   const skipBackward = () => {
     ref?.current?.seek(Math.max(0, onProgress.currentTime - 10));
   };
-
+  const onFav = async () => {
+    try {
+      let res;
+      if (!isLike) {
+        res = await saveDoc(
+          item?.guid?.[0]?._,
+          JSON.stringify(item),
+          "Favorite"
+        );
+      } else {
+        res = await deleteSingleDoc("Favorite", item?.guid?.[0]?._);
+      }
+      console.log("================res", res);
+    } catch (error) {
+      console.log("==========error", error);
+    }
+    saveDoc;
+  };
   return (
     <ScreenWrapper
       scrollEnabled
-      headerUnScrollable={() => <BackHeader title="Now Playing" />}
+      headerUnScrollable={() => (
+        <BackHeader
+          title="Now Playing"
+          onHeartPress={() => {
+            setLike(!isLike);
+            // onFav();
+          }}
+          isHeart={isLike}
+        />
+      )}
     >
       <View style={styles.mainContainer}>
-        <Animated.View
-          style={[
-            styles.headerImage,
-            { transform: [{ rotate: rotateInterpolate }] },
-          ]}
-        >
+        <View style={[styles.headerImage]}>
           <ImageFast
             source={{ uri: channel?.image }}
             resizeMode="cover"
-            style={{ width: "100%", height: "100%", borderRadius: 100 }}
+            style={{ width: "100%", height: "100%" }}
             loading={loading}
           />
           <Video
@@ -104,7 +101,7 @@ const PlayerScreen = ({ route }) => {
             }}
             onLoad={() => setLoading(false)}
           />
-        </Animated.View>
+        </View>
 
         <CustomText
           label={`EPS ${item?.["itunes:episode"]} | ${item?.title}`}
@@ -217,10 +214,10 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   headerImage: {
-    width: 250,
-    height: 250,
+    width: "100%",
+    height: 350,
     backgroundColor: COLORS.gray,
-    borderRadius: 500,
+    borderRadius: 20,
     overflow: "hidden",
   },
   markerStyle: {

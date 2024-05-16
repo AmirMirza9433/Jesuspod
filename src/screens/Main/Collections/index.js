@@ -1,15 +1,13 @@
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
-import Category from "../../../components/Category";
 import Header from "../../../components/Header";
 import Card from "../../../components/Card";
+import Tab from "../../../components/Tab";
 
 import { COLORS } from "../../../utils/COLORS";
 
-const screenWidth = Dimensions.get("window").width;
-const imageWidth = (screenWidth - 25 * 3) / 2; // Subtracting margins
 const Collections = () => {
   const status = [
     {
@@ -40,7 +38,6 @@ const Collections = () => {
           hideBackArrow
           title="Collection"
           subTitle={"Discover your podcast collections"}
-          onSettingPress={false}
           profile
           searchIcon
         />
@@ -48,7 +45,7 @@ const Collections = () => {
     >
       <View style={styles.header}>
         {status.map((item, index) => (
-          <Category
+          <Tab
             key={index}
             name={item.name}
             selected={selectedStatus === item.id}

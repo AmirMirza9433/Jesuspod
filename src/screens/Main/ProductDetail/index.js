@@ -1,34 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { parseString } from "react-native-xml2js";
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import {
+  TouchableOpacity,
   ImageBackground,
   RefreshControl,
   StyleSheet,
   ScrollView,
-  Dimensions,
   FlatList,
   View,
 } from "react-native";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
-import CustomButton from "../../../components/CustomButton";
 import BackHeader from "../../../components/BackHeader";
 import CustomText from "../../../components/CustomText";
-import Category from "../../../components/Category";
 import Icons from "../../../components/Icons";
-import Card from "../../../components/Card";
 
-import { ToastMessage } from "../../../utils/ToastMessage";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 
-const { width } = Dimensions.get("window");
-
 const ProductDetail = ({ navigation, route }) => {
   const channel = route?.params?.item;
-  const [isFav, setFav] = useState(false);
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
 
@@ -120,7 +114,7 @@ const ProductDetail = ({ navigation, route }) => {
           </View> */}
         </ImageBackground>
       </ImageBackground>
-      <View
+      {/* <View
         style={[styles.row, { padding: 20, justifyContent: "space-between" }]}
       >
         <CustomButton
@@ -167,9 +161,21 @@ const ProductDetail = ({ navigation, route }) => {
             marginTop={5}
           />
         </View>
+      </View> */}
+      <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+        <CustomText
+          label="Episodes"
+          fontFamily={Fonts.bold}
+          fontSize={22}
+          color={COLORS.primaryColor}
+        />
       </View>
       <View style={styles.listContainer}>
-        <ScrollView horizontal scrollEnabled={false}>
+        <ScrollView
+          horizontal
+          contentContainerStyle={{ width: "100%" }}
+          scrollEnabled={false}
+        >
           <FlatList
             refreshControl={
               <RefreshControl
@@ -181,24 +187,44 @@ const ProductDetail = ({ navigation, route }) => {
             data={podcasts}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item, index }) => (
-              <Card
-                onPress={() =>
-                  navigation.navigate("PlayerScreen", { item, channel })
-                }
-                flex="row"
-                align="center"
-                title={item?.title}
-                decNumLine={2}
-                des={item?.description}
-                author={`Episode ${item?.["itunes:episode"]}`}
-                imageHeight={80}
-                imageWith={80}
-                gap={10}
-                width={width - 40}
-                textWidth="75%"
-                justifyContent="space-between"
-              />
+            renderItem={({ item }) => (
+              <View style={styles.mapListContainer}>
+                <CustomText
+                  label={item?.title}
+                  fontFamily={Fonts.bold}
+                  fontSize={18}
+                />
+                <CustomText
+                  label={item?.description}
+                  color={COLORS.gray}
+                  numberOfLines={3}
+                />
+                <CustomText
+                  label={`Episode ${item?.["itunes:episode"]}`}
+                  fontFamily={Fonts.semiBold}
+                  marginBottom={10}
+                />
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() =>
+                    navigation.navigate("PlayerScreen", { item, channel })
+                  }
+                  style={styles.playContainer}
+                >
+                  <Icons
+                    family="AntDesign"
+                    name="caretright"
+                    size={22}
+                    color={COLORS.primaryColor}
+                  />
+                  <CustomText
+                    label={item?.["itunes:duration"]}
+                    fontFamily={Fonts.semiBold}
+                    marginTop={4}
+                    marginLeft={5}
+                  />
+                </TouchableOpacity>
+              </View>
             )}
           />
         </ScrollView>
@@ -263,7 +289,20 @@ const styles = StyleSheet.create({
   listContainer: {
     borderTopWidth: 1,
     borderTopColor: COLORS.gray,
+  },
+  playContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.gray,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 100,
+    alignSelf: "flex-start",
+  },
+  mapListContainer: {
+    borderBottomWidth: 0.6,
+    borderBottomColor: COLORS.gray,
+    paddingVertical: 20,
     paddingHorizontal: 20,
-    paddingBottom: 10,
   },
 });
