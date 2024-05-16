@@ -1,9 +1,8 @@
-import { StyleSheet, TextInput, View, Image } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 import React, { useState } from "react";
 
 import Icons from "./Icons";
 
-import { images } from "../assets/images";
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
 
@@ -37,15 +36,6 @@ const SearchInput = ({ placeholder, value, onChangeText }) => {
         onChangeText={onChangeText}
         placeholderTextColor={COLORS.darkGray}
       />
-      <Image
-        source={images.filter}
-        style={{
-          width: 24,
-          height: 24,
-          resizeMode: "contain",
-          marginLeft: -10,
-        }}
-      />
     </View>
   );
 };
@@ -60,7 +50,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 15,
     borderWidth: 1,
-    marginBottom: 20,
     height: 55,
     width: "100%",
     borderRadius: 16,

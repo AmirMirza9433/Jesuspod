@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, StyleSheet } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 
@@ -35,19 +35,20 @@ const Home = ({ navigation }) => {
   return (
     <ScreenWrapper
       headerUnScrollable={() => (
-        <Header
-          onPress={() => navigation.navigate("Profile")}
-          hideBackArrowr
-          userProfile={userData?.userImage}
-          title={userData?.userName}
-          subTitle="Enjoy your favorite podcast!"
-          onSettingPress={false}
-          notiIcon
-        />
+        <View style={{ padding: 20 }}>
+          <Header
+            onPress={() => navigation.navigate("Profile")}
+            hideBackArrowr
+            userProfile={userData?.userImage}
+            title={userData?.userName}
+            subTitle="Enjoy your favorite podcast!"
+            onSettingPress={false}
+            notiIcon
+          />
+          <SearchInput placeholder="Search" />
+        </View>
       )}
     >
-      <SearchInput placeholder="Search" />
-
       {/* <View style={styles.topChart}>
         <View>
           <CustomText
@@ -104,12 +105,7 @@ const Home = ({ navigation }) => {
         </View>
         <View style={styles.topImage} />
       </View> */}
-      <CustomText
-        label="Recommended for You"
-        color={COLORS.black}
-        fontFamily={Fonts.bold}
-        fontSize={16}
-      />
+
       <FlatList
         refreshControl={
           <RefreshControl

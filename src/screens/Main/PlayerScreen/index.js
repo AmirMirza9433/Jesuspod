@@ -1,18 +1,17 @@
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import { Dimensions, StyleSheet, View } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { StyleSheet, View, Animated } from "react-native";
 import Video from "react-native-video";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomText from "../../../components/CustomText";
 import BackHeader from "../../../components/BackHeader";
 import Icons from "../../../components/Icons";
-import Card from "../../../components/Card";
+import ImageFast from "../../../components/ImageFast";
 
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 
-const { width } = Dimensions.get("window");
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
   const channel = route.params?.channel;
@@ -22,6 +21,8 @@ const PlayerScreen = ({ route }) => {
   const [pause, setPause] = useState(true);
   const [musicTime, setMusicTime] = useState("00:00");
   const [durationTimeShow, setDurationTimeShow] = useState("00:00");
+  const [loading, setLoading] = useState(true);
+  const rotationValue = useRef(new Animated.Value(0)).current;
 
   const convertSecond = (d) => {
     d = Number(d);
@@ -35,6 +36,32 @@ const PlayerScreen = ({ route }) => {
       (s < 10 ? `0${s}` : s)
     );
   };
+
+  useEffect(() => {
+    let intervalId;
+    if (!pause) {
+      intervalId = setInterval(() => {
+        rotateImage();
+      }, 300);
+    } else {
+      clearInterval(intervalId);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [pause]);
+
+  const rotateImage = () => {
+    Animated.timing(rotationValue, {
+      toValue: rotationValue._value + 1,
+      duration: 20,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const rotateInterpolate = rotationValue.interpolate({
+    inputRange: [0, 360],
+    outputRange: ["0deg", "720deg"],
+  });
 
   const skipForward = () => {
     ref?.current?.seek(onProgress.currentTime + 10);
@@ -50,12 +77,24 @@ const PlayerScreen = ({ route }) => {
       headerUnScrollable={() => <BackHeader title="Now Playing" />}
     >
       <View style={styles.mainContainer}>
-        <View style={styles.headerImage}>
+        <Animated.View
+          style={[
+            styles.headerImage,
+            { transform: [{ rotate: rotateInterpolate }] },
+          ]}
+        >
+          <ImageFast
+            source={{ uri: channel?.image }}
+            resizeMode="cover"
+            style={{ width: "100%", height: "100%", borderRadius: 100 }}
+            loading={loading}
+          />
           <Video
-            source={require("../../../assets/images/video.mp4")}
+            source={{ uri: item?.enclosure[0].$.url }}
             style={{ flex: 1 }}
             resizeMode="cover"
             ref={ref}
+            audioOnly
             paused={pause}
             onProgress={(v) => {
               setOnProgress(v);
@@ -63,8 +102,10 @@ const PlayerScreen = ({ route }) => {
               setMusicTime(convertSecond(v?.currentTime));
               setDurationTimeShow(convertSecond(v?.seekableDuration));
             }}
+            onLoad={() => setLoading(false)}
           />
-        </View>
+        </Animated.View>
+
         <CustomText
           label={`EPS ${item?.["itunes:episode"]} | ${item?.title}`}
           fontFamily={Fonts.bold}
@@ -108,7 +149,7 @@ const PlayerScreen = ({ route }) => {
               borderTopRightRadius: 100,
               borderBottomRightRadius: 100,
             }}
-            sliderLength={220}
+            sliderLength={210}
             min={0}
             max={onProgress?.seekableDuration}
             step={1}
@@ -146,20 +187,6 @@ const PlayerScreen = ({ route }) => {
           />
         </View>
       </View>
-      <Card
-        flex="row"
-        align="center"
-        title={channel?.title}
-        image={channel?.image}
-        decNumLine={2}
-        author={`Episode ${item?.["itunes:episode"]}`}
-        imageHeight={80}
-        imageWith={80}
-        gap={10}
-        width={width - 40}
-        textWidth="75%"
-        justifyContent="space-between"
-      />
     </ScreenWrapper>
   );
 };
@@ -190,14 +217,11 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   headerImage: {
-    width: "100%",
-    height: 360,
+    width: 250,
+    height: 250,
     backgroundColor: COLORS.gray,
-    borderRadius: 16,
+    borderRadius: 500,
     overflow: "hidden",
-  },
-  icon: {
-    width: "17%",
   },
   markerStyle: {
     backgroundColor: COLORS.primaryColor,
@@ -217,11 +241,5 @@ const styles = StyleSheet.create({
     height: 6,
     borderTopLeftRadius: 100,
     borderBottomLeftRadius: 100,
-  },
-
-  button: {
-    backgroundColor: COLORS.lightGray,
-    padding: 10,
-    borderRadius: 10,
   },
 });

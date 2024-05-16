@@ -41,7 +41,7 @@ const Card = ({
       style={[
         styles.container,
         {
-          marginRight: marginRight || 10,
+          marginRight: marginRight || 0,
           flexDirection: flex,
           alignItems: align,
           gap: gap,
@@ -132,7 +132,7 @@ const Card = ({
 export default Card;
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
+    marginBottom: 15,
     width: "100%",
   },
   thumb: {
