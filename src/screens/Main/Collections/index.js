@@ -9,26 +9,7 @@ import Tab from "../../../components/Tab";
 import { COLORS } from "../../../utils/COLORS";
 
 const Collections = () => {
-  const status = [
-    {
-      id: "all",
-      name: "Playlist",
-    },
-    {
-      id: "pending",
-      name: "Favorite",
-    },
-    {
-      id: "accepted",
-      name: "Download",
-    },
-  ];
-
-  const [selectedStatus, setSelectedStatus] = useState("all");
-
-  const handleStatusSelect = (status) => {
-    setSelectedStatus(status);
-  };
+  const [tab, setTab] = useState("Playlist");
 
   return (
     <ScreenWrapper
@@ -44,16 +25,11 @@ const Collections = () => {
       )}
     >
       <View style={styles.header}>
-        {status.map((item, index) => (
-          <Tab
-            key={index}
-            name={item.name}
-            selected={selectedStatus === item.id}
-            onSelect={() => handleStatusSelect(item.id)}
-            isFirst={index === 0}
-            isLast={index === status.length - 1}
-          />
-        ))}
+        <Tab
+          array={["Playlist", "Favorite", "Download"]}
+          value={tab}
+          setVale={setTab}
+        />
       </View>
 
       <FlatList
