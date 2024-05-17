@@ -8,7 +8,7 @@ import { images } from "../assets/images";
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
 
-const Header = ({ title, subTitle, onPress, userProfile }) => {
+const Header = ({ title, subTitle, onPress, userProfile, notiIcon }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.6}
@@ -44,6 +44,13 @@ const Header = ({ title, subTitle, onPress, userProfile }) => {
           />
         </View>
       </View>
+      {notiIcon ? (
+        <ImageFast
+          style={styles.icn}
+          resizeMode={"contain"}
+          source={images.notifications}
+        />
+      ) : null}
     </TouchableOpacity>
   );
 };
@@ -67,5 +74,9 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
     resizeMode: "contain",
+  },
+  icn: {
+    height: 25,
+    width: 25,
   },
 });

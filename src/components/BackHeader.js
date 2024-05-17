@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 20,
   },
+
   profile: {
     height: 56,
     width: 56,

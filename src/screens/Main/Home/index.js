@@ -3,20 +3,20 @@ import { useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
-import CustomButton from "../../../components/CustomButton";
 import SearchInput from "../../../components/SearchInput";
-import CustomText from "../../../components/CustomText";
 import Header from "../../../components/Header";
 import Card from "../../../components/Card";
+import Tab from "../../../components/Tab";
+
+import Swiper from "./molecules/Swiper";
 
 import { COLORS } from "../../../utils/COLORS";
 import { getAllDocs } from "../../../Firebase";
-import { Fonts } from "../../../utils/fonts";
-import TopCart from "./molecules/TopCart";
-import Tab from "../../../components/Tab";
 
 const Home = ({ navigation }) => {
   const userData = useSelector((state) => state.user.users);
+  const recenctMusic = useSelector((state) => state.recent.recenctMusic);
+
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
   const [tab, setTab] = useState("For you");
@@ -58,7 +58,8 @@ const Home = ({ navigation }) => {
         setVale={setTab}
         paddingHorizontal={20}
       />
-      <TopCart />
+      {recenctMusic?.length ? <Swiper array={recenctMusic} /> : null}
+
       <View>
         <FlatList
           horizontal

@@ -6,8 +6,10 @@ import CustomText from "../../../../components/CustomText";
 
 import { COLORS } from "../../../../utils/COLORS";
 import { Fonts } from "../../../../utils/fonts";
+import { useNavigation } from "@react-navigation/native";
 
-const TopCart = () => {
+const TopCart = ({ item }) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.topChart}>
       <View>
@@ -61,6 +63,12 @@ const TopCart = () => {
           iconFontSize={20}
           btnFont={Fonts.regular}
           fontSize={12}
+          onPress={() =>
+            navigation.navigate("PlayerScreen", {
+              item: item?.item,
+              channel: item?.channel,
+            })
+          }
         />
       </View>
       <View style={styles.topImage} />

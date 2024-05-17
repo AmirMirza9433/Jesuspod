@@ -1,5 +1,8 @@
+import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { parseString } from "react-native-xml2js";
+import RNFetchBlob from "rn-fetch-blob";
+import Share from "react-native-share";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import {
@@ -17,12 +20,16 @@ import BackHeader from "../../../components/BackHeader";
 import CustomText from "../../../components/CustomText";
 import Icons from "../../../components/Icons";
 
+import { setRecenctMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 
 const ProductDetail = ({ navigation, route }) => {
+  const disptch = useDispatch();
   const channel = route?.params?.item;
+  const recenctMusic = useSelector((state) => state.recent.recenctMusic);
+
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
 
@@ -38,12 +45,63 @@ const ProductDetail = ({ navigation, route }) => {
     } catch (error) {
       setLoading(false);
 
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data:", errror);
     }
   };
+
+  // const share = () => {
+  //   RNFetchBlob.config({
+  //     fileCache: true,
+  //   })
+  //     .fetch("GET", channel.image)
+  //     .then((resp) => {
+  //       return resp.readFile("base64");
+  //     })
+  //     .then((base64Data) => {
+  //       const imageUrl = "data:image/png;base64," + base64Data;
+  //       const shareImage = {
+  //         title: channel.title,
+  //         message: channel.url,
+  //         url: imageUrl,
+  //       };
+
+  //       Share.open(shareImage)
+  //         .then((res) => {
+  //           console.log(res);
+  //         })
+  //         .catch((err) => {
+  //           err && console.log(err);
+  //         });
+
+  //       if (imagePath) {
+  //         return RNFetchBlob.fs.unlink(imagePath);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+  const share = () => {
+    const { config, fs } = RNFetchBlob;
+    const downloads = fs.dirs.DownloadDir;
+    return config({
+      fileCache: true,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        path: downloads + "/" + channel.title + ".png",
+      },
+    }).fetch("GET", channel.image);
+  };
+
   useEffect(() => {
     get();
   }, [channel?.url]);
+  const createRecent = (newData) => {
+    const myArray = [...recenctMusic];
+    const res = [{ channel, item: newData }, ...myArray];
+    disptch(setRecenctMusic(res.slice(0, 3)));
+  };
   return (
     <ScreenWrapper
       scrollEnabled
@@ -52,9 +110,9 @@ const ProductDetail = ({ navigation, route }) => {
       paddingHorizontal={0.1}
       headerUnScrollable={() => (
         <BackHeader
-          color={COLORS.white}
+          color={COLORS.black}
           style={{ position: "absolute", zIndex: 999, top: 20 }}
-          onSharePress={() => {}}
+          onSharePress={share}
         />
       )}
     >
@@ -206,9 +264,10 @@ const ProductDetail = ({ navigation, route }) => {
                 />
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() =>
-                    navigation.navigate("PlayerScreen", { item, channel })
-                  }
+                  onPress={() => {
+                    createRecent(item);
+                    navigation.navigate("PlayerScreen", { item, channel });
+                  }}
                   style={styles.playContainer}
                 >
                   <Icons

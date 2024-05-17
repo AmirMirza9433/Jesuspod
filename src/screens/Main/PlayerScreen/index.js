@@ -15,7 +15,6 @@ import { Fonts } from "../../../utils/fonts";
 
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
-  console.log("==============", item?.guid?.[0]?._);
   const channel = route.params?.channel;
   const ref = useRef(null);
   const [percentage, setPercentage] = useState(0);
@@ -104,7 +103,7 @@ const PlayerScreen = ({ route }) => {
         </View>
 
         <CustomText
-          label={`EPS ${item?.["itunes:episode"]} | ${item?.title}`}
+          label={`EPS ${item?.["itunes:episode"] || 0} | ${item?.title}`}
           fontFamily={Fonts.bold}
           fontSize={20}
           textAlign="center"
