@@ -13,6 +13,7 @@ import {
   ScrollView,
   FlatList,
   View,
+  Text,
 } from "react-native";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
@@ -24,11 +25,14 @@ import { setRecenctMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import MenuOptios from "../../../components/Menu";
+import HTMLView from "react-native-htmlview";
 
 const ProductDetail = ({ navigation, route }) => {
   const disptch = useDispatch();
   const channel = route?.params?.item;
   const recenctMusic = useSelector((state) => state.recent.recenctMusic);
+  console.log(recenctMusic);
 
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
@@ -49,39 +53,7 @@ const ProductDetail = ({ navigation, route }) => {
     }
   };
 
-  // const share = () => {
-  //   RNFetchBlob.config({
-  //     fileCache: true,
-  //   })
-  //     .fetch("GET", channel.image)
-  //     .then((resp) => {
-  //       return resp.readFile("base64");
-  //     })
-  //     .then((base64Data) => {
-  //       const imageUrl = "data:image/png;base64," + base64Data;
-  //       const shareImage = {
-  //         title: channel.title,
-  //         message: channel.url,
-  //         url: imageUrl,
-  //       };
-
-  //       Share.open(shareImage)
-  //         .then((res) => {
-  //           console.log(res);
-  //         })
-  //         .catch((err) => {
-  //           err && console.log(err);
-  //         });
-
-  //       if (imagePath) {
-  //         return RNFetchBlob.fs.unlink(imagePath);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
-  const share = () => {
+  const download = (data) => {
     const { config, fs } = RNFetchBlob;
     const downloads = fs.dirs.DownloadDir;
     return config({
@@ -89,18 +61,23 @@ const ProductDetail = ({ navigation, route }) => {
       addAndroidDownloads: {
         useDownloadManager: true,
         notification: true,
-        path: downloads + "/" + channel.title + ".png",
+        path: downloads + "/" + data?.title[0] + ".png",
       },
-    }).fetch("GET", channel.image);
+    }).fetch("GET", data?.enclosure[0].$.url);
   };
+
+  const share = () => {};
 
   useEffect(() => {
     get();
   }, [channel?.url]);
   const createRecent = (newData) => {
-    const myArray = [...recenctMusic];
+    let myArray = [];
+    if (Array.isArray(recenctMusic)) {
+      myArray = [...recenctMusic];
+    }
     const res = [{ channel, item: newData }, ...myArray];
-    disptch(setRecenctMusic(res.slice(0, 3)));
+    disptch(setRecenctMusic(res.slice(0, 4)));
   };
   return (
     <ScreenWrapper
@@ -109,11 +86,9 @@ const ProductDetail = ({ navigation, route }) => {
       transclucent
       paddingHorizontal={0.1}
       headerUnScrollable={() => (
-        <BackHeader
-          color={COLORS.black}
-          style={{ position: "absolute", zIndex: 999, top: 20 }}
-          onSharePress={share}
-        />
+        <View style={{ position: "absolute", zIndex: 999, top: 20 }}>
+          <BackHeader color={COLORS.white} />
+        </View>
       )}
     >
       <ImageBackground
@@ -172,6 +147,7 @@ const ProductDetail = ({ navigation, route }) => {
           </View> */}
         </ImageBackground>
       </ImageBackground>
+
       {/* <View
         style={[styles.row, { padding: 20, justifyContent: "space-between" }]}
       >
@@ -252,37 +228,75 @@ const ProductDetail = ({ navigation, route }) => {
                   fontFamily={Fonts.bold}
                   fontSize={18}
                 />
+                {/* <HTMLView value={item?.description} stylesheet={styles} /> */}
+
                 <CustomText
                   label={item?.description}
                   color={COLORS.gray}
                   numberOfLines={3}
                 />
-                <CustomText
+                {/* <CustomText
                   label={`Episode ${item?.["itunes:episode"]}`}
                   fontFamily={Fonts.semiBold}
                   marginBottom={10}
-                />
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  onPress={() => {
-                    createRecent(item);
-                    navigation.navigate("PlayerScreen", { item, channel });
+                /> */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: 10,
                   }}
-                  style={styles.playContainer}
                 >
-                  <Icons
-                    family="AntDesign"
-                    name="caretright"
-                    size={22}
-                    color={COLORS.primaryColor}
-                  />
-                  <CustomText
-                    label={item?.["itunes:duration"]}
-                    fontFamily={Fonts.semiBold}
-                    marginTop={4}
-                    marginLeft={5}
-                  />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      createRecent(item);
+                      navigation.navigate("PlayerScreen", { item, channel });
+                    }}
+                    style={styles.playContainer}
+                  >
+                    <Icons
+                      family="AntDesign"
+                      name="caretright"
+                      size={22}
+                      color={COLORS.primaryColor}
+                    />
+                    <CustomText
+                      label={item?.["itunes:duration"]}
+                      fontFamily={Fonts.semiBold}
+                      marginTop={4}
+                      marginLeft={5}
+                    />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={styles.downloadsIcon}
+                      onPress={() => download(item)}
+                    >
+                      <Icons
+                        family="Ionicons"
+                        name="arrow-down-circle"
+                        size={22}
+                        color={COLORS.primaryColor}
+                      />
+                    </TouchableOpacity>
+                    <MenuOptios ItemData={item} chanalData={channel} />
+
+                    {/* <Icons
+                      family="Entypo"
+                      name="dots-three-horizontal"
+                      size={22}
+                      color={COLORS.primaryColor}
+                    /> */}
+                  </View>
+                </View>
               </View>
             )}
           />
@@ -295,6 +309,36 @@ const ProductDetail = ({ navigation, route }) => {
 export default ProductDetail;
 
 const styles = StyleSheet.create({
+  p1: {
+    color: COLORS.gray,
+    fontFamily: Fonts.bold,
+    fontSize: 10,
+    padding: 0.1,
+    margin: 0.1,
+  },
+  h1: {
+    color: COLORS.gray,
+    fontFamily: Fonts.regular,
+    fontSize: 20,
+    padding: 0.1,
+    margin: 0.1,
+  },
+  h: {
+    color: COLORS.gray,
+    fontFamily: Fonts.regular,
+    fontSize: 20,
+    padding: 0.1,
+    margin: 0.1,
+  },
+
+  a: {
+    color: COLORS.gray,
+    fontFamily: Fonts.regular,
+    fontSize: 20,
+    padding: 0.1,
+    margin: 0.1,
+  },
+
   userImage: {
     backgroundColor: COLORS.gray,
     borderRadius: 100,
@@ -358,6 +402,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignSelf: "flex-start",
   },
+
   mapListContainer: {
     borderBottomWidth: 0.6,
     borderBottomColor: COLORS.gray,

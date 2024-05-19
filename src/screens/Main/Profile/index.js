@@ -13,6 +13,7 @@ import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 import ImageFast from "../../../components/ImageFast";
+import { setRecenctMusic } from "../../../store/reducer/recentSlice";
 
 const Profile = () => {
   const userData = useSelector((state) => state.user.users);
@@ -51,6 +52,7 @@ const Profile = () => {
       onPress: () => {
         dispatch(logout());
         dispatch(setUser({}));
+        dispatch(setRecenctMusic({}));
       },
     },
   ];

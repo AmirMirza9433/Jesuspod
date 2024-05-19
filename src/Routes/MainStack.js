@@ -6,6 +6,7 @@ import TabStack from "./TabStack";
 import Profile from "../screens/Main/Profile";
 import ProductDetail from "../screens/Main/ProductDetail";
 import PlayerScreen from "../screens/Main/PlayerScreen";
+import SeeAll from "../screens/Main/AllChanals";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ const MainStack = () => {
       <Stack.Screen name="TabStack" component={TabStack} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="ProductDetail" component={ProductDetail} />
+      <Stack.Screen name="SeeAll" component={SeeAll} />
       <Stack.Screen name="PlayerScreen" component={PlayerScreen} />
     </Stack.Navigator>
   );

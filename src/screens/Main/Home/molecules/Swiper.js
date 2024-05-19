@@ -1,39 +1,99 @@
-import { Animated, Dimensions, StyleSheet } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  FlatList,
+  ImageBackground,
+  StyleSheet,
+  View,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { COLORS } from "../../../../utils/COLORS";
 import TopCart from "./TopCart";
+import ScreenWrapper from "../../../../components/ScreenWrapper";
+import ImageFast from "../../../../components/ImageFast";
+import { Fonts } from "../../../../utils/fonts";
+import { images } from "../../../../assets/images";
+import CustomText from "../../../../components/CustomText";
+import { TouchableOpacity } from "react-native";
+import Icons from "../../../../components/Icons";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
-const Swiper = ({ array }) => {
-  const flatListRef = useRef();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  useEffect(() => {
-    flatListRef.current.scrollToIndex({ animated: true, index: currentIndex });
-  }, [currentIndex]);
+const Swiper = ({ array, onPress }) => {
+  const navigation = useNavigation();
+  // const flatListRef = useRef();
+  // const [currentIndex, setCurrentIndex] = useState(0);
+  // useEffect(() => {
+  //   flatListRef.current.scrollToIndex({ animated: true, index: currentIndex });
+  // }, [currentIndex]);
   return (
-    <Animated.FlatList
+    <FlatList
       data={array}
       showsHorizontalScrollIndicator={false}
       horizontal
-      getItemLayout={(_, index) => ({
-        length: width,
-        offset: width * index,
-        index,
-      })}
-      onScrollToIndexFailed={(info) => {
-        console.error("Failed to scroll to index:", info.index);
-      }}
-      ref={flatListRef}
-      onMomentumScrollEnd={(e) => {
-        const x = e.nativeEvent.contentOffset.x;
-        setCurrentIndex((x / width)?.toFixed(0));
-      }}
-      initialScrollIndex={currentIndex}
-      pagingEnabled
-      renderItem={({ item }) => (
-        <Animated.View style={styles.sliderItem}>
-          <TopCart item={item} />
-        </Animated.View>
+      renderItem={({ item, index }) => (
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={
+            onPress
+              ? () => navigation.navigate("ProductDetail", { item })
+              : null
+          }
+          style={{ position: "relative" }}
+        >
+          <ImageFast
+            resizeMode="cover"
+            style={styles.thumb}
+            source={{
+              uri: item?.channel?.image || item?.image,
+            }}
+          />
+
+          <ImageBackground
+            resizeMode="cover"
+            imageStyle={{ borderRadius: 16 }}
+            source={images.gradient}
+            style={styles.headerContent}
+          >
+            <View>
+              <CustomText
+                label={
+                  item?.item?.["itunes:title"] ||
+                  item?.item?.title ||
+                  item.title
+                }
+                fontFamily={Fonts.bold}
+                numberOfLines={2}
+                color={COLORS.white}
+              />
+              {item?.item?.["itunes:duration"] ? (
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => {
+                    navigation.navigate("PlayerScreen", {
+                      item: item?.item,
+                      channel: item?.channel,
+                    });
+                  }}
+                  style={styles.playContainer}
+                >
+                  <Icons
+                    family="AntDesign"
+                    name="caretright"
+                    size={22}
+                    color={COLORS.primaryColor}
+                  />
+                  <CustomText
+                    label={item?.item?.["itunes:duration"]}
+                    fontFamily={Fonts.semiBold}
+                    marginTop={5}
+                    marginLeft={5}
+                  />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          </ImageBackground>
+        </TouchableOpacity>
       )}
     />
   );
@@ -42,11 +102,29 @@ const Swiper = ({ array }) => {
 export default Swiper;
 
 const styles = StyleSheet.create({
-  sliderItem: {
-    width: width,
-    backgroundColor: COLORS.white,
+  thumb: {
+    backgroundColor: COLORS.gray,
+    borderRadius: 16,
+    height: 300,
+    width: 250,
+    marginRight: 15,
+  },
+  playContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingBottom: 60,
+    backgroundColor: COLORS.gray,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 100,
+    alignSelf: "flex-start",
+    marginTop: 10,
+  },
+  headerContent: {
+    padding: 15,
+    position: "absolute",
+    bottom: 0,
+    width: 250,
+
+    // left: 10,
   },
 });

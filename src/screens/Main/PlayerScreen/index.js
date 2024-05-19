@@ -109,7 +109,7 @@ const PlayerScreen = ({ route }) => {
           textAlign="center"
           marginTop={20}
         />
-        <View style={styles.row}>
+        {/* <View style={styles.row}>
           {["True Crime Chronicles", "by True Crime Chronicles"].map(
             (item, i) => (
               <React.Fragment key={item}>
@@ -128,7 +128,7 @@ const PlayerScreen = ({ route }) => {
               </React.Fragment>
             )
           )}
-        </View>
+        </View> */}
         <View style={styles.sliderContainer}>
           <CustomText label={musicTime} fontFamily={Fonts.semiBold} />
           <MultiSlider
