@@ -40,6 +40,7 @@
     "react-native-screens": "^3.27.0",
     "react-native-share": "^10.2.1",
     "react-native-simple-toast": "^3.2.0",
+    "react-native-track-player": "^4.1.1",
     "react-native-vector-icons": "^10.0.1",
     "react-native-video": "^5.2.1",
     "react-native-xml2js": "^1.0.3",
