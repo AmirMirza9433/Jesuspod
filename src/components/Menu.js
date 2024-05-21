@@ -74,7 +74,6 @@ const MenuOptios = ({ ItemData, chanalData }) => {
     } else {
       finalArray = [...userData?.musics, ItemData];
     }
-    console.log("================finalArray", finalArray);
     try {
       const res = await updateCollection("users", token, {
         ...userData,

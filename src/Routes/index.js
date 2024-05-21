@@ -19,13 +19,9 @@ const Routes = () => {
       }}
     >
       {token ? (
-        <>
-          <Stack.Screen name="MainStack" component={MainStack} />
-        </>
+        <Stack.Screen name="MainStack" component={MainStack} />
       ) : (
-        <>
-          <Stack.Screen name="AuthStack" component={AuthStack} />
-        </>
+        <Stack.Screen name="AuthStack" component={AuthStack} />
       )}
     </Stack.Navigator>
   );

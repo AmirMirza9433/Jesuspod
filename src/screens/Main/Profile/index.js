@@ -5,25 +5,26 @@ import React from "react";
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import BackHeader from "../../../components/BackHeader";
 import CustomText from "../../../components/CustomText";
+import ImageFast from "../../../components/ImageFast";
 import Icons from "../../../components/Icons";
 
+import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { setUser } from "../../../store/reducer/usersSlice";
 import { logout } from "../../../store/reducer/AuthConfig";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import ImageFast from "../../../components/ImageFast";
-import { setRecentMusic } from "../../../store/reducer/recentSlice";
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   const userData = useSelector((state) => state.user.users);
 
   const dispatch = useDispatch();
   const array = [
     {
       id: 1,
-      title: "My Podcast",
+      title: "Favorite Podcast",
       icon: images.tabLive,
+      onPress: () => navigation.navigate("FavPodcast"),
     },
     {
       id: 2,
