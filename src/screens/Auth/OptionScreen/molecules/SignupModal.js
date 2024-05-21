@@ -106,7 +106,6 @@ const SignupModal = ({
         state?.email,
         state?.password
       );
-      console.log("=====res", res);
       await firestore()
         .collection("users")
         .doc(res?.user?.uid)

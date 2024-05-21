@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  recenctMusic: [],
+  recentMusic: [],
 };
 export const recentSlice = createSlice({
   name: "recentSlice",
   initialState: initialState,
   reducers: {
-    setRecenctMusic(state, action) {
-      state.recenctMusic = action.payload;
+    setRecentMusic(state, action) {
+      state.recentMusic = action.payload;
     },
   },
 });
 
-export const { setRecenctMusic } = recentSlice.actions;
+export const { setRecentMusic } = recentSlice.actions;

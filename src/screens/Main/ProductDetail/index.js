@@ -21,7 +21,7 @@ import BackHeader from "../../../components/BackHeader";
 import CustomText from "../../../components/CustomText";
 import Icons from "../../../components/Icons";
 
-import { setRecenctMusic } from "../../../store/reducer/recentSlice";
+import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
@@ -29,10 +29,9 @@ import MenuOptios from "../../../components/Menu";
 import HTMLView from "react-native-htmlview";
 
 const ProductDetail = ({ navigation, route }) => {
-  const disptch = useDispatch();
+  const dispatch = useDispatch();
   const channel = route?.params?.item;
-  const recenctMusic = useSelector((state) => state.recent.recenctMusic);
-  console.log(recenctMusic);
+  const recentMusic = useSelector((state) => state.recent.recentMusic);
 
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
@@ -66,18 +65,16 @@ const ProductDetail = ({ navigation, route }) => {
     }).fetch("GET", data?.enclosure[0].$.url);
   };
 
-  const share = () => {};
-
   useEffect(() => {
     get();
   }, [channel?.url]);
   const createRecent = (newData) => {
     let myArray = [];
-    if (Array.isArray(recenctMusic)) {
-      myArray = [...recenctMusic];
+    if (Array.isArray(recentMusic)) {
+      myArray = [...recentMusic];
     }
     const res = [{ channel, item: newData }, ...myArray];
-    disptch(setRecenctMusic(res.slice(0, 4)));
+    dispatch(setRecentMusic(res.slice(0, 4)));
   };
   return (
     <ScreenWrapper

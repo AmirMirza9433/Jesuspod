@@ -1,10 +1,12 @@
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
-import { useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import SearchInput from "../../../components/SearchInput";
+import CustomText from "../../../components/CustomText";
 import Header from "../../../components/Header";
+import Icons from "../../../components/Icons";
 import Card from "../../../components/Card";
 import Tab from "../../../components/Tab";
 
@@ -12,17 +14,14 @@ import Swiper from "./molecules/Swiper";
 
 import { COLORS } from "../../../utils/COLORS";
 import { getAllDocs } from "../../../Firebase";
-import CustomText from "../../../components/CustomText";
 import { Fonts } from "../../../utils/fonts";
-import Icons from "../../../components/Icons";
 
 const Home = ({ navigation }) => {
   const userData = useSelector((state) => state.user.users);
-  const recenctMusic = useSelector((state) => state.recent.recenctMusic);
+  const recentMusic = useSelector((state) => state.recent.recentMusic);
 
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
-  const [random5, setrandom5] = useState([]);
 
   const [tab, setTab] = useState("For you");
   const getChannels = async () => {
@@ -38,29 +37,8 @@ const Home = ({ navigation }) => {
     }
   };
 
-  const randomdata = async () => {
-    try {
-      const res = await getAllDocs("channels");
-      const data = res?.[0]?.channels;
-      if (data) {
-        const randomChannels = getRandomChannels(data);
-        setrandom5(randomChannels);
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log("=========error:", error);
-    }
-  };
-
-  const getRandomChannels = (channels) => {
-    // Shuffle the array and pick the first 5
-    return channels.sort(() => 0.5 - Math.random()).slice(0, 5);
-  };
-
   useEffect(() => {
     getChannels();
-    randomdata();
   }, []);
 
   return (
@@ -87,15 +65,9 @@ const Home = ({ navigation }) => {
         setVale={setTab}
         paddingHorizontal={20}
       />
-      {recenctMusic?.length ? (
-        <View>
-          <Swiper array={recenctMusic} />
-        </View>
-      ) : (
-        <View>
-          <Swiper array={random5} onPress={true} />
-        </View>
-      )}
+      <Swiper
+        array={recentMusic?.length ? recentMusic : channels?.slice(0, 6)}
+      />
 
       <View
         style={{
