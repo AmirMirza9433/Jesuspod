@@ -2,8 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { parseString } from "react-native-xml2js";
 import RNFetchBlob from "rn-fetch-blob";
-import Share from "react-native-share";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import {
   TouchableOpacity,
@@ -13,20 +11,18 @@ import {
   ScrollView,
   FlatList,
   View,
-  Text,
 } from "react-native";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import BackHeader from "../../../components/BackHeader";
 import CustomText from "../../../components/CustomText";
+import MenuOptios from "../../../components/Menu";
 import Icons from "../../../components/Icons";
 
 import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import MenuOptios from "../../../components/Menu";
-import HTMLView from "react-native-htmlview";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -121,88 +117,8 @@ const ProductDetail = ({ navigation, route }) => {
             fontFamily={Fonts.semiBold}
             color={COLORS.white}
           />
-          {/* <View style={styles.row}>
-            {[
-              `${podcasts?.length || 0} Episodes`,
-              "True Crime",
-              "120K Listening",
-            ].map((item, i) => (
-              <React.Fragment key={item}>
-                <CustomText
-                  label={item}
-                  fontFamily={Fonts.semiBold}
-                  color={COLORS.white}
-                />
-                {i == 2 ? null : (
-                  <CustomText
-                    label=" • "
-                    fontFamily={Fonts.semiBold}
-                    color={COLORS.gray}
-                  />
-                )}
-              </React.Fragment>
-            ))}
-          </View> */}
-          {/* <View style={[styles.row, { marginVertical: 15 }]}>
-            <View style={styles.profile} />
-            <CustomText
-              label="True Crime Chronicles"
-              fontFamily={Fonts.semiBold}
-              color={COLORS.white}
-              marginLeft={15}
-            />
-          </View> */}
         </ImageBackground>
       </ImageBackground>
-
-      {/* <View
-        style={[styles.row, { padding: 20, justifyContent: "space-between" }]}
-      >
-        <CustomButton
-          title="Play All Episode"
-          width="55%"
-          alignSelf="start"
-          height={50}
-          icon
-          iconColor={COLORS.white}
-          iconfamily={"Feather"}
-          iconname={"play-circle"}
-          iconGap={10}
-          iconFontSize={20}
-          btnFont={Fonts.semiBold}
-          fontSize={14}
-        />
-        <View style={{ alignItems: "center" }}>
-          <Icons
-            onPress={() => setFav(!isFav)}
-            family="AntDesign"
-            name={isFav ? "heart" : "hearto"}
-            color={isFav ? COLORS.red : COLORS.gray}
-            size={24}
-          />
-          <CustomText
-            label="Favorite"
-            fontSize={12}
-            fontFamily={Fonts.semiBold}
-            marginTop={5}
-          />
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <Icons
-            onPress={() => ToastMessage("Downloading...")}
-            family="Feather"
-            name="download"
-            color={COLORS.gray}
-            size={24}
-          />
-          <CustomText
-            label="Download"
-            fontSize={12}
-            fontFamily={Fonts.semiBold}
-            marginTop={5}
-          />
-        </View>
-      </View> */}
       <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
         <CustomText
           label="Episodes"
@@ -241,26 +157,12 @@ const ProductDetail = ({ navigation, route }) => {
                   fontFamily={Fonts.bold}
                   fontSize={18}
                 />
-                {/* <HTMLView value={item?.description} stylesheet={styles} /> */}
-
                 <CustomText
                   label={item?.description}
                   color={COLORS.gray}
                   numberOfLines={2}
                 />
-                {/* <CustomText
-                  label={`Episode ${item?.["itunes:episode"]}`}
-                  fontFamily={Fonts.semiBold}
-                  marginBottom={10}
-                /> */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginTop: 10,
-                  }}
-                >
+                <View style={styles.row}>
                   <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => {
@@ -301,13 +203,6 @@ const ProductDetail = ({ navigation, route }) => {
                       />
                     </TouchableOpacity>
                     <MenuOptios ItemData={item} chanalData={channel} />
-
-                    {/* <Icons
-                      family="Entypo"
-                      name="dots-three-horizontal"
-                      size={22}
-                      color={COLORS.primaryColor}
-                    /> */}
                   </View>
                 </View>
               </View>
@@ -322,71 +217,6 @@ const ProductDetail = ({ navigation, route }) => {
 export default ProductDetail;
 
 const styles = StyleSheet.create({
-  p1: {
-    color: COLORS.gray,
-    fontFamily: Fonts.bold,
-    fontSize: 10,
-    padding: 0.1,
-    margin: 0.1,
-  },
-  h1: {
-    color: COLORS.gray,
-    fontFamily: Fonts.regular,
-    fontSize: 20,
-    padding: 0.1,
-    margin: 0.1,
-  },
-  h: {
-    color: COLORS.gray,
-    fontFamily: Fonts.regular,
-    fontSize: 20,
-    padding: 0.1,
-    margin: 0.1,
-  },
-
-  a: {
-    color: COLORS.gray,
-    fontFamily: Fonts.regular,
-    fontSize: 20,
-    padding: 0.1,
-    margin: 0.1,
-  },
-
-  userImage: {
-    backgroundColor: COLORS.gray,
-    borderRadius: 100,
-    width: "100%",
-    height: "100%",
-  },
-  editContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 100,
-    backgroundColor: COLORS.primaryColor,
-    justifyContent: "center",
-    alignItems: "center",
-    bottom: 5,
-    right: -5,
-    position: "absolute",
-  },
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    paddingVertical: 10,
-    marginBottom: 10,
-  },
-  itemIcon: {
-    width: 24,
-    height: 24,
-    resizeMode: "contain",
-    marginRight: 15,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   headerImage: {
     width: "100%",
     height: 400,
@@ -395,12 +225,6 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     padding: 15,
-  },
-  profile: {
-    width: 40,
-    height: 40,
-    borderRadius: 100,
-    backgroundColor: COLORS.gray,
   },
   listContainer: {
     borderTopWidth: 1,
@@ -415,11 +239,16 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignSelf: "flex-start",
   },
-
   mapListContainer: {
     borderBottomWidth: 0.6,
     borderBottomColor: COLORS.gray,
     paddingVertical: 20,
     paddingHorizontal: 20,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
   },
 });

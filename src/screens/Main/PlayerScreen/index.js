@@ -1,4 +1,5 @@
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet, View } from "react-native";
 import React, { useRef, useState } from "react";
 import Video from "react-native-video";
@@ -9,7 +10,8 @@ import BackHeader from "../../../components/BackHeader";
 import ImageFast from "../../../components/ImageFast";
 import Icons from "../../../components/Icons";
 
-import { deleteSingleDoc, saveDoc } from "../../../Firebase";
+import { setUser } from "../../../store/reducer/usersSlice";
+import { updateCollection } from "../../../Firebase";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 
@@ -17,13 +19,19 @@ const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
   const channel = route.params?.channel;
   const ref = useRef(null);
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.authConfig.token);
+  const userData = useSelector((state) => state.user.users);
   const [percentage, setPercentage] = useState(0);
   const [onProgress, setOnProgress] = useState({});
   const [pause, setPause] = useState(true);
   const [musicTime, setMusicTime] = useState("00:00");
   const [durationTimeShow, setDurationTimeShow] = useState("00:00");
   const [loading, setLoading] = useState(true);
-  const [isLike, setLike] = useState(false);
+  const [isLike, setLike] = useState(
+    userData?.musics?.filter((item) => item?.title?.[0] == item?.title?.[0])
+      ?.length
+  );
 
   const convertSecond = (d) => {
     d = Number(d);
@@ -46,35 +54,39 @@ const PlayerScreen = ({ route }) => {
     ref?.current?.seek(Math.max(0, onProgress.currentTime - 10));
   };
   const onFav = async () => {
-    try {
-      let res;
-      if (!isLike) {
-        res = await saveDoc(
-          item?.guid?.[0]?._,
-          JSON.stringify(item),
-          "Favorite"
-        );
-      } else {
-        res = await deleteSingleDoc("Favorite", item?.guid?.[0]?._);
-      }
-      console.log("================res", res);
-    } catch (error) {
-      console.log("==========error", error);
+    setLike(!isLike);
+    let finalArray;
+    if (
+      userData?.musics?.filter((item) => item?.title?.[0] == item?.title?.[0])
+        ?.length
+    ) {
+      finalArray = userData?.musics?.filter(
+        (item) => item?.title?.[0] != item?.title?.[0]
+      );
+    } else {
+      finalArray = [...userData?.musics, item];
     }
-    saveDoc;
+    try {
+      const res = await updateCollection("users", token, {
+        ...userData,
+        musics: finalArray,
+      });
+      dispatch(
+        setUser({
+          ...userData,
+          musics: finalArray,
+        })
+      );
+      console.log("==============res", res);
+    } catch (error) {
+      console.log("==============error", error?.response?.data);
+    }
   };
   return (
     <ScreenWrapper
       scrollEnabled
       headerUnScrollable={() => (
-        <BackHeader
-          title="Now Playing"
-          onHeartPress={() => {
-            setLike(!isLike);
-            // onFav();
-          }}
-          isHeart={isLike}
-        />
+        <BackHeader title="Now Playing" onHeartPress={onFav} isHeart={isLike} />
       )}
     >
       <View style={styles.mainContainer}>

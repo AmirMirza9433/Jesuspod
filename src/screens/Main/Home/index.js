@@ -66,7 +66,7 @@ const Home = ({ navigation }) => {
         paddingHorizontal={20}
       />
       <Swiper
-        array={recentMusic?.length ? recentMusic : channels?.slice(0, 6)}
+        array={recentMusic?.length ? recentMusic : channels?.slice(0, 5)}
       />
 
       <View

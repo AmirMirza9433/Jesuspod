@@ -1,14 +1,20 @@
-import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { MenuView } from "@react-native-menu/menu";
-import Icons from "./Icons";
-import { COLORS } from "../utils/COLORS";
-import { Fonts } from "../utils/fonts";
-import { images } from "../assets/images";
 import RNFetchBlob from "rn-fetch-blob";
 import Share from "react-native-share";
-import { View } from "react-native";
+import React from "react";
+
+import Icons from "./Icons";
+
+import { COLORS } from "../utils/COLORS";
+import { updateCollection } from "../Firebase";
+import { setUser } from "../store/reducer/usersSlice";
 
 const MenuOptios = ({ ItemData, chanalData }) => {
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.authConfig.token);
+  const userData = useSelector((state) => state.user.users);
+
   const downloadData = () => {
     const { config, fs } = RNFetchBlob;
     const downloads = fs.dirs.DownloadDir;
@@ -55,28 +61,59 @@ const MenuOptios = ({ ItemData, chanalData }) => {
         console.log(error);
       });
   };
-
+  const onLike = async () => {
+    let finalArray;
+    if (
+      userData?.musics?.filter(
+        (item) => item?.title?.[0] == ItemData?.title?.[0]
+      )?.length
+    ) {
+      finalArray = userData?.musics?.filter(
+        (item) => item?.title?.[0] != ItemData?.title?.[0]
+      );
+    } else {
+      finalArray = [...userData?.musics, ItemData];
+    }
+    console.log("================finalArray", finalArray);
+    try {
+      const res = await updateCollection("users", token, {
+        ...userData,
+        musics: finalArray,
+      });
+      dispatch(
+        setUser({
+          ...userData,
+          musics: finalArray,
+        })
+      );
+      console.log("==============res", res);
+    } catch (error) {
+      console.log("==============error", error?.response?.data);
+    }
+  };
   return (
     <MenuView
       themeVariant="light"
       title="Menu Title"
       shouldOpenOnLongPress={false}
       onPressAction={({ nativeEvent }) => {
-        if (nativeEvent?.event === "2") {
-          ondataShare(); // Call onShare function when Share option is pressed
+        if (nativeEvent?.event === "1") {
+          onLike();
+        } else if (nativeEvent?.event === "2") {
+          ondataShare();
         } else if (nativeEvent?.event === "3") {
           downloadData();
-        } else {
         }
-
-        // console.warn(JSON.stringify(nativeEvent));
       }}
       actions={[
         {
           id: "1",
-          title: "Like",
+          title: userData?.musics?.filter(
+            (item) => item?.title?.[0] == ItemData?.title
+          )?.length
+            ? "Un Like"
+            : "Like",
           titleColor: COLORS.black,
-          //   image: images.setting,
           imageColor: COLORS.primaryColor,
         },
         {
@@ -84,15 +121,12 @@ const MenuOptios = ({ ItemData, chanalData }) => {
           title: "Share",
           titleColor: COLORS.black,
           subtitle: "Share action on SNS",
-          //   image: images.setting,
           imageColor: COLORS.primaryColor,
-          //   state: "on",
         },
         {
           id: "3",
           title: "Download",
           titleColor: COLORS.black,
-          //   image: images.setting,
           imageColor: COLORS.primaryColor,
         },
       ]}

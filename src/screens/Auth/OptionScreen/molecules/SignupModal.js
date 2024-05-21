@@ -103,7 +103,7 @@ const SignupModal = ({
     try {
       setLoading(true);
       const res = await auth().createUserWithEmailAndPassword(
-        state?.email,
+        state?.email?.toLowerCase()?.trim(),
         state?.password
       );
       await firestore()
@@ -114,11 +114,12 @@ const SignupModal = ({
             userImage: state.userImage,
             userName: state.userName,
             email: state.email,
+            musics: [],
           },
           userId: res?.user?.uid,
         });
       dispatch(setToken(res?.user?.uid));
-      dispatch(setUser(state));
+      dispatch(setUser({ ...state, musics: [] }));
       setState(init);
       onDisable();
       setLoading(false);
