@@ -65,6 +65,16 @@ const ProductDetail = ({ navigation, route }) => {
     }).fetch("GET", data?.enclosure[0].$.url);
   };
 
+  const changedata = (timestamp) => {
+    const date = new Date(timestamp);
+    const dayMonth = date.toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "short",
+    });
+
+    return dayMonth;
+  };
+
   useEffect(() => {
     get();
   }, [channel?.url]);
@@ -221,6 +231,12 @@ const ProductDetail = ({ navigation, route }) => {
             renderItem={({ item }) => (
               <View style={styles.mapListContainer}>
                 <CustomText
+                  label={changedata(item?.pubDate)}
+                  fontFamily={Fonts.regular}
+                  fontSize={15}
+                  marginBottom={10}
+                />
+                <CustomText
                   label={item?.title}
                   fontFamily={Fonts.bold}
                   fontSize={18}
@@ -230,7 +246,7 @@ const ProductDetail = ({ navigation, route }) => {
                 <CustomText
                   label={item?.description}
                   color={COLORS.gray}
-                  numberOfLines={3}
+                  numberOfLines={2}
                 />
                 {/* <CustomText
                   label={`Episode ${item?.["itunes:episode"]}`}
