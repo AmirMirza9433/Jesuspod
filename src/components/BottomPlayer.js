@@ -1,15 +1,17 @@
-// BottomPlayer.js
-
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { View, StyleSheet, Image, Dimensions } from "react-native";
+import React, { useState } from "react";
 import TrackPlayer, {
   usePlaybackState,
-  State,
   useProgress,
+  State,
 } from "react-native-track-player";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import { COLORS } from "../utils/COLORS";
+
 import Icons from "./Icons";
+
+import { COLORS } from "../utils/COLORS";
+
+const { width } = Dimensions.get("screen");
 
 const BottomPlayer = ({ currentTrack }) => {
   const playbackState = usePlaybackState();
@@ -52,7 +54,7 @@ const BottomPlayer = ({ currentTrack }) => {
           pressedMarkerStyle={styles.pressedMarkerStyle}
           selectedStyle={styles.selectedStyle}
           trackStyle={styles.trackStyle}
-          sliderLength={265}
+          sliderLength={width - 160}
         />
       </View>
     </View>

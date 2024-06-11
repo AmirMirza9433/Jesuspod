@@ -53,9 +53,7 @@ const MenuOptios = ({ ItemData, chanalData }) => {
         };
 
         Share.open(shareImage)
-          .then((res) => {
-            console.log(res);
-          })
+          .then((res) => {})
           .catch((err) => {
             err && console.log(err);
           });
@@ -92,7 +90,6 @@ const MenuOptios = ({ ItemData, chanalData }) => {
           musics: finalArray,
         })
       );
-      console.log("==============res", res);
     } catch (error) {
       console.log("==============error", error?.response?.data);
     }

@@ -29,7 +29,6 @@ const Home = ({ navigation }) => {
     setLoading(true);
     try {
       const res = await getAllDocs("chanals");
-      console.log(res);
       setChannels(res?.[0]?.podcasts);
 
       setLoading(false);

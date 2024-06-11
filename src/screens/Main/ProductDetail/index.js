@@ -112,7 +112,6 @@ const ProductDetail = ({ navigation, route }) => {
           musics: finalArray,
         })
       );
-      console.log("==============res", res);
     } catch (error) {
       console.log("==============error", error?.response?.data);
     }

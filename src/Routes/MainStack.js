@@ -12,11 +12,15 @@ import TrackPlayer from "react-native-track-player";
 import BottomPlayer from "../components/BottomPlayer";
 import { StyleSheet, View } from "react-native";
 import CategoryPodcast from "../screens/Main/CategoryPodcast";
+import { useSelector } from "react-redux";
 
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
   const [currentTrack, setCurrentTrack] = useState(null);
+  const isPlayer = useSelector((state) => state.player.isPlayer);
+  console.log(isPlayer);
+
   useEffect(() => {
     const updateTrack = async () => {
       const track = await TrackPlayer.getCurrentTrack();
@@ -53,7 +57,7 @@ const MainStack = () => {
         </Stack.Navigator>
       </View>
 
-      {currentTrack && <BottomPlayer currentTrack={currentTrack} />}
+      {currentTrack && isPlayer && <BottomPlayer currentTrack={currentTrack} />}
     </View>
   );
 };

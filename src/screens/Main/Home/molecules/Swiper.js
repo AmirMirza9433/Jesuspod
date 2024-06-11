@@ -20,7 +20,6 @@ import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const Swiper = ({ array, onPress }) => {
-  console.log(array);
   const navigation = useNavigation();
 
   const formatTime = (timeStr) => {

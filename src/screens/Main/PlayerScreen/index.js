@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import TrackPlayer, {
-  RepeatMode,
-  State,
   usePlaybackState,
   useProgress,
   Capability,
-  Event,
+  RepeatMode,
+  State,
 } from "react-native-track-player";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
@@ -16,22 +15,30 @@ import BackHeader from "../../../components/BackHeader";
 import ImageFast from "../../../components/ImageFast";
 import Icons from "../../../components/Icons";
 
-import { setUser } from "../../../store/reducer/usersSlice";
-import { updateCollection } from "../../../Firebase";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import MenuOptios from "../../../components/Menu";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { setPlayer } from "../../../store/reducer/PlayerSlice";
 
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
   const channel = route.params?.channel;
-
-  const [isLike, setLike] = useState(false);
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const playbackState = usePlaybackState();
   const { position, duration } = useProgress();
   const [isPlaying, setIsPlaying] = useState(playbackState === State.Playing);
   const validDuration = isNaN(duration) || duration <= 0 ? 1 : duration;
+
+  useEffect(() => {
+    dispatch(setPlayer(false));
+    return () => {
+      console.log("DetailsScreen is unfocused, state is true");
+      dispatch(setPlayer(true));
+    };
+  }, [isFocused]);
 
   useEffect(() => {
     setupTrack();
@@ -127,39 +134,6 @@ const PlayerScreen = ({ route }) => {
     setIsPlaying(!isPlaying);
   };
 
-  // const onFav = async () => {
-  //   setLike(!isLike);
-  //   let finalArray;
-  //   if (
-  //     userData?.musics?.filter((item) => item?.title?.[0] == item?.title?.[0])
-  //       ?.length
-  //   ) {
-  //     finalArray = userData?.musics?.filter(
-  //       (item) => item?.title?.[0] != item?.title?.[0]
-  //     );
-  //   } else {
-  //     finalArray = [...userData?.musics, item];
-  //   }
-  //   try {
-  //     const res = await updateCollection("users", token, {
-  //       ...userData,
-  //       musics: finalArray,
-  //     });
-  //     dispatch(
-  //       setUser({
-  //         ...userData,
-  //         musics: finalArray,
-  //       })
-  //     );
-  //     console.log("==============res", res);
-  //   } catch (error) {
-  //     console.log("==============error", error?.response?.data);
-  //   }
-  // };
-
-  // Debugging log for the MultiSlider values
-  // console.log("Slider Values:", { position,duration, sliderLength: 210, max: isNaN(duration) ? 1 : duration,});
-
   return (
     <ScreenWrapper
       scrollEnabled
@@ -169,11 +143,6 @@ const PlayerScreen = ({ route }) => {
           isMenu={true}
           ItemData={item}
           chanalData={channel}
-          // onHeartPress={() => {
-          //   setLike(!isLike);
-          //   onFav();
-          // }}
-          // isHeart={isLike}
         />
       )}
     >
@@ -212,7 +181,7 @@ const PlayerScreen = ({ route }) => {
             trackStyle={styles.trackStyle}
             sliderLength={210}
             min={0}
-            max={validDuration} // Ensure max is a valid number
+            max={validDuration}
             step={1}
           />
           <CustomText

@@ -90,12 +90,12 @@ const Discover = () => {
   };
 
   const backgroundImages = [
-    require("../../../assets/images/CatImages/2.png"),
+    require("../../../assets/images/CatImages/31.png"),
     require("../../../assets/images/CatImages/13.png"),
     require("../../../assets/images/CatImages/16.png"),
     require("../../../assets/images/CatImages/18.png"),
     require("../../../assets/images/CatImages/21.png"),
-    require("../../../assets/images/CatImages/31.png"),
+    require("../../../assets/images/CatImages/2.png"),
   ];
 
   useEffect(() => {
