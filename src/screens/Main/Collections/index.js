@@ -1,50 +1,73 @@
-import { FlatList, View } from "react-native";
-import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Button,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
+import CustomText from "../../../components/CustomText";
 import Header from "../../../components/Header";
+import Icons from "../../../components/Icons";
 import Card from "../../../components/Card";
-import Tab from "../../../components/Tab";
 
-const Collections = () => {
-  const [tab, setTab] = useState("Playlist");
+import { COLORS } from "../../../utils/COLORS";
+import { Fonts } from "../../../utils/fonts";
+import YoutubePlayer from "react-native-youtube-iframe";
+import WebView from "react-native-webview";
+{
+  /* <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+<div class="elfsight-app-9fa6a344-715f-4311-93d2-8e315f334d8c" data-elfsight-app-lazy></div> */
+}
+const Live = () => {
+  const [loading, setLoading] = useState(true);
+
+  const elfsightWidgetHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+
+      <body>
+        <div class="elfsight-app-f48dfb8d-5f77-42d2-957a-da2b2df1e852" data-elfsight-app-lazy></div> <!-- Replace XXXXXXX with your Elfsight widget ID -->
+        <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+      </body>
+    </html>
+  `;
 
   return (
-    <ScreenWrapper
-      headerUnScrollable={() => (
-        <View style={{ padding: 20, paddingBottom: 0 }}>
-          <Header
-            title="Collection"
-            subTitle="Discover your podcast collections"
-          />
-          <Tab
-            array={["Playlist", "Favorite", "Download"]}
-            value={tab}
-            setVale={setTab}
-          />
-        </View>
+    <View style={styles.container}>
+      {loading && (
+        <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
       )}
-    >
-      <FlatList
-        data={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-        numColumns={2}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(_, i) => i.toString()}
-        renderItem={({ item, index }) => (
-          <Card
-            heading="Thriller & Horror"
-            title="EPS 25 | Night of Terror"
-            des="Nightmare Stories"
-            author="by Trio of Norman"
-            time="10 Mins"
-            imageHeight={175}
-            width="48%"
-            marginRight={(2 % index) + 1 !== 0 ? "4%" : 0}
-          />
-        )}
+
+      <WebView
+        originWhitelist={["*"]}
+        source={{ html: elfsightWidgetHTML }}
+        onLoadStart={() => setLoading(true)}
+        onLoadEnd={() => setLoading(false)}
+        style={styles.webview}
       />
-    </ScreenWrapper>
+    </View>
   );
 };
 
-export default Collections;
+export default Live;
+const styles = StyleSheet.create({
+  border: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray,
+    marginBottom: 10,
+  },
+
+  container: {
+    flex: 1,
+  },
+  webview: {
+    flex: 1,
+  },
+});

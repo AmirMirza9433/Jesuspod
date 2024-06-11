@@ -1,8 +1,14 @@
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import React, { useRef, useState } from "react";
-import Video from "react-native-video";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import TrackPlayer, {
+  RepeatMode,
+  State,
+  usePlaybackState,
+  useProgress,
+  Capability,
+  Event,
+} from "react-native-track-player";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomText from "../../../components/CustomText";
@@ -14,31 +20,89 @@ import { setUser } from "../../../store/reducer/usersSlice";
 import { updateCollection } from "../../../Firebase";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import MenuOptios from "../../../components/Menu";
 
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
   const channel = route.params?.channel;
-  const ref = useRef(null);
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.authConfig.token);
-  const userData = useSelector((state) => state.user.users);
-  const [percentage, setPercentage] = useState(0);
-  const [onProgress, setOnProgress] = useState({});
-  const [pause, setPause] = useState(true);
-  const [musicTime, setMusicTime] = useState("00:00");
-  const [durationTimeShow, setDurationTimeShow] = useState("00:00");
+
+  const [isLike, setLike] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isLike, setLike] = useState(
-    userData?.musics?.filter((item) => item?.title?.[0] == item?.title?.[0])
-      ?.length
-  );
+  const playbackState = usePlaybackState();
+  const { position, duration } = useProgress();
+  const [isPlaying, setIsPlaying] = useState(playbackState === State.Playing);
+  const validDuration = isNaN(duration) || duration <= 0 ? 1 : duration;
+
+  useEffect(() => {
+    setupTrack();
+  }, []);
+
+  const setupTrack = async () => {
+    let isSetup = false;
+    try {
+      await TrackPlayer.getCurrentTrack();
+      await TrackPlayer.stop();
+      await TrackPlayer.reset();
+      isSetup = true;
+      await TrackPlayer.add({
+        id: item?.guid[0]._,
+        url: item?.enclosure[0].$.url,
+        title: item?.title,
+        artist: channel?.title,
+        artwork: channel?.image || channel?.imageUrl,
+      });
+      setLoading(false);
+    } catch {
+      await TrackPlayer.setupPlayer();
+      await TrackPlayer.updateOptions({
+        stopWithApp: true,
+        // android: {
+        //   // This is the default behavior
+        //   appKilledPlaybackBehavior: AppKilledPlaybackBehavior.ContinuePlayback,
+        // },
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.SeekTo,
+          Capability.Stop,
+        ],
+        compactCapabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+        ],
+        notificationCapabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.SeekTo,
+          Capability.Stop,
+        ],
+      });
+      await TrackPlayer.add({
+        id: item.guid[0]._,
+        url: item.enclosure[0].$.url,
+        title: item.title,
+        artist: channel.title,
+        artwork: channel.image,
+      });
+      await TrackPlayer.setRepeatMode(RepeatMode.Queue);
+      setLoading(false);
+      isSetup = true;
+    } finally {
+      return isSetup;
+    }
+  };
 
   const convertSecond = (d) => {
     d = Number(d);
     var h = Math.floor(d / 3600);
     var m = Math.floor((d % 3600) / 60);
     var s = Math.floor((d % 3600) % 60);
-
     return (
       (h >= 1 ? `${h}:` : "") +
       (m < 10 ? `0${m}:` : `${m}:`) +
@@ -47,70 +111,79 @@ const PlayerScreen = ({ route }) => {
   };
 
   const skipForward = () => {
-    ref?.current?.seek(onProgress.currentTime + 10);
+    TrackPlayer.seekTo(position + 10);
   };
 
   const skipBackward = () => {
-    ref?.current?.seek(Math.max(0, onProgress.currentTime - 10));
+    TrackPlayer.seekTo(Math.max(0, position - 10));
   };
-  const onFav = async () => {
-    setLike(!isLike);
-    let finalArray;
-    if (
-      userData?.musics?.filter((item) => item?.title?.[0] == item?.title?.[0])
-        ?.length
-    ) {
-      finalArray = userData?.musics?.filter(
-        (item) => item?.title?.[0] != item?.title?.[0]
-      );
+
+  const togglePlayback = async () => {
+    if (isPlaying) {
+      await TrackPlayer.pause();
     } else {
-      finalArray = [...userData?.musics, item];
+      await TrackPlayer.play();
     }
-    try {
-      const res = await updateCollection("users", token, {
-        ...userData,
-        musics: finalArray,
-      });
-      dispatch(
-        setUser({
-          ...userData,
-          musics: finalArray,
-        })
-      );
-      console.log("==============res", res);
-    } catch (error) {
-      console.log("==============error", error?.response?.data);
-    }
+    setIsPlaying(!isPlaying);
   };
+
+  // const onFav = async () => {
+  //   setLike(!isLike);
+  //   let finalArray;
+  //   if (
+  //     userData?.musics?.filter((item) => item?.title?.[0] == item?.title?.[0])
+  //       ?.length
+  //   ) {
+  //     finalArray = userData?.musics?.filter(
+  //       (item) => item?.title?.[0] != item?.title?.[0]
+  //     );
+  //   } else {
+  //     finalArray = [...userData?.musics, item];
+  //   }
+  //   try {
+  //     const res = await updateCollection("users", token, {
+  //       ...userData,
+  //       musics: finalArray,
+  //     });
+  //     dispatch(
+  //       setUser({
+  //         ...userData,
+  //         musics: finalArray,
+  //       })
+  //     );
+  //     console.log("==============res", res);
+  //   } catch (error) {
+  //     console.log("==============error", error?.response?.data);
+  //   }
+  // };
+
+  // Debugging log for the MultiSlider values
+  // console.log("Slider Values:", { position,duration, sliderLength: 210, max: isNaN(duration) ? 1 : duration,});
+
   return (
     <ScreenWrapper
       scrollEnabled
       headerUnScrollable={() => (
-        <BackHeader title="Now Playing" onHeartPress={onFav} isHeart={isLike} />
+        <BackHeader
+          title="Now Playing"
+          isMenu={true}
+          ItemData={item}
+          chanalData={channel}
+          // onHeartPress={() => {
+          //   setLike(!isLike);
+          //   onFav();
+          // }}
+          // isHeart={isLike}
+        />
       )}
     >
       <View style={styles.mainContainer}>
-        <View style={[styles.headerImage]}>
+        <View style={styles.headerImage}>
           <ImageFast
-            source={{ uri: channel?.image }}
+            source={{ uri: channel?.image || channel?.imageUrl }}
             resizeMode="cover"
             style={{ width: "100%", height: "100%" }}
             loading={loading}
-          />
-          <Video
-            source={{ uri: item?.enclosure[0].$.url }}
-            style={{ flex: 1 }}
-            resizeMode="cover"
-            ref={ref}
-            audioOnly
-            paused={pause}
-            onProgress={(v) => {
-              setOnProgress(v);
-              setPercentage(v?.currentTime);
-              setMusicTime(convertSecond(v?.currentTime));
-              setDurationTimeShow(convertSecond(v?.seekableDuration));
-            }}
-            onLoad={() => setLoading(false)}
           />
         </View>
 
@@ -121,48 +194,31 @@ const PlayerScreen = ({ route }) => {
           textAlign="center"
           marginTop={20}
         />
-        {/* <View style={styles.row}>
-          {["True Crime Chronicles", "by True Crime Chronicles"].map(
-            (item, i) => (
-              <React.Fragment key={item}>
-                <CustomText
-                  label={item}
-                  fontFamily={Fonts.semiBold}
-                  fontSize={13}
-                />
-                {i == 1 ? null : (
-                  <CustomText
-                    label=" • "
-                    fontFamily={Fonts.semiBold}
-                    color={COLORS.primaryColor}
-                  />
-                )}
-              </React.Fragment>
-            )
-          )}
-        </View> */}
+
         <View style={styles.sliderContainer}>
-          <CustomText label={musicTime} fontFamily={Fonts.semiBold} />
+          <CustomText
+            label={convertSecond(position)}
+            fontFamily={Fonts.semiBold}
+          />
+
           <MultiSlider
             onValuesChangeFinish={([val]) => {
-              ref?.current?.seek(val);
+              TrackPlayer.seekTo(val);
             }}
-            values={[parseInt(percentage)]}
+            values={[position]}
             markerStyle={styles.markerStyle}
             pressedMarkerStyle={styles.pressedMarkerStyle}
             selectedStyle={styles.selectedStyle}
-            trackStyle={{
-              backgroundColor: COLORS.gray,
-              height: 6,
-              borderTopRightRadius: 100,
-              borderBottomRightRadius: 100,
-            }}
+            trackStyle={styles.trackStyle}
             sliderLength={210}
             min={0}
-            max={onProgress?.seekableDuration}
+            max={validDuration} // Ensure max is a valid number
             step={1}
           />
-          <CustomText label={durationTimeShow} fontFamily={Fonts.semiBold} />
+          <CustomText
+            label={convertSecond(duration)}
+            fontFamily={Fonts.semiBold}
+          />
         </View>
         <View style={styles.row}>
           <Icons family="Feather" name="repeat" size={32} color={COLORS.gray} />
@@ -175,9 +231,9 @@ const PlayerScreen = ({ route }) => {
           />
           <Icons
             family="AntDesign"
-            name={pause ? "play" : "pausecircle"}
+            name={isPlaying ? "pausecircle" : "play"}
             size={60}
-            onPress={() => setPause(!pause)}
+            onPress={togglePlayback}
             color={COLORS.primaryColor}
           />
           <Icons
@@ -249,5 +305,11 @@ const styles = StyleSheet.create({
     height: 6,
     borderTopLeftRadius: 100,
     borderBottomLeftRadius: 100,
+  },
+  trackStyle: {
+    backgroundColor: COLORS.gray,
+    height: 6,
+    borderTopRightRadius: 100,
+    borderBottomRightRadius: 100,
   },
 });

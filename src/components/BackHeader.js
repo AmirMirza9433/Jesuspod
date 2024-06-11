@@ -7,6 +7,7 @@ import Icons from "./Icons";
 
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
+import MenuOptios from "./Menu";
 
 const BackHeader = ({
   title,
@@ -15,6 +16,9 @@ const BackHeader = ({
   onSharePress,
   color,
   isHeart = false,
+  isMenu = false,
+  ItemData,
+  chanalData,
 }) => {
   const navigation = useNavigation();
   return (
@@ -54,6 +58,10 @@ const BackHeader = ({
             onPress={onHeartPress}
             style={{ marginRight: 15 }}
           />
+        ) : null}
+
+        {isMenu ? (
+          <MenuOptios ItemData={ItemData} chanalData={chanalData} />
         ) : null}
       </View>
     </View>

@@ -1,23 +1,58 @@
-import TrackPlayer from "react-native-track-player";
+import TrackPlayer, {
+  AppKilledPlaybackBehavior,
+  Capability,
+  RepeatMode,
+  Event,
+} from "react-native-track-player";
 
-module.exports = async function () {
-  TrackPlayer.addEventListener("remote-play", () => {
-    TrackPlayer.play();
-  });
+export async function setupPlayer() {
+  let isSetup = false;
+  try {
+    await TrackPlayer.getCurrentTrack();
+    isSetup = true;
+  } catch {
+    await TrackPlayer.setupPlayer();
+    await TrackPlayer.updateOptions({
+      android: {
+        appKilledPlaybackBehavior:
+          AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
+      },
+      capabilities: [
+        Capability.Play,
+        Capability.Pause,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious,
+        Capability.SeekTo,
+      ],
+      compactCapabilities: [
+        Capability.Play,
+        Capability.Pause,
+        Capability.SkipToNext,
+      ],
+      progressUpdateEventInterval: 2,
+    });
 
-  TrackPlayer.addEventListener("remote-pause", () => {
-    TrackPlayer.pause();
-  });
+    isSetup = true;
+  } finally {
+    return isSetup;
+  }
+}
 
-  TrackPlayer.addEventListener("remote-next", () => {
-    TrackPlayer.skipToNext();
-  });
+export async function addTracks() {
+  await TrackPlayer.add([
+    {
+      id: "1",
+      url: "https://mcdn.podbean.com/mf/web/9ykmru4fbeer9g28/20240421_rhb_mainPOD.mp3",
+      title: "Fluidity",
+      artist: "tobylane",
+      duration: 60,
+    },
+  ]);
+  await TrackPlayer.setRepeatMode(RepeatMode.Queue);
+}
 
-  TrackPlayer.addEventListener("remote-previous", () => {
-    TrackPlayer.skipToPrevious();
-  });
+export async function playbackService() {
+  TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
 
-  TrackPlayer.addEventListener("remote-stop", () => {
-    TrackPlayer.destroy();
-  });
-};
+  TrackPlayer.addEventListener(Event.RemotePause, () => TrackPlayer.pause());
+}

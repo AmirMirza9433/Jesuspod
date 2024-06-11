@@ -17,4 +17,5 @@ export const images = {
   more: require("./icons/more.png"),
   gradient: require("./gradient.png"),
   placeholder: require("./placeholder.png"),
+  search: require("./search.png"),
 };

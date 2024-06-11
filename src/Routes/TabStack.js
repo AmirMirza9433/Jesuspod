@@ -68,7 +68,7 @@ const TabStack = () => {
             <View>
               {focused ? <View style={styles.emptyView} /> : null}
               <Image
-                source={images.tabLive}
+                source={images.subscription}
                 style={[
                   styles.icon,
                   { tintColor: focused ? COLORS.primaryColor : COLORS.gray },
@@ -77,7 +77,7 @@ const TabStack = () => {
             </View>
           ),
         }}
-        name="Live"
+        name="Videos"
         component={Live}
       />
       <Tab.Screen
@@ -86,7 +86,7 @@ const TabStack = () => {
             <View>
               {focused ? <View style={styles.emptyView} /> : null}
               <Image
-                source={images.tabCollection}
+                source={images.search}
                 style={[
                   styles.icon,
                   { tintColor: focused ? COLORS.primaryColor : COLORS.gray },
@@ -95,7 +95,7 @@ const TabStack = () => {
             </View>
           ),
         }}
-        name="Collections"
+        name="Search"
         component={Collections}
       />
     </Tab.Navigator>

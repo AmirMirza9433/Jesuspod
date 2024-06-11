@@ -20,7 +20,28 @@ import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const Swiper = ({ array, onPress }) => {
+  console.log(array);
   const navigation = useNavigation();
+
+  const formatTime = (timeStr) => {
+    const timestamp = timeStr[0];
+
+    const parts = timestamp.split(":").map(Number);
+    let formattedTime = "";
+
+    if (parts.length === 1) {
+      // Only seconds
+      formattedTime = `${parts[0]}s`;
+    } else if (parts.length === 2) {
+      // Minutes and seconds
+      formattedTime = `${parts[0]}m `;
+    } else if (parts.length === 3) {
+      // Hours, minutes, and seconds
+      formattedTime = `${parts[0]}h ${parts[1]}m `;
+    }
+
+    return formattedTime;
+  };
   // const flatListRef = useRef();
   // const [currentIndex, setCurrentIndex] = useState(0);
   // useEffect(() => {
@@ -45,7 +66,8 @@ const Swiper = ({ array, onPress }) => {
             resizeMode="cover"
             style={styles.thumb}
             source={{
-              uri: item?.channel?.image || item?.image,
+              uri:
+                item?.channel?.image || item?.image || item?.channel?.imageUrl,
             }}
           />
 
@@ -84,7 +106,12 @@ const Swiper = ({ array, onPress }) => {
                     color={COLORS.primaryColor}
                   />
                   <CustomText
-                    label={item?.item?.["itunes:duration"]}
+                    label={
+                      item?.item?.["itunes:duration"]
+                        ? formatTime(item?.item?.["itunes:duration"])
+                        : item?.item?.["itunes:duration"] ||
+                          item?.["itunes:duration"]
+                    }
                     fontFamily={Fonts.semiBold}
                     marginTop={5}
                     marginLeft={5}

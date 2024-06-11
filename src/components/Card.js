@@ -31,6 +31,7 @@ const Card = ({
   justifyContent,
   decNumLine = 1,
   marginLeft,
+  typeofPod,
 }) => {
   const navigation = useNavigation();
   return (
@@ -53,7 +54,7 @@ const Card = ({
       ]}
     >
       <ImageFast
-        resizeMode="cover"
+        resizeMode="contain"
         style={[styles.thumb, { height: imageHeight, width: imageWith }]}
         source={!image ? images.appLogo : { uri: image }}
       />
@@ -94,6 +95,19 @@ const Card = ({
             marginLeft={2}
           />
         ) : null}
+
+        {typeofPod ? (
+          <CustomText
+            label={typeofPod}
+            fontFamily={Fonts.semiBold}
+            fontSize={12}
+            numberOfLines={1}
+            color={COLORS.primaryColor}
+            marginTop={5}
+            marginLeft={2}
+          />
+        ) : null}
+
         {title ? (
           <CustomText
             label={title}

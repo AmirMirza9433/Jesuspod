@@ -11,7 +11,10 @@ import {
   ScrollView,
   FlatList,
   View,
+  Text,
+  Alert,
 } from "react-native";
+import Share from "react-native-share";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import BackHeader from "../../../components/BackHeader";
@@ -23,11 +26,19 @@ import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const channel = route?.params?.item;
   const recentMusic = useSelector((state) => state.recent.recentMusic);
+  const token = useSelector((state) => state.authConfig.token);
+  const userData = useSelector((state) => state.user.users);
 
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
@@ -48,7 +59,66 @@ const ProductDetail = ({ navigation, route }) => {
     }
   };
 
-  const download = (data) => {
+  const ondataShare = (item) => {
+    RNFetchBlob.config({
+      fileCache: true,
+    })
+      .fetch("GET", channel.image)
+      .then((resp) => {
+        return resp.readFile("base64");
+      })
+      .then((base64Data) => {
+        const imageUrl = "data:image/png;base64," + base64Data;
+        const shareImage = {
+          title: item.title[0].trim(),
+          message: item?.enclosure[0].$.url,
+          url: imageUrl,
+        };
+        Share.open(shareImage)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            err && console.log(err);
+          });
+        if (imagePath) {
+          return RNFetchBlob.fs.unlink(imagePath);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const onLike = async (item) => {
+    let finalArray;
+    if (
+      userData?.musics?.filter((item) => item?.title?.[0] == item?.title?.[0])
+        ?.length
+    ) {
+      finalArray = userData?.musics?.filter(
+        (item) => item?.title?.[0] != item?.title?.[0]
+      );
+    } else {
+      finalArray = [...userData?.musics, item];
+    }
+    try {
+      const res = await updateCollection("users", token, {
+        ...userData,
+        musics: finalArray,
+      });
+      dispatch(
+        setUser({
+          ...userData,
+          musics: finalArray,
+        })
+      );
+      console.log("==============res", res);
+    } catch (error) {
+      console.log("==============error", error?.response?.data);
+    }
+  };
+
+  const downloaddata = (data) => {
     const { config, fs } = RNFetchBlob;
     const downloads = fs.dirs.DownloadDir;
     return config({
@@ -74,6 +144,7 @@ const ProductDetail = ({ navigation, route }) => {
   useEffect(() => {
     get();
   }, [channel?.url]);
+
   const createRecent = (newData) => {
     let myArray = [];
     if (Array.isArray(recentMusic)) {
@@ -96,7 +167,7 @@ const ProductDetail = ({ navigation, route }) => {
     >
       <ImageBackground
         resizeMode="cover"
-        source={{ uri: channel.image }}
+        source={{ uri: channel.image || channel.imageUrl }}
         style={styles.headerImage}
       >
         <ImageBackground
@@ -193,7 +264,7 @@ const ProductDetail = ({ navigation, route }) => {
                   >
                     <TouchableOpacity
                       style={styles.downloadsIcon}
-                      onPress={() => download(item)}
+                      onPress={() => downloaddata(item)}
                     >
                       <Icons
                         family="Ionicons"

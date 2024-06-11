@@ -93,3 +93,43 @@ export const checkUserExist = async (email) => {
     return false;
   }
 };
+
+export const getCategories = async () => {
+  try {
+    // Reference to the 'category' collection
+    const categoryCollection = firestore().collection("category");
+
+    // Fetch all documents in the collection
+    const categorySnapshot = await categoryCollection.get();
+
+    // Extract data from each document
+    const categories = categorySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return categories;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
+export const getChannelsByCategoryName = async (categoryName) => {
+  try {
+    const channelsCollection = firestore().collection("Newchannels");
+    const querySnapshot = await channelsCollection
+      .where("category.name", "==", categoryName)
+      .get();
+
+    const channels = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return channels;
+  } catch (error) {
+    console.error("Error fetching channels by category name:", error);
+    throw error;
+  }
+};

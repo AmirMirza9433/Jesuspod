@@ -12,6 +12,7 @@ import Notification from "./Notification";
 import { getToken } from "./src/utils/constants";
 import { persistor, store } from "./src/store";
 import { COLORS } from "./src/utils/COLORS";
+import { MenuProvider } from "react-native-popup-menu";
 
 const App = () => {
   const [isVisible, setVisible] = useState(false);
@@ -40,21 +41,23 @@ const App = () => {
   }, []);
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <NavigationContainer>
-          <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
-          <Routes />
-          {isVisible && (
-            <Notification
-              isVisible={isVisible}
-              title={notification?.title}
-              desc={notification?.body}
-            />
-          )}
-        </NavigationContainer>
-      </PersistGate>
-    </Provider>
+    <MenuProvider>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <NavigationContainer>
+            <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
+            <Routes />
+            {isVisible && (
+              <Notification
+                isVisible={isVisible}
+                title={notification?.title}
+                desc={notification?.body}
+              />
+            )}
+          </NavigationContainer>
+        </PersistGate>
+      </Provider>
+    </MenuProvider>
   );
 };
 

@@ -24,11 +24,13 @@ const Home = ({ navigation }) => {
   const [channels, setChannels] = useState([]);
 
   const [tab, setTab] = useState("For you");
+
   const getChannels = async () => {
     setLoading(true);
     try {
-      const res = await getAllDocs("channels");
-      setChannels(res?.[0]?.channels);
+      const res = await getAllDocs("chanals");
+      console.log(res);
+      setChannels(res?.[0]?.podcasts);
 
       setLoading(false);
     } catch (error) {
@@ -65,6 +67,7 @@ const Home = ({ navigation }) => {
         setVale={setTab}
         paddingHorizontal={20}
       />
+
       <Swiper
         array={recentMusic?.length ? recentMusic : channels?.slice(0, 5)}
       />

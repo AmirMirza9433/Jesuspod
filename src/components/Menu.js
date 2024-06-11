@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { MenuView } from "@react-native-menu/menu";
 import RNFetchBlob from "rn-fetch-blob";
 import Share from "react-native-share";
 import React from "react";
@@ -9,7 +8,15 @@ import Icons from "./Icons";
 import { COLORS } from "../utils/COLORS";
 import { updateCollection } from "../Firebase";
 import { setUser } from "../store/reducer/usersSlice";
-
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
+import { View } from "react-native";
+import CustomText from "./CustomText";
+import { Fonts } from "../utils/fonts";
 const MenuOptios = ({ ItemData, chanalData }) => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.authConfig.token);
@@ -32,7 +39,7 @@ const MenuOptios = ({ ItemData, chanalData }) => {
     RNFetchBlob.config({
       fileCache: true,
     })
-      .fetch("GET", chanalData.image)
+      .fetch("GET", chanalData?.image)
       .then((resp) => {
         return resp.readFile("base64");
       })
@@ -91,52 +98,82 @@ const MenuOptios = ({ ItemData, chanalData }) => {
     }
   };
   return (
-    <MenuView
-      themeVariant="light"
-      title="Menu Title"
-      shouldOpenOnLongPress={false}
-      onPressAction={({ nativeEvent }) => {
-        if (nativeEvent?.event === "1") {
-          onLike();
-        } else if (nativeEvent?.event === "2") {
-          ondataShare();
-        } else if (nativeEvent?.event === "3") {
-          downloadData();
-        }
-      }}
-      actions={[
-        {
-          id: "1",
-          title: userData?.musics?.filter(
-            (item) => item?.title?.[0] == ItemData?.title
-          )?.length
-            ? "Un Like"
-            : "Like",
-          titleColor: COLORS.black,
-          imageColor: COLORS.primaryColor,
-        },
-        {
-          id: "2",
-          title: "Share",
-          titleColor: COLORS.black,
-          subtitle: "Share action on SNS",
-          imageColor: COLORS.primaryColor,
-        },
-        {
-          id: "3",
-          title: "Download",
-          titleColor: COLORS.black,
-          imageColor: COLORS.primaryColor,
-        },
-      ]}
-    >
-      <Icons
-        family="Entypo"
-        name="dots-three-horizontal"
-        size={22}
-        color={COLORS.primaryColor}
-      />
-    </MenuView>
+    <Menu>
+      <MenuTrigger>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Icons
+            family="Entypo"
+            name="dots-three-horizontal"
+            size={22}
+            color={COLORS.primaryColor}
+          />
+        </View>
+      </MenuTrigger>
+      <MenuOptions>
+        <MenuOption onSelect={ondataShare}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Icons
+              family="Entypo"
+              name="share"
+              size={22}
+              color={COLORS.primaryColor}
+            />
+
+            <CustomText
+              fontFamily={Fonts.medium}
+              label={"Share"}
+              marginLeft={10}
+            />
+          </View>
+        </MenuOption>
+        <MenuOption onSelect={onLike}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Icons
+              family="AntDesign"
+              name="like1"
+              size={22}
+              color={COLORS.primaryColor}
+            />
+
+            <CustomText
+              fontFamily={Fonts.medium}
+              label={"Like"}
+              marginLeft={10}
+            />
+          </View>
+        </MenuOption>
+        <MenuOption onSelect={downloadData}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Icons
+              family="MaterialIcons"
+              name="download-for-offline"
+              size={22}
+              color={COLORS.primaryColor}
+            />
+            <CustomText
+              fontFamily={Fonts.medium}
+              label={"Download"}
+              marginLeft={10}
+            />
+          </View>
+        </MenuOption>
+      </MenuOptions>
+    </Menu>
   );
 };
 
