@@ -1,5 +1,5 @@
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import { View, StyleSheet, Image, Dimensions } from "react-native";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import React, { useState } from "react";
 import TrackPlayer, {
   usePlaybackState,
@@ -7,9 +7,11 @@ import TrackPlayer, {
   State,
 } from "react-native-track-player";
 
+import CustomText from "./CustomText";
 import Icons from "./Icons";
 
 import { COLORS } from "../utils/COLORS";
+import { Fonts } from "../utils/fonts";
 
 const { width } = Dimensions.get("screen");
 
@@ -33,17 +35,25 @@ const BottomPlayer = ({ currentTrack }) => {
   };
 
   return (
-    <View style={styles.innerContainer}>
-      <Image source={{ uri: currentTrack?.artwork }} style={styles.image} />
-      <View style={styles.controls}>
+    <View style={styles.mainContainer}>
+      <View style={styles.row}>
+        <Image source={{ uri: currentTrack?.artwork }} style={styles.image} />
+        <CustomText
+          label={currentTrack?.title}
+          fontFamily={Fonts.bold}
+          fontSize={18}
+          numberOfLines={1}
+          width={200}
+        />
         <Icons
           family="AntDesign"
           name={isPlaying ? "pausecircle" : "play"}
-          size={30}
+          size={40}
           color={COLORS.primaryColor}
           onPress={togglePlayback}
-          style={{ marginRight: 15 }}
         />
+      </View>
+      <View style={styles.sliderContainer}>
         <MultiSlider
           values={[position]}
           onValuesChangeFinish={seekTo}
@@ -54,7 +64,7 @@ const BottomPlayer = ({ currentTrack }) => {
           pressedMarkerStyle={styles.pressedMarkerStyle}
           selectedStyle={styles.selectedStyle}
           trackStyle={styles.trackStyle}
-          sliderLength={width - 160}
+          sliderLength={width - 60}
         />
       </View>
     </View>
@@ -64,30 +74,34 @@ const BottomPlayer = ({ currentTrack }) => {
 export default BottomPlayer;
 
 const styles = StyleSheet.create({
-  innerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  mainContainer: {
     paddingHorizontal: 15,
-    paddingVertical: 5,
+    paddingTop: 10,
     position: "absolute",
     bottom: 70,
-    width: "95%",
+    width: width - 20,
     backgroundColor: COLORS.white,
     borderWidth: 1,
     border: COLORS.gray,
     borderRadius: 10,
     alignSelf: "center",
   },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: width - 50,
+    marginBottom: -10,
+  },
   image: {
     width: 40,
     height: 40,
     borderRadius: 25,
-    marginRight: 10,
   },
-  controls: {
-    flexDirection: "row",
+  sliderContainer: {
+    width: width - 50,
     alignItems: "center",
+    marginBottom: -8,
   },
   selectedStyle: {
     backgroundColor: COLORS.primaryColor,
