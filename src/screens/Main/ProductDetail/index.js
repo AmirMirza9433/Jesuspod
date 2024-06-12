@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
+import RenderHTML from "react-native-render-html";
 import { parseString } from "react-native-xml2js";
 import RNFetchBlob from "rn-fetch-blob";
 import axios from "axios";
@@ -11,8 +12,6 @@ import {
   ScrollView,
   FlatList,
   View,
-  Text,
-  Alert,
 } from "react-native";
 import Share from "react-native-share";
 
@@ -26,12 +25,6 @@ import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from "react-native-popup-menu";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -42,6 +35,7 @@ const ProductDetail = ({ navigation, route }) => {
 
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
+  console.log("===========podcasts", podcasts[0]?.description);
 
   const get = async () => {
     setLoading(true);
@@ -227,11 +221,19 @@ const ProductDetail = ({ navigation, route }) => {
                   fontFamily={Fonts.bold}
                   fontSize={18}
                 />
-                <CustomText
+                <RenderHTML
+                  contentWidth={3000}
+                  source={{ html: `<div>${item?.description || ""}</div>` }}
+                  tagsStyles={{
+                    div: { color: COLORS.black },
+                    img: { height: 400, width: "auto" },
+                  }}
+                />
+                {/* <CustomText
                   label={item?.description}
                   color={COLORS.gray}
                   numberOfLines={2}
-                />
+                /> */}
                 <View style={styles.row}>
                   <TouchableOpacity
                     activeOpacity={0.6}
