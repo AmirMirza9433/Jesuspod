@@ -86,7 +86,7 @@ const TabStack = () => {
             <View>
               {focused ? <View style={styles.emptyView} /> : null}
               <Image
-                source={images.search}
+                source={images.social}
                 style={[
                   styles.icon,
                   { tintColor: focused ? COLORS.primaryColor : COLORS.gray },
@@ -95,7 +95,7 @@ const TabStack = () => {
             </View>
           ),
         }}
-        name="Search"
+        name="Social"
         component={Collections}
       />
     </Tab.Navigator>

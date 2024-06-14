@@ -191,6 +191,7 @@ const SignupModal = ({
               key={item.id}
               name={item.name}
               email={item.email}
+              value={item.value}
               pass={item.pass}
               error={item.error}
               onChangeText={item.onChange}

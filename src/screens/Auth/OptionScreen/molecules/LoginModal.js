@@ -149,6 +149,7 @@ const LoginModal = ({
               name={item.name}
               email={item.email}
               pass={item.pass}
+              value={item.value}
               error={item.error}
               onChangeText={item.onChange}
             />

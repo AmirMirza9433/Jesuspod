@@ -7,7 +7,15 @@ import Icons from "../../../../components/Icons";
 import { COLORS } from "../../../../utils/COLORS";
 import { Fonts } from "../../../../utils/fonts";
 
-const CustomInput = ({ value, onChangeText, error, email, name, pass }) => {
+const CustomInput = ({
+  value,
+  onChangeText,
+  error,
+  email,
+  name,
+  pass,
+  editable,
+}) => {
   const [hidePass, setHidePass] = useState(pass);
   return (
     <>
@@ -43,6 +51,7 @@ const CustomInput = ({ value, onChangeText, error, email, name, pass }) => {
             onChangeText={onChangeText}
             placeholderTextColor={COLORS.gray}
             autoCapitalize={email && "none"}
+            editable={!editable}
           />
         </View>
 

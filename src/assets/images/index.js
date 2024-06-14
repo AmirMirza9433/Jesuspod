@@ -5,6 +5,7 @@ export const images = {
   appLogo: require("./app_logo.jpeg"),
   tabHome: require("./icons/home.png"),
   tabDiscover: require("./icons/discover.png"),
+  social: require("./icons/social.png"),
   tabLive: require("./icons/live.png"),
   tabCollection: require("./icons/collection.png"),
   filter: require("./filter.png"),

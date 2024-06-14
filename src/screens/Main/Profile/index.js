@@ -31,11 +31,11 @@ const Profile = ({ navigation }) => {
       title: "Notification",
       icon: images.notifications,
     },
-    {
-      id: 3,
-      title: "Subscription",
-      icon: images.subscription,
-    },
+    // {
+    //   id: 3,
+    //   title: "Subscription",
+    //   icon: images.subscription,
+    // },
     {
       id: 4,
       title: "Privacy of Policy",
@@ -45,6 +45,7 @@ const Profile = ({ navigation }) => {
       id: 5,
       title: "Help Center",
       icon: images.help,
+      onPress: () => navigation.navigate("HelpCenter"),
     },
     {
       id: 6,
@@ -72,7 +73,11 @@ const Profile = ({ navigation }) => {
             }
             style={styles.userImage}
           />
-          <TouchableOpacity activeOpacity={0.7} style={styles.editContainer}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate("EditProfile")}
+            style={styles.editContainer}
+          >
             <Icons family="Entypo" name="edit" color={COLORS.white} size={20} />
           </TouchableOpacity>
         </View>

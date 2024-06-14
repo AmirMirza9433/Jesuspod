@@ -14,6 +14,8 @@ import FavPodcast from "../screens/Main/FavPodcast";
 import SeeAll from "../screens/Main/AllChanals";
 import Profile from "../screens/Main/Profile";
 import TabStack from "./TabStack";
+import EditProfile from "../screens/Main/EditProfile";
+import HelpCenter from "../screens/Main/HelpCenter";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +55,8 @@ const MainStack = () => {
         <Stack.Screen name="PlayerScreen" component={PlayerScreen} />
         <Stack.Screen name="FavPodcast" component={FavPodcast} />
         <Stack.Screen name="CategoryPodcast" component={CategoryPodcast} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="HelpCenter" component={HelpCenter} />
       </Stack.Navigator>
       {currentTrack && isPlayer && <BottomPlayer currentTrack={currentTrack} />}
     </View>

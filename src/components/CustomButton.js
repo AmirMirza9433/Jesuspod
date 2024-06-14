@@ -37,7 +37,7 @@ const CustomButton = ({
 }) => {
   return (
     <TouchableOpacity
-      disabled={disabled}
+      disabled={loading || disabled}
       activeOpacity={0.6}
       style={[
         {

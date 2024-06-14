@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -22,6 +22,7 @@ const Home = ({ navigation }) => {
 
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [tab, setTab] = useState("For you");
 
@@ -30,7 +31,6 @@ const Home = ({ navigation }) => {
     try {
       const res = await getAllDocs("chanals");
       setChannels(res?.[0]?.podcasts);
-
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -41,6 +41,10 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     getChannels();
   }, []);
+
+  const filteredChannels = channels.filter((channel) =>
+    channel.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <ScreenWrapper
@@ -56,7 +60,11 @@ const Home = ({ navigation }) => {
             subTitle="Enjoy your favorite podcast!"
             notiIcon
           />
-          <SearchInput placeholder="Search" />
+          <SearchInput
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
         </View>
       )}
     >
@@ -119,7 +127,7 @@ const Home = ({ navigation }) => {
               colors={[COLORS.primaryColor]}
             />
           }
-          data={channels}
+          data={filteredChannels}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(_, i) => i.toString()}
           renderItem={({ item, index }) => (
@@ -178,7 +186,7 @@ const Home = ({ navigation }) => {
               colors={[COLORS.primaryColor]}
             />
           }
-          data={channels}
+          data={filteredChannels}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(_, i) => i.toString()}
           renderItem={({ item, index }) => (
@@ -198,5 +206,3 @@ const Home = ({ navigation }) => {
 };
 
 export default Home;
-
-const styles = StyleSheet.create({});
