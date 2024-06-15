@@ -20,6 +20,9 @@ import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const Swiper = ({ array, onPress }) => {
+  console.log("====================================");
+  console.log(array);
+  console.log("====================================");
   const navigation = useNavigation();
 
   const formatTime = (timeStr) => {
@@ -66,7 +69,10 @@ const Swiper = ({ array, onPress }) => {
             style={styles.thumb}
             source={{
               uri:
-                item?.channel?.image || item?.image || item?.channel?.imageUrl,
+                item?.channel?.image ||
+                item?.image ||
+                item?.channel?.imageUrl ||
+                item?.imageUrl,
             }}
           />
 

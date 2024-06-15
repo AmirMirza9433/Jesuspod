@@ -77,7 +77,10 @@ const MenuOptios = ({ ItemData, chanalData }) => {
         (item) => item?.title?.[0] != ItemData?.title?.[0]
       );
     } else {
-      finalArray = [...userData?.musics, ItemData];
+      finalArray = [
+        ...userData?.musics,
+        { ...ItemData, imageUrl: chanalData?.image },
+      ];
     }
     try {
       const res = await updateCollection("users", token, {

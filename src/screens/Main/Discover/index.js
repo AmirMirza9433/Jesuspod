@@ -76,7 +76,28 @@ import SearchInput from "../../../components/SearchInput";
 const Discover = () => {
   const navigation = useNavigation();
   const [Cat, setCat] = useState([]);
+
   const [referesh, setrefresh] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [filteredData, setFilteredData] = useState("");
+
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+    if (text) {
+      const filtered = Cat.filter((item) =>
+        item.name.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(Cat);
+    }
+  };
+
+  // const filteredChannels = Cat.filter((channel) =>
+  //   channel.title.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
+
   const getcat = async () => {
     setrefresh(true);
     try {
@@ -111,14 +132,18 @@ const Discover = () => {
               title="Search"
               subTitle="Discover your podcast collections"
             />
-            <SearchInput placeholder="Search" />
+            <SearchInput
+              placeholder="Search"
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
           </View>
         </>
       )}
     >
       <View style={{ height: 20 }} />
       <FlatList
-        data={Cat}
+        data={filteredData || Cat}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         refreshControl={

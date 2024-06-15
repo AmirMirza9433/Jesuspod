@@ -146,6 +146,21 @@ const ProductDetail = ({ navigation, route }) => {
     const res = [{ channel, item: newData }, ...myArray];
     dispatch(setRecentMusic(res.slice(0, 4)));
   };
+
+  const tagsStyles = {
+    div: {
+      color: "black",
+      maxHeight: 190, // Assuming each line is approximately 20px in height
+      overflow: "hidden",
+      margin: 0,
+      padding: 0,
+    },
+
+    img: {
+      display: "none",
+    },
+  };
+
   return (
     <ScreenWrapper
       scrollEnabled
@@ -224,10 +239,7 @@ const ProductDetail = ({ navigation, route }) => {
                 <RenderHTML
                   contentWidth={3000}
                   source={{ html: `<div>${item?.description || ""}</div>` }}
-                  tagsStyles={{
-                    div: { color: COLORS.black },
-                    img: { height: 400, width: "auto" },
-                  }}
+                  tagsStyles={tagsStyles}
                 />
                 {/* <CustomText
                   label={item?.description}

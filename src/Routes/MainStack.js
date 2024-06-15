@@ -16,6 +16,7 @@ import Profile from "../screens/Main/Profile";
 import TabStack from "./TabStack";
 import EditProfile from "../screens/Main/EditProfile";
 import HelpCenter from "../screens/Main/HelpCenter";
+import PrivacyPolicy from "../screens/Main/PrivacyPolicy";
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +58,7 @@ const MainStack = () => {
         <Stack.Screen name="CategoryPodcast" component={CategoryPodcast} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="HelpCenter" component={HelpCenter} />
+        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
       </Stack.Navigator>
       {currentTrack && isPlayer && <BottomPlayer currentTrack={currentTrack} />}
     </View>

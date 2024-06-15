@@ -25,6 +25,7 @@ const FavPodcast = ({ navigation, route }) => {
   const channel = route?.params?.item;
   const recentMusic = useSelector((state) => state.recent.recentMusic);
   const userData = useSelector((state) => state.user.users);
+  console.log(userData);
 
   const loading = false;
 

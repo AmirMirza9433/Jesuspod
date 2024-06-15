@@ -23,6 +23,7 @@ import { setPlayer } from "../../../store/reducer/PlayerSlice";
 
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
+  console.log("userDAta ===============", item);
   const channel = route.params?.channel;
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
@@ -56,7 +57,7 @@ const PlayerScreen = ({ route }) => {
         url: item?.enclosure[0].$.url,
         title: item?.title,
         artist: channel?.title,
-        artwork: channel?.image || channel?.imageUrl,
+        artwork: channel?.image || channel?.imageUrl || item?.imageUrl,
       });
       setLoading(false);
     } catch {
@@ -149,7 +150,9 @@ const PlayerScreen = ({ route }) => {
       <View style={styles.mainContainer}>
         <View style={styles.headerImage}>
           <ImageFast
-            source={{ uri: channel?.image || channel?.imageUrl }}
+            source={{
+              uri: channel?.image || channel?.imageUrl || item?.imageUrl,
+            }}
             resizeMode="cover"
             style={{ width: "100%", height: "100%" }}
             loading={loading}

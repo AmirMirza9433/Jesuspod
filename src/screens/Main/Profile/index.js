@@ -40,6 +40,7 @@ const Profile = ({ navigation }) => {
       id: 4,
       title: "Privacy of Policy",
       icon: images.prvacy,
+      onPress: () => navigation.navigate("PrivacyPolicy"),
     },
     {
       id: 5,
