@@ -74,7 +74,6 @@ const Home = ({ navigation }) => {
         setVale={setTab}
         paddingHorizontal={20}
       />
-
       <Swiper
         array={recentMusic?.length ? recentMusic : channels?.slice(0, 5)}
       />
@@ -116,7 +115,6 @@ const Home = ({ navigation }) => {
           />
         </View>
       </View>
-
       <View>
         <FlatList
           horizontal
@@ -142,7 +140,6 @@ const Home = ({ navigation }) => {
           )}
         />
       </View>
-
       <View
         style={{
           flexDirection: "row",
@@ -175,7 +172,6 @@ const Home = ({ navigation }) => {
           />
         </View>
       </View>
-
       <View>
         <FlatList
           horizontal

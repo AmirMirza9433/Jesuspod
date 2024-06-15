@@ -35,7 +35,7 @@ const OptionScreen = () => {
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
-        "957417392617-5v5s6f5sgu1osqsf43aeccvliqqg674m.apps.googleusercontent.com",
+        "913487026448-6km7mlu2pp2jhtvm6r0krvfddn4ns8q3.apps.googleusercontent.com",
     });
   }, []);
 

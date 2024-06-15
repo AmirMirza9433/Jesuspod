@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "913487026448-duivu4astqg2rkn716b45muntpdg9r2b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jesuspod.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "913487026448-kfv46kg9db31nsvmjgiu5ootsmlrda2f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jesuspod.app",
+            "certificate_hash": "3b0ca97f2c9db24b3aecbf188a8ab4e19cb9d488"
+          }
+        },
+        {
           "client_id": "913487026448-6km7mlu2pp2jhtvm6r0krvfddn4ns8q3.apps.googleusercontent.com",
           "client_type": 3
         }
