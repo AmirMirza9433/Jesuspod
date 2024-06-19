@@ -68,12 +68,12 @@ const Home = ({ navigation }) => {
         </View>
       )}
     >
-      <Tab
+      {/* <Tab
         array={["For you", "Podcast", "Radio"]}
         value={tab}
         setVale={setTab}
         paddingHorizontal={20}
-      />
+      /> */}
       <Swiper
         array={recentMusic?.length ? recentMusic : channels?.slice(0, 5)}
       />

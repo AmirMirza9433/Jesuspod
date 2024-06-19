@@ -56,7 +56,7 @@ const CategoryPodcast = ({ route }) => {
         renderItem={({ item, index }) => (
           <Card
             typeofPod={data?.name}
-            imageHeight={170}
+            imageHeight={180}
             marginRight={(2 % index) + 1 !== 0 ? "4%" : 0}
             image={item.imageUrl}
             item={item}

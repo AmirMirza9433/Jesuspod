@@ -26,11 +26,11 @@ const Profile = ({ navigation }) => {
       icon: images.tabLive,
       onPress: () => navigation.navigate("FavPodcast"),
     },
-    {
-      id: 2,
-      title: "Notification",
-      icon: images.notifications,
-    },
+    // {
+    //   id: 2,
+    //   title: "Notification",
+    //   icon: images.notifications,
+    // },
     // {
     //   id: 3,
     //   title: "Subscription",

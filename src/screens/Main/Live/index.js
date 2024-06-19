@@ -18,11 +18,14 @@ import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 import YoutubePlayer from "react-native-youtube-iframe";
 import WebView from "react-native-webview";
+import { useSelector } from "react-redux";
 {
   /* <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
 <div class="elfsight-app-9fa6a344-715f-4311-93d2-8e315f334d8c" data-elfsight-app-lazy></div> */
 }
 const Live = () => {
+  const isPlayer = useSelector((state) => state.player.isPlayer);
+
   const [loading, setLoading] = useState(true);
 
   const elfsightWidgetHTML = `
@@ -105,7 +108,7 @@ const Live = () => {
   // }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginBottom: isPlayer ? 85 : 0 }]}>
       {loading && (
         <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
       )}
