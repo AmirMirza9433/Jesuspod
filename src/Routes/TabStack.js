@@ -12,6 +12,10 @@ import Live from "../screens/Main/Live";
 import { images } from "../assets/images";
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
+import ProfileStack from "./ProfileStack";
+import Icons from "../components/Icons";
+import HomeStack from "./HomeStack";
+import DiscoverStack from "./DiscoverStack";
 
 const Tab = createBottomTabNavigator();
 const TabStack = () => {
@@ -42,7 +46,7 @@ const TabStack = () => {
           ),
         }}
         name="Home"
-        component={Home}
+        component={HomeStack}
       />
       <Tab.Screen
         options={{
@@ -60,7 +64,7 @@ const TabStack = () => {
           ),
         }}
         name="Discover"
-        component={Discover}
+        component={DiscoverStack}
       />
       <Tab.Screen
         options={{
@@ -97,6 +101,31 @@ const TabStack = () => {
         }}
         name="Social"
         component={Collections}
+      />
+      <Tab.Screen
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View>
+              {focused ? <View style={styles.emptyView} /> : null}
+              <Icons
+                family={"FontAwesome5"}
+                name={"user-circle"}
+                size={22}
+                color={focused ? COLORS.primaryColor : COLORS.gray}
+                // style={[
+                //   styles.icon,
+                //   { tintColor: focused ? COLORS.primaryColor : COLORS.gray },
+                // ]}
+              />
+              {/* <Image
+                source={images.placeholder}
+                
+              /> */}
+            </View>
+          ),
+        }}
+        name="Profile"
+        component={ProfileStack}
       />
     </Tab.Navigator>
   );

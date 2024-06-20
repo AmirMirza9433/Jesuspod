@@ -25,6 +25,9 @@ import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import ImageFast from "../../../components/ImageFast";
+import CustomModal from "../../../components/CustomModal";
+import EpisodeModal from "../../../components/EpisodeModal";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -32,10 +35,10 @@ const ProductDetail = ({ navigation, route }) => {
   const recentMusic = useSelector((state) => state.recent.recentMusic);
   const token = useSelector((state) => state.authConfig.token);
   const userData = useSelector((state) => state.user.users);
-
+  const [episodemodal, setepisodemodal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
-  console.log("===========podcasts", podcasts[0]?.description);
+  const [EpisodeDAta, setEpisodeDAta] = useState("");
 
   const get = async () => {
     setLoading(true);
@@ -134,6 +137,36 @@ const ProductDetail = ({ navigation, route }) => {
     return dayMonth;
   };
 
+  const formatTime = (timeStr) => {
+    const timestamp = timeStr[0];
+
+    const parts = timestamp.split(":").map(Number);
+    let formattedTime = "";
+
+    if (parts.length === 1) {
+      // Only seconds
+      formattedTime = `${parts[0]}s`;
+    } else if (parts.length === 2) {
+      // Minutes and seconds
+      formattedTime = `${parts[0]}m `;
+    } else if (parts.length === 3) {
+      // Hours, minutes, and seconds
+      formattedTime = `${parts[0]}h ${parts[1]}m `;
+    }
+
+    return formattedTime;
+  };
+
+  const openEpisoseModal = (item) => {
+    setepisodemodal(true);
+    setEpisodeDAta(item);
+  };
+
+  const handlePlay = (item) => {
+    setepisodemodal(false);
+    createRecent(item);
+    navigation.navigate("PlayerScreen", { item, channel });
+  };
   useEffect(() => {
     get();
   }, [channel?.url]);
@@ -173,16 +206,30 @@ const ProductDetail = ({ navigation, route }) => {
         </View>
       )}
     >
-      <ImageBackground
+      <EpisodeModal
+        isVisible={episodemodal}
+        chanalImage={channel?.image || channel?.imageUrl}
+        episodeData={EpisodeDAta}
+        onDisable={() => setepisodemodal(false)}
+        onplay={handlePlay}
+      />
+      {/* <ImageBackground
         resizeMode="cover"
         source={{ uri: channel.image || channel.imageUrl }}
         style={styles.headerImage}
+      > */}
+      <ImageBackground
+        resizeMode="cover"
+        source={images.gradient}
+        style={styles.headerContent}
       >
-        <ImageBackground
-          resizeMode="cover"
-          source={images.gradient}
-          style={styles.headerContent}
-        >
+        <ImageFast
+          source={{ uri: channel?.image || channel?.imageUrl }}
+          style={styles.headerContent1}
+          resizeMode={"contain"}
+        />
+
+        <View style={{ width: "100%" }}>
           <CustomText
             label={channel?.title || ""}
             fontFamily={Fonts.bold}
@@ -196,7 +243,8 @@ const ProductDetail = ({ navigation, route }) => {
             fontFamily={Fonts.semiBold}
             color={COLORS.white}
           />
-        </ImageBackground>
+        </View>
+        {/* </ImageBackground> */}
       </ImageBackground>
       <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
         <CustomText
@@ -241,17 +289,12 @@ const ProductDetail = ({ navigation, route }) => {
                   source={{ html: `<div>${item?.description || ""}</div>` }}
                   tagsStyles={tagsStyles}
                 />
-                {/* <CustomText
-                  label={item?.description}
-                  color={COLORS.gray}
-                  numberOfLines={2}
-                /> */}
+
                 <View style={styles.row}>
                   <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => {
-                      createRecent(item);
-                      navigation.navigate("PlayerScreen", { item, channel });
+                      openEpisoseModal(item);
                     }}
                     style={styles.playContainer}
                   >
@@ -262,7 +305,7 @@ const ProductDetail = ({ navigation, route }) => {
                       color={COLORS.primaryColor}
                     />
                     <CustomText
-                      label={item?.["itunes:duration"]}
+                      label={formatTime(item?.["itunes:duration"])}
                       fontFamily={Fonts.semiBold}
                       marginTop={4}
                       marginLeft={5}
@@ -303,12 +346,20 @@ export default ProductDetail;
 const styles = StyleSheet.create({
   headerImage: {
     width: "100%",
-    height: 400,
     backgroundColor: COLORS.gray,
     justifyContent: "flex-end",
   },
+
+  headerContent1: {
+    height: 250,
+    width: 250,
+  },
   headerContent: {
     padding: 15,
+    height: 400,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   listContainer: {
     borderTopWidth: 1,

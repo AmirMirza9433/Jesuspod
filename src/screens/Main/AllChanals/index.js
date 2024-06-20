@@ -14,8 +14,8 @@ const SeeAll = () => {
   const getChannels = async () => {
     setLoading(true);
     try {
-      const res = await getAllDocs("channels");
-      setChannels(res?.[0]?.channels);
+      const res = await getAllDocs("chanals");
+      setChannels(res?.[0]?.podcasts);
       setLoading(false);
     } catch (error) {
       setLoading(false);

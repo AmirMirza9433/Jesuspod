@@ -43,23 +43,7 @@ const MainStack = () => {
 
   return (
     <View style={styles.container}>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          animation: "slide_from_right",
-        }}
-      >
-        <Stack.Screen name="TabStack" component={TabStack} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="ProductDetail" component={ProductDetail} />
-        <Stack.Screen name="SeeAll" component={SeeAll} />
-        <Stack.Screen name="PlayerScreen" component={PlayerScreen} />
-        <Stack.Screen name="FavPodcast" component={FavPodcast} />
-        <Stack.Screen name="CategoryPodcast" component={CategoryPodcast} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
-        <Stack.Screen name="HelpCenter" component={HelpCenter} />
-        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
-      </Stack.Navigator>
+      <TabStack />
       {currentTrack && isPlayer && <BottomPlayer currentTrack={currentTrack} />}
     </View>
   );
