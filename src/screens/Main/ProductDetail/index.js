@@ -1,49 +1,38 @@
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
-import RenderHTML from "react-native-render-html";
 import { parseString } from "react-native-xml2js";
-import RNFetchBlob from "rn-fetch-blob";
 import axios from "axios";
 import {
+  ActivityIndicator,
   TouchableOpacity,
   ImageBackground,
-  RefreshControl,
   StyleSheet,
   ScrollView,
   FlatList,
   View,
 } from "react-native";
-import Share from "react-native-share";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
+import CustomButton from "../../../components/CustomButton";
 import BackHeader from "../../../components/BackHeader";
 import CustomText from "../../../components/CustomText";
-import MenuOptios from "../../../components/Menu";
-import Icons from "../../../components/Icons";
+import ImageFast from "../../../components/ImageFast";
 
 import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import ImageFast from "../../../components/ImageFast";
-import CustomModal from "../../../components/CustomModal";
-import EpisodeModal from "../../../components/EpisodeModal";
-import CustomButton from "../../../components/CustomButton";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const channel = route?.params?.item;
   const recentMusic = useSelector((state) => state.recent.recentMusic);
-  const token = useSelector((state) => state.authConfig.token);
-  const userData = useSelector((state) => state.user.users);
-  const [episodemodal, setepisodemodal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
-  const [EpisodeDAta, setEpisodeDAta] = useState("");
 
   const get = async () => {
     setLoading(true);
-    const response = await axios.get(channel?.url);
+    const response = await axios.get(channel?.url || channel?.channel?.url);
     try {
       const xmlData = response.data;
       parseString(xmlData, (err, res) => {
@@ -52,80 +41,8 @@ const ProductDetail = ({ navigation, route }) => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-
       console.error("Error fetching data:", errror);
     }
-  };
-
-  const ondataShare = (item) => {
-    RNFetchBlob.config({
-      fileCache: true,
-    })
-      .fetch("GET", channel.image)
-      .then((resp) => {
-        return resp.readFile("base64");
-      })
-      .then((base64Data) => {
-        const imageUrl = "data:image/png;base64," + base64Data;
-        const shareImage = {
-          title: item.title[0].trim(),
-          message: item?.enclosure[0].$.url,
-          url: imageUrl,
-        };
-        Share.open(shareImage)
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            err && console.log(err);
-          });
-        if (imagePath) {
-          return RNFetchBlob.fs.unlink(imagePath);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const onLike = async (item) => {
-    let finalArray;
-    if (
-      userData?.musics?.filter((item) => item?.title?.[0] == item?.title?.[0])
-        ?.length
-    ) {
-      finalArray = userData?.musics?.filter(
-        (item) => item?.title?.[0] != item?.title?.[0]
-      );
-    } else {
-      finalArray = [...userData?.musics, item];
-    }
-    try {
-      const res = await updateCollection("users", token, {
-        ...userData,
-        musics: finalArray,
-      });
-      dispatch(
-        setUser({
-          ...userData,
-          musics: finalArray,
-        })
-      );
-    } catch (error) {
-      console.log("==============error", error?.response?.data);
-    }
-  };
-
-  const downloaddata = (data) => {
-    const { config, fs } = RNFetchBlob;
-    const downloads = fs.dirs.DownloadDir;
-    return config({
-      fileCache: true,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path: downloads + "/" + data?.title[0] + ".png",
-      },
-    }).fetch("GET", data?.enclosure[0].$.url);
   };
 
   const changedata = (timestamp) => {
@@ -138,39 +55,9 @@ const ProductDetail = ({ navigation, route }) => {
     return dayMonth;
   };
 
-  const formatTime = (timeStr) => {
-    const timestamp = timeStr[0];
-
-    const parts = timestamp.split(":").map(Number);
-    let formattedTime = "";
-
-    if (parts.length === 1) {
-      // Only seconds
-      formattedTime = `${parts[0]}s`;
-    } else if (parts.length === 2) {
-      // Minutes and seconds
-      formattedTime = `${parts[0]}m `;
-    } else if (parts.length === 3) {
-      // Hours, minutes, and seconds
-      formattedTime = `${parts[0]}h ${parts[1]}m `;
-    }
-
-    return formattedTime;
-  };
-
-  const openEpisoseModal = (item) => {
-    setepisodemodal(true);
-    setEpisodeDAta(item);
-  };
-
-  const handlePlay = (item) => {
-    setepisodemodal(false);
-    createRecent(item);
-    navigation.navigate("PlayerScreen", { item, channel });
-  };
   useEffect(() => {
     get();
-  }, [channel?.url]);
+  }, [channel?.url || channel?.channel?.url]);
 
   const createRecent = (newData) => {
     let myArray = [];
@@ -179,20 +66,6 @@ const ProductDetail = ({ navigation, route }) => {
     }
     const res = [{ channel, item: newData }, ...myArray];
     dispatch(setRecentMusic(res.slice(0, 4)));
-  };
-
-  const tagsStyles = {
-    div: {
-      color: "black",
-      maxHeight: 190, // Assuming each line is approximately 20px in height
-      overflow: "hidden",
-      margin: 0,
-      padding: 0,
-    },
-
-    img: {
-      display: "none",
-    },
   };
 
   return (
@@ -207,46 +80,26 @@ const ProductDetail = ({ navigation, route }) => {
         </View>
       )}
     >
-      {/* <EpisodeModal
-        isVisible={episodemodal}
-        chanalImage={channel?.image || channel?.imageUrl}
-        episodeData={EpisodeDAta}
-        onDisable={() => setepisodemodal(false)}
-        onplay={handlePlay}
-      /> */}
-      {/* <ImageBackground
-        resizeMode="cover"
-        source={{ uri: channel.image || channel.imageUrl }}
-        style={styles.headerImage}
-      > */}
       <ImageBackground
         resizeMode="cover"
         source={images.gradient}
         style={styles.headerContent}
       >
         <ImageFast
-          source={{ uri: channel?.image || channel?.imageUrl }}
+          source={{ uri: channel?.imageUrl || channel?.channel?.imageUrl }}
           style={styles.headerContent1}
-          resizeMode={"contain"}
+          resizeMode="contain"
         />
-
         <View style={{ width: "100%" }}>
           <CustomText
-            label={channel?.title || ""}
+            label={channel?.title || channel?.channel?.title}
             fontFamily={Fonts.bold}
             fontSize={22}
             color={COLORS.white}
-            textAlign={"center"}
-            // marginBottom={10}
+            textAlign="center"
             marginTop={20}
           />
-          {/* <CustomText
-            label={`${podcasts?.length || 0} Episodes`}
-            fontFamily={Fonts.semiBold}
-            color={COLORS.white}
-          /> */}
         </View>
-        {/* </ImageBackground> */}
       </ImageBackground>
       <View
         style={{
@@ -264,7 +117,7 @@ const ProductDetail = ({ navigation, route }) => {
           color={COLORS.primaryColor}
         />
         <CustomButton
-          title={"Subscribe"}
+          title="Subscribe"
           backgroundColor={COLORS.primaryColor}
           color={COLORS.white}
           fontFamily={Fonts.bold}
@@ -278,50 +131,50 @@ const ProductDetail = ({ navigation, route }) => {
           contentContainerStyle={{ width: "100%" }}
           scrollEnabled={false}
         >
-          <FlatList
-            refreshControl={
-              <RefreshControl
-                refreshing={loading}
-                onRefresh={get}
-                colors={[COLORS.primaryColor]}
-              />
-            }
-            data={podcasts}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.mapListContainer}
-                onPress={() => {
-                  createRecent(item);
-                  navigation.navigate("PlayerScreen", { item, channel });
-                }}
-              >
-                <View style={{ width: 30 }}>
-                  <CustomText
-                    label={changedata(item?.pubDate)}
-                    fontFamily={Fonts.regular}
-                    fontSize={15}
-                    marginBottom={10}
-                    textAlign={"center"}
-                  />
-                </View>
-                <View style={{ paddingHorizontal: 15 }}>
-                  <CustomText
-                    label={item?.title}
-                    fontFamily={Fonts.medium}
-                    fontSize={16}
-                    marginLeft={5}
-                    numberOfLines={2}
-                  />
-                </View>
-                {/* <RenderHTML
+          {loading ? (
+            <View
+              style={{ justifyContent: "center", width: "100%", marginTop: 20 }}
+            >
+              <ActivityIndicator color={COLORS.primaryColor} size={50} />
+            </View>
+          ) : (
+            <FlatList
+              data={podcasts}
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(_, i) => i.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.mapListContainer}
+                  onPress={() => {
+                    createRecent(item);
+                    navigation.navigate("PlayerScreen", { item, channel });
+                  }}
+                >
+                  <View style={{ width: 30 }}>
+                    <CustomText
+                      label={changedata(item?.pubDate)}
+                      fontFamily={Fonts.regular}
+                      fontSize={15}
+                      marginBottom={10}
+                      textAlign={"center"}
+                    />
+                  </View>
+                  <View style={{ paddingHorizontal: 15 }}>
+                    <CustomText
+                      label={item?.title}
+                      fontFamily={Fonts.medium}
+                      fontSize={16}
+                      marginLeft={5}
+                      numberOfLines={2}
+                    />
+                  </View>
+                  {/* <RenderHTML
                   contentWidth={3000}
                   source={{ html: `<div>${item?.description || ""}</div>` }}
                   tagsStyles={tagsStyles}
                 /> */}
 
-                {/* <View style={styles.row}>
+                  {/* <View style={styles.row}>
                   <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => {
@@ -363,9 +216,10 @@ const ProductDetail = ({ navigation, route }) => {
                     <MenuOptios ItemData={item} chanalData={channel} />
                   </View>
                 </View> */}
-              </TouchableOpacity>
-            )}
-          />
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </ScrollView>
       </View>
     </ScreenWrapper>

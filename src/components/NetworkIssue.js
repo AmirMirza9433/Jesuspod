@@ -14,9 +14,6 @@ import { COLORS } from "../utils/COLORS";
 const NetworkIssue = ({ children }) => {
   const dispatch = useDispatch();
   const isDrawer = useSelector((state) => state.player.isDrawer);
-  console.log("====================================");
-  console.log(isDrawer);
-  console.log("====================================");
 
   const [isInternetReachable, setInternetReachable] = useState(true);
   const [connected, setConnected] = useState(true);

@@ -55,7 +55,7 @@ const Profile = ({ navigation }) => {
       onPress: () => {
         dispatch(logout());
         dispatch(setUser({}));
-        dispatch(setRecentMusic({}));
+        dispatch(setRecentMusic([]));
       },
     },
   ];

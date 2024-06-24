@@ -58,7 +58,7 @@ const CategoryPodcast = ({ route }) => {
             typeofPod={data?.name}
             imageHeight={180}
             marginRight={(2 % index) + 1 !== 0 ? "4%" : 0}
-            image={item.imageUrl}
+            image={item?.imageUrl}
             item={item}
             title={item.title}
           />

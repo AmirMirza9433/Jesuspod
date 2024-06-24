@@ -1,6 +1,7 @@
-import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { FlatList, RefreshControl, View } from "react-native";
+import firestore from "@react-native-firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import SearchInput from "../../../components/SearchInput";
@@ -11,25 +12,34 @@ import Card from "../../../components/Card";
 
 import Swiper from "./molecules/Swiper";
 
-import { setDrawer } from "../../../store/reducer/PlayerSlice";
 import { COLORS } from "../../../utils/COLORS";
 import { getAllDocs } from "../../../Firebase";
 import { Fonts } from "../../../utils/fonts";
 
 const Home = ({ navigation }) => {
-  const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.users);
   const recentMusic = useSelector((state) => state.recent.recentMusic);
+  console.log("=======recentMusic", recentMusic);
 
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-
+  // const addKeyToFirestore = async (id, key, value) => {
+  //   try {
+  //     const res = await firestore()
+  //       .collection("Newchannels")
+  //       .doc(id)
+  //       .set({ [key]: value }, { merge: true });
+  //     console.log(res);
+  //   } catch (error) {
+  //     console.error("Error adding key: ", error);
+  //   }
+  // };
   const getChannels = async () => {
     setLoading(true);
     try {
-      const res = await getAllDocs("chanals");
-      setChannels(res?.[0]?.podcasts);
+      const res = await getAllDocs("Newchannels");
+      setChannels(res);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -39,6 +49,7 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     getChannels();
+    // addKeyToFirestore("zxLZiVV7TNS2v9WnAURn", "_id", "zxLZiVV7TNS2v9WnAURn");
   }, []);
 
   const filteredChannels = channels.filter((channel) =>
@@ -53,7 +64,7 @@ const Home = ({ navigation }) => {
         headerUnScrollable={() => (
           <View style={{ padding: 20 }}>
             <Header
-              // onPress={() => dispatch(setDrawer(true))}
+              onPress={() => navigation.navigate("Profile")}
               hideBackArrowr
               userProfile={userData?.userImage}
               title={userData?.userName}
@@ -69,6 +80,7 @@ const Home = ({ navigation }) => {
         )}
       >
         <Swiper
+          isPlayer={recentMusic?.length}
           array={recentMusic?.length ? recentMusic : channels?.slice(0, 5)}
         />
 
@@ -81,7 +93,7 @@ const Home = ({ navigation }) => {
           }}
         >
           <CustomText
-            label={"Recommended for You"}
+            label="Recommended for You"
             color={COLORS.black}
             fontFamily={Fonts.bold}
             fontSize={16}
@@ -94,7 +106,7 @@ const Home = ({ navigation }) => {
             }}
           >
             <CustomText
-              label={"See All"}
+              label="See All"
               color={COLORS.primaryColor}
               fontFamily={Fonts.bold}
               fontSize={16}
@@ -102,8 +114,8 @@ const Home = ({ navigation }) => {
             />
 
             <Icons
-              family={"Feather"}
-              name={"chevron-right"}
+              family="Feather"
+              name="chevron-right"
               color={COLORS.primaryColor}
               size={20}
             />
@@ -122,14 +134,14 @@ const Home = ({ navigation }) => {
             data={filteredChannels}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item, index }) => (
+            renderItem={({ item }) => (
               <Card
                 imageHeight={183}
                 width={183}
-                image={item.image}
+                image={item?.imageUrl}
                 marginRight={10}
                 item={item}
-                title={item.title}
+                title={item?.title}
               />
             )}
           />
@@ -144,14 +156,14 @@ const Home = ({ navigation }) => {
           }}
         >
           <CustomText
-            label={"Just Added"}
+            label="Just Added"
             color={COLORS.black}
             fontFamily={Fonts.bold}
             fontSize={16}
           />
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <CustomText
-              label={"See All"}
+              label="See All"
               color={COLORS.primaryColor}
               fontFamily={Fonts.bold}
               fontSize={16}
@@ -159,8 +171,8 @@ const Home = ({ navigation }) => {
             />
 
             <Icons
-              family={"Feather"}
-              name={"chevron-right"}
+              family="Feather"
+              name="chevron-right"
               color={COLORS.primaryColor}
               size={20}
             />
@@ -179,14 +191,14 @@ const Home = ({ navigation }) => {
             data={filteredChannels}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item, index }) => (
+            renderItem={({ item }) => (
               <Card
                 imageHeight={183}
                 width={183}
-                image={item.image}
+                image={item?.imageUrl}
                 marginRight={10}
                 item={item}
-                title={item.title}
+                title={item?.title}
               />
             )}
           />
@@ -197,19 +209,3 @@ const Home = ({ navigation }) => {
 };
 
 export default Home;
-
-const styles = StyleSheet.create({
-  border: {
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray,
-    marginBottom: 10,
-  },
-
-  container: {
-    flex: 1,
-    // height: 100,
-  },
-  // webview: {
-  //   // flex: 1,
-  // },
-});

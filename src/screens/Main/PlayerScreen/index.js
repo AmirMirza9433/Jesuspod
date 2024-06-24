@@ -23,8 +23,8 @@ import { setPlayer } from "../../../store/reducer/PlayerSlice";
 
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
-  console.log("userDAta ===============", item);
   const channel = route.params?.channel;
+  console.log("channel===============", item);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
@@ -53,11 +53,11 @@ const PlayerScreen = ({ route }) => {
       await TrackPlayer.reset();
       isSetup = true;
       await TrackPlayer.add({
-        id: item?.guid[0]._,
-        url: item?.enclosure[0].$.url,
-        title: item?.title,
-        artist: channel?.title,
-        artwork: channel?.image || channel?.imageUrl || item?.imageUrl,
+        id: item?.guid?.[0]?._ || item?.item?.guid?.[0]?._,
+        url: item?.enclosure?.[0]?.$?.url || item?.item?.enclosure?.[0]?.$?.url,
+        title: item?.title || item?.item?.title,
+        artist: channel?.title || item?.channel?.title,
+        artwork: channel?.imageUrl || item?.channel?.imageUrl,
       });
       setLoading(false);
     } catch {
@@ -92,11 +92,11 @@ const PlayerScreen = ({ route }) => {
         ],
       });
       await TrackPlayer.add({
-        id: item.guid[0]._,
-        url: item.enclosure[0].$.url,
-        title: item.title,
-        artist: channel.title,
-        artwork: channel.image,
+        id: item?.guid?.[0]?._ || item?.item?.guid?.[0]?._,
+        url: item?.enclosure?.[0]?.$?.url || item?.item?.enclosure?.[0]?.$?.url,
+        title: item?.title || item?.item?.title,
+        artist: channel?.title || item?.channel?.title,
+        artwork: channel?.imageUrl || item?.channel?.imageUrl,
       });
       await TrackPlayer.setRepeatMode(RepeatMode.Queue);
       setLoading(false);
@@ -150,9 +150,7 @@ const PlayerScreen = ({ route }) => {
       <View style={styles.mainContainer}>
         <View style={styles.headerImage}>
           <ImageFast
-            source={{
-              uri: channel?.image || channel?.imageUrl || item?.imageUrl,
-            }}
+            source={{ uri: channel?.imageUrl || item?.channel?.imageUrl }}
             resizeMode="cover"
             style={{ width: "100%", height: "100%" }}
             loading={loading}
@@ -160,7 +158,9 @@ const PlayerScreen = ({ route }) => {
         </View>
 
         <CustomText
-          label={`EPS ${item?.["itunes:episode"] || 0} | ${item?.title}`}
+          label={`EPS ${
+            item?.["itunes:episode"] || item?.item?.["itunes:episode"] || 0
+          } | ${item?.title || item?.channel?.title}`}
           fontFamily={Fonts.bold}
           fontSize={20}
           textAlign="center"

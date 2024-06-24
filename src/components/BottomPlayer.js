@@ -1,5 +1,5 @@
-import { View, StyleSheet, Image, Dimensions } from "react-native";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { View, StyleSheet, Dimensions } from "react-native";
 import React, { useState } from "react";
 import TrackPlayer, {
   usePlaybackState,
@@ -8,6 +8,7 @@ import TrackPlayer, {
 } from "react-native-track-player";
 
 import CustomText from "./CustomText";
+import ImageFast from "./ImageFast";
 import Icons from "./Icons";
 
 import { COLORS } from "../utils/COLORS";
@@ -37,7 +38,11 @@ const BottomPlayer = ({ currentTrack }) => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.row}>
-        <Image source={{ uri: currentTrack?.artwork }} style={styles.image} />
+        <ImageFast
+          resizeMode="cover"
+          source={{ uri: currentTrack?.artwork }}
+          style={styles.image}
+        />
         <CustomText
           label={currentTrack?.title}
           fontFamily={Fonts.bold}
