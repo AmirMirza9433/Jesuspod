@@ -90,7 +90,7 @@ const TabStack = () => {
             <View>
               {focused ? <View style={styles.emptyView} /> : null}
               <Image
-                source={images.social}
+                source={images.news}
                 style={[
                   styles.icon,
                   { tintColor: focused ? COLORS.primaryColor : COLORS.gray },
@@ -99,7 +99,7 @@ const TabStack = () => {
             </View>
           ),
         }}
-        name="Social"
+        name="News"
         component={Collections}
       />
       <Tab.Screen

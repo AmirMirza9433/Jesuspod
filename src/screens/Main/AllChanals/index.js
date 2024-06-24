@@ -11,6 +11,8 @@ import { getAllDocs } from "../../../Firebase";
 const SeeAll = () => {
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const getChannels = async () => {
     setLoading(true);
     try {
@@ -25,6 +27,10 @@ const SeeAll = () => {
   useEffect(() => {
     getChannels();
   }, []);
+
+  const filteredChannels = channels.filter((channel) =>
+    channel.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   return (
     <ScreenWrapper
       headerUnScrollable={() => (
@@ -35,19 +41,23 @@ const SeeAll = () => {
             subTitle="What are you listening to today?"
             profile
           />
-          <SearchInput placeholder="Search" />
+          <SearchInput
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
         </View>
       )}
     >
       <FlatList
-        data={channels}
+        data={filteredChannels}
         showsHorizontalScrollIndicator={false}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         keyExtractor={(_, i) => i.toString()}
         renderItem={({ item, index }) => (
           <Card
-            imageHeight={100}
+            imageHeight={180}
             marginRight={(2 % index) + 1 !== 0 ? "4%" : 0}
             image={item.image}
             item={item}

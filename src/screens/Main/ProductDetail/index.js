@@ -28,6 +28,7 @@ import { Fonts } from "../../../utils/fonts";
 import ImageFast from "../../../components/ImageFast";
 import CustomModal from "../../../components/CustomModal";
 import EpisodeModal from "../../../components/EpisodeModal";
+import CustomButton from "../../../components/CustomButton";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -206,13 +207,13 @@ const ProductDetail = ({ navigation, route }) => {
         </View>
       )}
     >
-      <EpisodeModal
+      {/* <EpisodeModal
         isVisible={episodemodal}
         chanalImage={channel?.image || channel?.imageUrl}
         episodeData={EpisodeDAta}
         onDisable={() => setepisodemodal(false)}
         onplay={handlePlay}
-      />
+      /> */}
       {/* <ImageBackground
         resizeMode="cover"
         source={{ uri: channel.image || channel.imageUrl }}
@@ -235,23 +236,40 @@ const ProductDetail = ({ navigation, route }) => {
             fontFamily={Fonts.bold}
             fontSize={22}
             color={COLORS.white}
-            marginBottom={10}
+            textAlign={"center"}
+            // marginBottom={10}
             marginTop={20}
           />
-          <CustomText
+          {/* <CustomText
             label={`${podcasts?.length || 0} Episodes`}
             fontFamily={Fonts.semiBold}
             color={COLORS.white}
-          />
+          /> */}
         </View>
         {/* </ImageBackground> */}
       </ImageBackground>
-      <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+      <View
+        style={{
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <CustomText
-          label="Episodes"
+          label={`${podcasts?.length || 0} Episodes`}
           fontFamily={Fonts.bold}
-          fontSize={22}
+          fontSize={18}
           color={COLORS.primaryColor}
+        />
+        <CustomButton
+          title={"Subscribe"}
+          backgroundColor={COLORS.primaryColor}
+          color={COLORS.white}
+          fontFamily={Fonts.bold}
+          width={100}
+          height={40}
         />
       </View>
       <View style={styles.listContainer}>
@@ -272,25 +290,38 @@ const ProductDetail = ({ navigation, route }) => {
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, i) => i.toString()}
             renderItem={({ item }) => (
-              <View style={styles.mapListContainer}>
-                <CustomText
-                  label={changedata(item?.pubDate)}
-                  fontFamily={Fonts.regular}
-                  fontSize={15}
-                  marginBottom={10}
-                />
-                <CustomText
-                  label={item?.title}
-                  fontFamily={Fonts.bold}
-                  fontSize={18}
-                />
-                <RenderHTML
+              <TouchableOpacity
+                style={styles.mapListContainer}
+                onPress={() => {
+                  createRecent(item);
+                  navigation.navigate("PlayerScreen", { item, channel });
+                }}
+              >
+                <View style={{ width: 30 }}>
+                  <CustomText
+                    label={changedata(item?.pubDate)}
+                    fontFamily={Fonts.regular}
+                    fontSize={15}
+                    marginBottom={10}
+                    textAlign={"center"}
+                  />
+                </View>
+                <View style={{ paddingHorizontal: 15 }}>
+                  <CustomText
+                    label={item?.title}
+                    fontFamily={Fonts.medium}
+                    fontSize={16}
+                    marginLeft={5}
+                    numberOfLines={2}
+                  />
+                </View>
+                {/* <RenderHTML
                   contentWidth={3000}
                   source={{ html: `<div>${item?.description || ""}</div>` }}
                   tagsStyles={tagsStyles}
-                />
+                /> */}
 
-                <View style={styles.row}>
+                {/* <View style={styles.row}>
                   <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={() => {
@@ -331,8 +362,8 @@ const ProductDetail = ({ navigation, route }) => {
                     </TouchableOpacity>
                     <MenuOptios ItemData={item} chanalData={channel} />
                   </View>
-                </View>
-              </View>
+                </View> */}
+              </TouchableOpacity>
             )}
           />
         </ScrollView>
@@ -353,6 +384,7 @@ const styles = StyleSheet.create({
   headerContent1: {
     height: 250,
     width: 250,
+    marginTop: 10,
   },
   headerContent: {
     padding: 15,
@@ -379,6 +411,8 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.gray,
     paddingVertical: 20,
     paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
   },
   row: {
     flexDirection: "row",

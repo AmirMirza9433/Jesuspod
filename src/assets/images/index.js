@@ -19,4 +19,6 @@ export const images = {
   gradient: require("./gradient.png"),
   placeholder: require("./placeholder.png"),
   search: require("./search.png"),
+  news: require("./news.png"),
+  warning: require("./warning.png"),
 };

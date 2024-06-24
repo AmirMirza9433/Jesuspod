@@ -54,7 +54,7 @@ const Card = ({
       ]}
     >
       <ImageFast
-        resizeMode="cover"
+        resizeMode="contain"
         style={[styles.thumb, { height: imageHeight, width: imageWith }]}
         source={!image ? images.appLogo : { uri: image }}
       />

@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 
 import Icons from "./Icons";
@@ -6,7 +6,7 @@ import Icons from "./Icons";
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
 
-const SearchInput = ({ placeholder, value, onChangeText }) => {
+const SearchInput = ({ placeholder, value, onChangeText, onPress }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {
@@ -17,7 +17,8 @@ const SearchInput = ({ placeholder, value, onChangeText }) => {
   };
 
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPress ? onPress : null}
       style={[
         styles.mainContainer,
         {
@@ -36,7 +37,7 @@ const SearchInput = ({ placeholder, value, onChangeText }) => {
         onChangeText={onChangeText}
         placeholderTextColor={COLORS.darkGray}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 

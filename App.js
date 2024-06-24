@@ -13,6 +13,7 @@ import { getToken } from "./src/utils/constants";
 import { persistor, store } from "./src/store";
 import { COLORS } from "./src/utils/COLORS";
 import { MenuProvider } from "react-native-popup-menu";
+import NetworkIssue from "./src/components/NetworkIssue";
 
 const App = () => {
   const [isVisible, setVisible] = useState(false);
@@ -29,6 +30,7 @@ const App = () => {
 
     return unsubscribe;
   }, []);
+
   useEffect(() => {
     if (isVisible) {
       setTimeout(() => {
@@ -46,7 +48,9 @@ const App = () => {
         <PersistGate loading={null} persistor={persistor}>
           <NavigationContainer>
             <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
-            <Routes />
+            <NetworkIssue>
+              <Routes />
+            </NetworkIssue>
             {isVisible && (
               <Notification
                 isVisible={isVisible}
