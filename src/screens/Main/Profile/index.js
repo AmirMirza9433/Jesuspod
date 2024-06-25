@@ -31,11 +31,12 @@ const Profile = ({ navigation }) => {
     //   title: "Notification",
     //   icon: images.notifications,
     // },
-    // {
-    //   id: 3,
-    //   title: "Subscription",
-    //   icon: images.subscription,
-    // },
+    {
+      id: 3,
+      title: "Subscription",
+      icon: images.subscription,
+      onPress: () => navigation.navigate("Subscription"),
+    },
     {
       id: 4,
       title: "Privacy of Policy",

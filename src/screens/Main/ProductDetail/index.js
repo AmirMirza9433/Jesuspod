@@ -19,10 +19,10 @@ import CustomText from "../../../components/CustomText";
 import ImageFast from "../../../components/ImageFast";
 
 import { setRecentMusic } from "../../../store/reducer/recentSlice";
+import { updateCollection } from "../../../Firebase";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import { updateCollection } from "../../../Firebase";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ const ProductDetail = ({ navigation, route }) => {
   const channelId = channel?._id ? channel?._id : channel?.channel?._id;
   const channelData = channel?._id ? channel : channel?.channel;
   const [subButton, setSubButton] = useState(
-    channelData?.sub?.filter((item) => item?._id == userData?._id)?.length
+    channelData?.sub?.filter((item) => item == token)?.length
   );
   const [subLoading, setSubLoading] = useState(false);
 
@@ -81,14 +81,10 @@ const ProductDetail = ({ navigation, route }) => {
     setSubLoading(true);
 
     let finalArray;
-    if (
-      channelData?.sub?.filter((item) => item?._id == userData?._id)?.length
-    ) {
-      finalArray = channelData?.sub?.filter(
-        (item) => item?._id !== userData?._id
-      );
+    if (channelData?.sub?.filter((item) => item == token)?.length) {
+      finalArray = channelData?.sub?.filter((item) => item !== token);
     } else {
-      finalArray = [...channelData?.sub, userData];
+      finalArray = [...channelData?.sub, token];
     }
     try {
       const res = await updateCollection("Newchannels", channelId, {

@@ -45,11 +45,13 @@ const Header = ({ title, subTitle, onPress, userProfile, notiIcon }) => {
         </View>
       </View>
       {notiIcon ? (
-        <ImageFast
-          style={styles.icn}
-          resizeMode={"contain"}
-          source={images.notifications}
-        />
+        <TouchableOpacity activeOpacity={0.9}>
+          <ImageFast
+            style={styles.icn}
+            resizeMode={"contain"}
+            source={images.notifications}
+          />
+        </TouchableOpacity>
       ) : null}
     </TouchableOpacity>
   );

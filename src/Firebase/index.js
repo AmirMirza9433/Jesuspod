@@ -96,13 +96,8 @@ export const checkUserExist = async (email) => {
 
 export const getCategories = async () => {
   try {
-    // Reference to the 'category' collection
     const categoryCollection = firestore().collection("category");
-
-    // Fetch all documents in the collection
     const categorySnapshot = await categoryCollection.get();
-
-    // Extract data from each document
     const categories = categorySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -132,4 +127,25 @@ export const getChannelsByCategoryName = async (categoryName) => {
     console.error("Error fetching channels by category name:", error);
     throw error;
   }
+};
+export const getDocWithQuery = (collection, query) => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = firestore()
+      .collection(collection)
+      .where(...query)
+      .onSnapshot(
+        (chatsSnapshot) => {
+          const detectorDataArray = [];
+          chatsSnapshot.forEach((chatSnapshot) => {
+            const detectorData = chatSnapshot.data();
+            detectorDataArray.push(detectorData);
+          });
+          resolve(detectorDataArray);
+        },
+        (error) => {
+          console.error("Error:", error);
+          reject(error);
+        }
+      );
+  });
 };

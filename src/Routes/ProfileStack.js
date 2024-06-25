@@ -1,16 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
+import React from "react";
 
-import ProductDetail from "../screens/Main/ProductDetail";
-import PlayerScreen from "../screens/Main/PlayerScreen";
-import SeeAll from "../screens/Main/AllChanals";
-import Profile from "../screens/Main/Profile";
+import CategoryPodcast from "../screens/Main/CategoryPodcast";
+import PrivacyPolicy from "../screens/Main/PrivacyPolicy";
+import Subscription from "../screens/Main/Subscription";
 import EditProfile from "../screens/Main/EditProfile";
 import FavPodcast from "../screens/Main/FavPodcast";
-import CategoryPodcast from "../screens/Main/CategoryPodcast";
 import HelpCenter from "../screens/Main/HelpCenter";
-import PrivacyPolicy from "../screens/Main/PrivacyPolicy";
+import Profile from "../screens/Main/Profile";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +26,7 @@ const ProfileStack = () => {
       <Stack.Screen name="CategoryPodcast" component={CategoryPodcast} />
       <Stack.Screen name="HelpCenter" component={HelpCenter} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+      <Stack.Screen name="Subscription" component={Subscription} />
     </Stack.Navigator>
   );
 };
