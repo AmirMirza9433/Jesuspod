@@ -18,6 +18,7 @@ import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 
 const EditProfile = ({ navigation }) => {
+  const isPlayer = useSelector((state) => state.player.isPlayer);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const userData = useSelector((state) => state.user.users);
@@ -80,7 +81,7 @@ const EditProfile = ({ navigation }) => {
         <CustomButton
           color={COLORS.white}
           title="Update"
-          marginBottom={20}
+          marginBottom={isPlayer ? 85 : 0}
           onPress={updateUser}
           loading={loading}
           width="90%"
@@ -102,7 +103,6 @@ const EditProfile = ({ navigation }) => {
           </TouchableOpacity>
         )}
       />
-
       {array.map((item) => (
         <Input
           key={item.id}

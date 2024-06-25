@@ -24,7 +24,6 @@ import { setPlayer } from "../../../store/reducer/PlayerSlice";
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
   const channel = route.params?.channel;
-  console.log("channel===============", item);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);

@@ -35,7 +35,7 @@ const SearchInput = ({ placeholder, value, onChangeText, onPress }) => {
         onBlur={handleBlur}
         value={value}
         onChangeText={onChangeText}
-        placeholderTextColor={COLORS.darkGray}
+        placeholderTextColor={COLORS.black}
       />
     </TouchableOpacity>
   );

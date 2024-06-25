@@ -48,13 +48,14 @@ const BottomPlayer = ({ currentTrack }) => {
           fontFamily={Fonts.bold}
           fontSize={18}
           numberOfLines={1}
+          color={COLORS.white}
           width={200}
         />
         <Icons
           family="AntDesign"
           name={isPlaying ? "pausecircle" : "play"}
           size={40}
-          color={COLORS.primaryColor}
+          color={COLORS.white}
           onPress={togglePlayback}
         />
       </View>
@@ -84,11 +85,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     position: "absolute",
     bottom: 70,
-    width: width - 20,
-    backgroundColor: COLORS.white,
-    borderWidth: 1,
-    border: COLORS.gray,
-    borderRadius: 10,
+    width: "100%",
+    backgroundColor: COLORS.primaryColor,
+    // borderWidth: 1,
+    // border: COLORS.gray,
+    // borderRadius: 10,
     alignSelf: "center",
   },
   row: {
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: -8,
   },
   selectedStyle: {
-    backgroundColor: COLORS.primaryColor,
+    backgroundColor: COLORS.white,
     height: 6,
     borderTopLeftRadius: 100,
     borderBottomLeftRadius: 100,
@@ -121,14 +122,14 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 100,
   },
   markerStyle: {
-    backgroundColor: COLORS.primaryColor,
+    backgroundColor: COLORS.white,
     width: 12,
     borderRadius: 100,
     height: 12,
     marginBottom: -7,
   },
   pressedMarkerStyle: {
-    backgroundColor: COLORS.primaryColor,
+    backgroundColor: COLORS.white,
     width: 12,
     borderRadius: 100,
     height: 12,

@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 
@@ -14,18 +14,20 @@ import { logout } from "../../../store/reducer/AuthConfig";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import { Linking } from "react-native";
+import CustomButton from "../../../components/CustomButton";
 
 const Profile = ({ navigation }) => {
   const userData = useSelector((state) => state.user.users);
 
   const dispatch = useDispatch();
   const array = [
-    {
-      id: 1,
-      title: "Favorite Podcast",
-      icon: images.tabLive,
-      onPress: () => navigation.navigate("FavPodcast"),
-    },
+    // {
+    //   id: 1,
+    //   title: "Favorite Podcast",
+    //   icon: images.tabLive,
+    //   onPress: () => navigation.navigate("FavPodcast"),
+    // },
     // {
     //   id: 2,
     //   title: "Notification",
@@ -39,18 +41,24 @@ const Profile = ({ navigation }) => {
     },
     {
       id: 4,
+      title: "Downloads",
+      icon: images.down,
+      onPress: () => navigation.navigate("Subscription"),
+    },
+    {
+      id: 5,
       title: "Privacy of Policy",
       icon: images.prvacy,
       onPress: () => navigation.navigate("PrivacyPolicy"),
     },
     {
-      id: 5,
+      id: 6,
       title: "Help Center",
       icon: images.help,
       onPress: () => navigation.navigate("HelpCenter"),
     },
     {
-      id: 6,
+      id: 7,
       title: "Logout",
       icon: images.exit,
       onPress: () => {
@@ -113,6 +121,55 @@ const Profile = ({ navigation }) => {
             <Icons family="Feather" name="chevron-right" size={25} />
           </TouchableOpacity>
         ))}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={{
+            width: "100%",
+            padding: 10,
+            borderRadius: 8,
+            textAlign: "center",
+            flexDirection: "row",
+            gap: 5,
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              color: COLORS.black,
+              fontFamily: Fonts.semiBold,
+              fontSize: 20,
+            }}
+          >
+            Help us preach the gospel
+          </Text>
+        </TouchableOpacity>
+
+        <CustomButton
+          onPress={() => Linking.openURL("https://fpgchurch.com/pages/give")}
+          title={"Give Now"}
+          fontSize={22}
+          width={130}
+          height={40}
+          marginTop={5}
+          borderRadius={2}
+          fontFamily={Fonts.bold}
+          backgroundColor={"green"}
+        />
+        <CustomText
+          label={"A Ministry of Faith Pleases God Church"}
+          color={COLORS.primaryColor}
+          fontFamily={Fonts.medium}
+          marginTop={10}
+        />
+        <TouchableOpacity onPress={Linking.openURL("fpgchurch.com")}>
+          <CustomText
+            label={"fpgchurch.com"}
+            color={COLORS.primaryColor}
+            fontFamily={Fonts.bold}
+            textDecorationLine={"underline"}
+            marginTop={10}
+          />
+        </TouchableOpacity>
       </View>
     </ScreenWrapper>
   );

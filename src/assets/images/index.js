@@ -21,4 +21,5 @@ export const images = {
   search: require("./search.png"),
   news: require("./news.png"),
   warning: require("./warning.png"),
+  down: require("./downloading.png"),
 };

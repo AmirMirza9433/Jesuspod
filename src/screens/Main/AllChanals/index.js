@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import SearchInput from "../../../components/SearchInput";
@@ -7,6 +7,7 @@ import Header from "../../../components/Header";
 import Card from "../../../components/Card";
 
 import { getAllDocs } from "../../../Firebase";
+import { COLORS } from "../../../utils/COLORS";
 
 const SeeAll = () => {
   const [loading, setLoading] = useState(false);
@@ -16,8 +17,8 @@ const SeeAll = () => {
   const getChannels = async () => {
     setLoading(true);
     try {
-      const res = await getAllDocs("chanals");
-      setChannels(res?.[0]?.podcasts);
+      const res = await getAllDocs("Newchannels");
+      setChannels(res);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -50,6 +51,13 @@ const SeeAll = () => {
       )}
     >
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={getChannels}
+            colors={[COLORS.primaryColor]}
+          />
+        }
         data={filteredChannels}
         showsHorizontalScrollIndicator={false}
         numColumns={2}
@@ -59,7 +67,7 @@ const SeeAll = () => {
           <Card
             imageHeight={180}
             marginRight={(2 % index) + 1 !== 0 ? "4%" : 0}
-            image={item.image}
+            image={item.imageUrl}
             item={item}
             title={item.title}
           />

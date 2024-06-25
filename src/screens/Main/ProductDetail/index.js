@@ -23,6 +23,7 @@ import { updateCollection } from "../../../Firebase";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import Icons from "../../../components/Icons";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -106,7 +107,13 @@ const ProductDetail = ({ navigation, route }) => {
       transclucent
       paddingHorizontal={0.1}
       headerUnScrollable={() => (
-        <View style={{ position: "absolute", zIndex: 999, top: 20 }}>
+        <View
+          style={{
+            position: "absolute",
+            zIndex: 999,
+            top: 20,
+          }}
+        >
           <BackHeader color={COLORS.white} />
         </View>
       )}
@@ -195,13 +202,27 @@ const ProductDetail = ({ navigation, route }) => {
                       textAlign={"center"}
                     />
                   </View>
-                  <View style={{ paddingHorizontal: 15 }}>
+                  <View
+                    style={{
+                      paddingHorizontal: 15,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
                     <CustomText
                       label={item?.title}
                       fontFamily={Fonts.medium}
                       fontSize={16}
                       marginLeft={5}
+                      width={290}
                       numberOfLines={2}
+                    />
+                    <Icons
+                      family="MaterialCommunityIcons"
+                      name="download-circle-outline"
+                      size={30}
+                      color={COLORS.primaryColor}
+                      marginLeft={10}
                     />
                   </View>
                   {/* <RenderHTML

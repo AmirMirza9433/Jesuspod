@@ -73,6 +73,7 @@ const Home = ({ navigation }) => {
               notiIcon
             />
             <SearchInput
+              onPress={() => navigation.navigate("SeeAll")}
               placeholder="Search"
               value={searchQuery}
               onChangeText={setSearchQuery}

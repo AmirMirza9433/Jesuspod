@@ -25,6 +25,9 @@ const Subscription = () => {
         "array-contains",
         token,
       ]);
+      console.log("====================================");
+      console.log(res);
+      console.log("====================================");
       setChannels(res);
       setLoading(false);
     } catch (error) {
@@ -50,13 +53,13 @@ const Subscription = () => {
         ) : (
           <FlatList
             data={channels}
+            numColumns={2}
             keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <Card
-                imageHeight={183}
-                width="100%"
+                imageHeight={180}
+                marginRight={(2 % index) + 1 !== 0 ? "4%" : 0}
                 image={item?.imageUrl}
-                marginRight={10}
                 item={item}
                 title={item?.title}
               />
