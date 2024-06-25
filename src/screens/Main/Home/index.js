@@ -1,4 +1,5 @@
 import { FlatList, RefreshControl, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -17,9 +18,9 @@ import { getAllDocs } from "../../../Firebase";
 import { Fonts } from "../../../utils/fonts";
 
 const Home = ({ navigation }) => {
+  const isFocused = useIsFocused();
   const userData = useSelector((state) => state.user.users);
   const recentMusic = useSelector((state) => state.recent.recentMusic);
-  console.log("=======recentMusic", recentMusic);
 
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
@@ -49,8 +50,8 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     getChannels();
-    // addKeyToFirestore("zxLZiVV7TNS2v9WnAURn", "_id", "zxLZiVV7TNS2v9WnAURn");
-  }, []);
+    // addKeyToFirestore("0e4lfsnD5Btv7hNFHtjT", "sub", []);
+  }, [isFocused]);
 
   const filteredChannels = channels.filter((channel) =>
     channel.title.toLowerCase().includes(searchQuery.toLowerCase())

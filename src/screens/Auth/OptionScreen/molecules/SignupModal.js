@@ -115,6 +115,7 @@ const SignupModal = ({
             userName: state.userName,
             email: state.email,
             musics: [],
+            sub: [],
           },
           userId: res?.user?.uid,
         });

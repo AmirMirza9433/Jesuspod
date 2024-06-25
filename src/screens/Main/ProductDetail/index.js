@@ -22,13 +22,22 @@ import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import { updateCollection } from "../../../Firebase";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const channel = route?.params?.item;
+  const token = useSelector((state) => state.authConfig.token);
+  const userData = useSelector((state) => state.user.users);
   const recentMusic = useSelector((state) => state.recent.recentMusic);
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
+  const channelId = channel?._id ? channel?._id : channel?.channel?._id;
+  const channelData = channel?._id ? channel : channel?.channel;
+  const [subButton, setSubButton] = useState(
+    channelData?.sub?.filter((item) => item?._id == userData?._id)?.length
+  );
+  const [subLoading, setSubLoading] = useState(false);
 
   const get = async () => {
     setLoading(true);
@@ -66,6 +75,32 @@ const ProductDetail = ({ navigation, route }) => {
     }
     const res = [{ channel, item: newData }, ...myArray];
     dispatch(setRecentMusic(res.slice(0, 4)));
+  };
+
+  const onSubscribe = async () => {
+    setSubLoading(true);
+
+    let finalArray;
+    if (
+      channelData?.sub?.filter((item) => item?._id == userData?._id)?.length
+    ) {
+      finalArray = channelData?.sub?.filter(
+        (item) => item?._id !== userData?._id
+      );
+    } else {
+      finalArray = [...channelData?.sub, userData];
+    }
+    try {
+      const res = await updateCollection("Newchannels", channelId, {
+        ...channelData,
+        sub: finalArray,
+      });
+      console.log("===============res", res);
+      setSubLoading(false);
+    } catch (error) {
+      setSubLoading(false);
+      console.log("==============error", error?.response?.data);
+    }
   };
 
   return (
@@ -117,11 +152,16 @@ const ProductDetail = ({ navigation, route }) => {
           color={COLORS.primaryColor}
         />
         <CustomButton
-          title="Subscribe"
+          title={subButton ? "Unsubscribe" : "Subscribe"}
           backgroundColor={COLORS.primaryColor}
           color={COLORS.white}
+          loading={subLoading}
+          onPress={() => {
+            setSubButton(!subButton);
+            onSubscribe();
+          }}
           fontFamily={Fonts.bold}
-          width={100}
+          width={130}
           height={40}
         />
       </View>

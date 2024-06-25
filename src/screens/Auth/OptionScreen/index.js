@@ -53,6 +53,8 @@ const OptionScreen = () => {
         userName: userInfo?.user?.name,
         userImage: userInfo?.user?.photo,
         userId: userInfo?.user?.id,
+        sub: [],
+        musics: [],
       };
       auth().signInWithCredential(googleCredential);
       await firestore()
