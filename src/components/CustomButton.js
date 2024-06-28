@@ -79,7 +79,7 @@ const CustomButton = ({
           {icon ? (
             <View
               style={{
-                backgroundColor: COLORS.primaryColor,
+                backgroundColor: "transparent",
                 height: 25,
                 width: 25,
                 borderRadius: 20,

@@ -43,7 +43,7 @@ const Profile = ({ navigation }) => {
       id: 4,
       title: "Downloads",
       icon: images.down,
-      onPress: () => navigation.navigate("Subscription"),
+      onPress: () => navigation.navigate("FavPodcast"),
     },
     {
       id: 5,

@@ -1,6 +1,6 @@
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { RefreshControl, StyleSheet, View } from "react-native";
 import TrackPlayer, {
   usePlaybackState,
   useProgress,
@@ -8,6 +8,7 @@ import TrackPlayer, {
   RepeatMode,
   State,
 } from "react-native-track-player";
+import firestore from "@react-native-firebase/firestore";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomText from "../../../components/CustomText";
@@ -20,16 +21,22 @@ import { Fonts } from "../../../utils/fonts";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { setPlayer } from "../../../store/reducer/PlayerSlice";
+import Card from "../../../components/Card";
+import { FlatList } from "react-native";
 
 const PlayerScreen = ({ route }) => {
   const item = route.params?.item;
   const channel = route.params?.channel;
+
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
+  const [starLoading, setstarLoading] = useState(false);
   const playbackState = usePlaybackState();
   const { position, duration } = useProgress();
   const [isPlaying, setIsPlaying] = useState(playbackState === State.Playing);
+  const userData = useSelector((state) => state.user.users);
+  const [StredId, setStredId] = useState(false);
   const validDuration = isNaN(duration) || duration <= 0 ? 1 : duration;
 
   useEffect(() => {
@@ -44,6 +51,32 @@ const PlayerScreen = ({ route }) => {
     setupTrack();
   }, []);
 
+  useEffect(() => {
+    starMusic();
+  }, [isFocused]);
+
+  const starMusic = async () => {
+    const musicTitle =
+      (item?.title?.[0] ?? item?.item?.title?.[0]) || "Default Title";
+
+    const musicRef = firestore().collection("stared").doc(musicTitle);
+    // console.log(musicRef);
+    try {
+      const doc = await musicRef.get();
+      console.log(doc);
+      if (doc.exists) {
+        const { starredBy, starCount } = doc.data();
+        if (
+          starredBy.includes(userData?.userId || starredBy == userData?.userId)
+        ) {
+          setStredId(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error starring music:", error);
+    }
+  };
+
   const setupTrack = async () => {
     let isSetup = false;
     try {
@@ -52,11 +85,19 @@ const PlayerScreen = ({ route }) => {
       await TrackPlayer.reset();
       isSetup = true;
       await TrackPlayer.add({
-        id: item?.guid?.[0]?._ || item?.item?.guid?.[0]?._,
-        url: item?.enclosure?.[0]?.$?.url || item?.item?.enclosure?.[0]?.$?.url,
-        title: item?.title || item?.item?.title,
-        artist: channel?.title || item?.channel?.title,
-        artwork: channel?.imageUrl || item?.channel?.imageUrl,
+        id:
+          item?.guid?.[0]?._ || item?.item?.guid?.[0]?._ || item?.guid?.[0]?._,
+        url:
+          item?.enclosure?.[0]?.$?.url ||
+          item?.item?.enclosure?.[0]?.$?.url ||
+          item?.enclosure?.[0]?.$?.url,
+        title: item?.title || item?.item?.title || item?.title,
+        artist: channel?.title || item?.channel?.title || item?.title,
+        artwork:
+          channel?.imageUrl ||
+          item?.channel?.imageUrl ||
+          item?.imageUrl ||
+          channel,
       });
       setLoading(false);
     } catch {
@@ -92,10 +133,17 @@ const PlayerScreen = ({ route }) => {
       });
       await TrackPlayer.add({
         id: item?.guid?.[0]?._ || item?.item?.guid?.[0]?._,
-        url: item?.enclosure?.[0]?.$?.url || item?.item?.enclosure?.[0]?.$?.url,
-        title: item?.title || item?.item?.title,
-        artist: channel?.title || item?.channel?.title,
-        artwork: channel?.imageUrl || item?.channel?.imageUrl,
+        url:
+          item?.enclosure?.[0]?.$?.url ||
+          item?.item?.enclosure?.[0]?.$?.url ||
+          item?.enclosure?.[0]?.$?.url,
+        title: item?.title || item?.item?.title || item?.title,
+        artist: channel?.title || item?.channel?.title || item?.title,
+        artwork:
+          channel?.imageUrl ||
+          item?.channel?.imageUrl ||
+          item?.imageUrl ||
+          channel,
       });
       await TrackPlayer.setRepeatMode(RepeatMode.Queue);
       setLoading(false);
@@ -134,6 +182,28 @@ const PlayerScreen = ({ route }) => {
     setIsPlaying(!isPlaying);
   };
 
+  const [RcomendedMusic, setRcomendedMusic] = useState([]);
+
+  const getAllStarredMusic = async () => {
+    setstarLoading(true);
+    try {
+      const snapshot = await firestore().collection("stared").get();
+      const starredMusic = snapshot.docs.map((doc) => doc.data());
+      console.log(starredMusic[0]?.Staredmusic[0]?.title);
+      setRcomendedMusic(starredMusic);
+      setstarLoading(false);
+      return starredMusic;
+    } catch (error) {
+      setstarLoading(false);
+      console.error("Error fetching starred music:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    getAllStarredMusic();
+  }, [isFocused]);
+
   return (
     <ScreenWrapper
       scrollEnabled
@@ -143,13 +213,20 @@ const PlayerScreen = ({ route }) => {
           isMenu={true}
           ItemData={item}
           chanalData={channel}
+          stared={StredId}
         />
       )}
     >
       <View style={styles.mainContainer}>
         <View style={styles.headerImage}>
           <ImageFast
-            source={{ uri: channel?.imageUrl || item?.channel?.imageUrl }}
+            source={{
+              uri:
+                channel?.imageUrl ||
+                item?.channel?.imageUrl ||
+                item?.imageUrl ||
+                channel,
+            }}
             resizeMode="cover"
             style={{ width: "100%", height: "100%" }}
             loading={loading}
@@ -159,7 +236,7 @@ const PlayerScreen = ({ route }) => {
         <CustomText
           label={`EPS ${
             item?.["itunes:episode"] || item?.item?.["itunes:episode"] || 0
-          } | ${item?.title || item?.channel?.title}`}
+          } | ${item?.title || item?.channel?.title || item?.title}`}
           fontFamily={Fonts.bold}
           fontSize={20}
           textAlign="center"
@@ -221,6 +298,54 @@ const PlayerScreen = ({ route }) => {
             color={COLORS.gray}
           />
         </View>
+      </View>
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 20,
+          marginBottom: 20,
+        }}
+      >
+        <CustomText
+          label="Recommended for You"
+          color={COLORS.black}
+          fontFamily={Fonts.bold}
+          fontSize={16}
+        />
+      </View>
+      <View>
+        <FlatList
+          horizontal
+          refreshControl={
+            <RefreshControl
+              refreshing={starLoading}
+              onRefresh={getAllStarredMusic}
+              colors={[COLORS.primaryColor]}
+            />
+          }
+          data={RcomendedMusic}
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(_, i) => i.toString()}
+          renderItem={({ item }) => (
+            <Card
+              imageHeight={183}
+              width={183}
+              image={item?.imageUrl}
+              marginRight={10}
+              item={item}
+              onPress={() =>
+                navigation.navigate("PlayerScreen", {
+                  item: item?.Staredmusic[0],
+                  channel: item?.imageUrl,
+                })
+              }
+              title={item?.Staredmusic[0]?.title}
+            />
+          )}
+        />
       </View>
     </ScreenWrapper>
   );

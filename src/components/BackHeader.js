@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
+import firestore from "@react-native-firebase/firestore";
 
 import CustomText from "./CustomText";
 import Icons from "./Icons";
@@ -10,6 +11,8 @@ import { Fonts } from "../utils/fonts";
 import MenuOptios from "./Menu";
 import RNFetchBlob from "rn-fetch-blob";
 import Share from "react-native-share";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 const BackHeader = ({
   title,
@@ -21,14 +24,23 @@ const BackHeader = ({
   isMenu = false,
   ItemData,
   chanalData,
+  stared,
 }) => {
   const navigation = useNavigation();
+  const userData = useSelector((state) => state.user.users);
+  const [Starepod, setStared] = useState(false);
+  useEffect(() => {
+    setStared(stared);
+  }, [stared]);
 
   const ondataShare = () => {
     RNFetchBlob.config({
       fileCache: true,
     })
-      .fetch("GET", chanalData?.imageUrl)
+      .fetch(
+        "GET",
+        ItemData?.channel?.imageUrl || ItemData?.imageUrl || chanalData
+      )
       .then((resp) => {
         return resp.readFile("base64");
       })
@@ -36,8 +48,10 @@ const BackHeader = ({
         const imageUrl = "data:image/png;base64," + base64Data;
 
         const shareImage = {
-          title: ItemData.title[0].trim(),
-          message: ItemData?.enclosure[0].$.url,
+          title: ItemData.title[0].trim() || ItemData?.channel.title,
+          message:
+            ItemData?.enclosure[0].$.url ||
+            ItemData?.channel.enclosure[0].$.url,
           url: imageUrl,
         };
 
@@ -54,6 +68,65 @@ const BackHeader = ({
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const starMusic = async () => {
+    const userId = userData?.userId;
+
+    const musicTitle = ItemData?.title[0] || ItemData?.channel?.title;
+
+    if (!userId || !musicTitle) {
+      console.error("User ID or music title is missing.");
+      return;
+    }
+
+    const musicRef = firestore().collection("stared").doc(musicTitle);
+    setStared(true); // Set the stared state
+
+    try {
+      const doc = await musicRef.get();
+      if (doc.exists) {
+        const { starredBy, starCount } = doc.data();
+        if (starredBy.includes(userId)) {
+          // If userId is in starredBy, unstar the music
+          const updatedStarredBy = starredBy.filter((id) => id !== userId);
+          const newStarCount = starCount - 1;
+          setStared(false); // Set the stared state
+
+          if (newStarCount === 0) {
+            // Delete the document if no more stars
+            await musicRef.delete();
+          } else {
+            // Update the document with the new starredBy array and starCount
+            await musicRef.update({
+              starredBy: updatedStarredBy,
+              starCount: newStarCount,
+            });
+          }
+        } else {
+          // Manually update starredBy array
+          const updatedStarredBy = [...starredBy, userId];
+          await musicRef.update({
+            starredBy: updatedStarredBy,
+            starCount: starCount + 1,
+          });
+        }
+      } else {
+        // Create the document if it doesn't exist
+        await musicRef.set({
+          Staredmusic: [ItemData],
+          imageUrl:
+            ItemData?.imageUrl ||
+            ItemData?.channel?.imageUrl ||
+            chanalData.imageUrl ||
+            chanalData,
+          starCount: 1,
+          starredBy: [userId],
+        });
+      }
+    } catch (error) {
+      console.error("Error starring music:", error);
+    }
   };
 
   return (
@@ -97,10 +170,10 @@ const BackHeader = ({
 
         {isMenu ? (
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity onPress={ondataShare}>
+            <TouchableOpacity onPress={starMusic}>
               <Icons
                 family="AntDesign"
-                name="staro"
+                name={Starepod ? "star" : "staro"}
                 size={22}
                 color={COLORS.primaryColor}
                 marginRight={10}

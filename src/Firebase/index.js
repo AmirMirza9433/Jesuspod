@@ -62,9 +62,9 @@ export const getDocsById = (collection, id) => {
   });
 };
 
-export const updateCollection = async (collection, uid, data) => {
+export const updateCollection = async (collection, docId, data) => {
   try {
-    const docRef = firestore().collection(collection).doc(uid);
+    const docRef = firestore().collection(collection).doc(docId);
     const res = await docRef.update(data);
     return res;
   } catch (error) {

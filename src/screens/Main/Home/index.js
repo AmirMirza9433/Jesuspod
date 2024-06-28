@@ -25,6 +25,25 @@ const Home = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [RcomendedMusic, setRcomendedMusic] = useState([]);
+
+  const getAllStarredMusic = async () => {
+    try {
+      const snapshot = await firestore().collection("stared").get();
+      const starredMusic = snapshot.docs.map((doc) => doc.data());
+      console.log(starredMusic[0]?.Staredmusic[0]?.title);
+      setRcomendedMusic(starredMusic);
+      return starredMusic;
+    } catch (error) {
+      console.error("Error fetching starred music:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    getAllStarredMusic();
+  }, [isFocused]);
+
   // const addKeyToFirestore = async (id, key, value) => {
   //   try {
   //     const res = await firestore()
@@ -50,12 +69,15 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     getChannels();
-    // addKeyToFirestore("0e4lfsnD5Btv7hNFHtjT", "sub", []);
   }, [isFocused]);
 
   const filteredChannels = channels.filter((channel) =>
     channel.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const dattRetune = (data) => {
+    console.log(data);
+  };
 
   return (
     <>
@@ -100,28 +122,6 @@ const Home = ({ navigation }) => {
             fontFamily={Fonts.bold}
             fontSize={16}
           />
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 10,
-            }}
-          >
-            <CustomText
-              label="See All"
-              color={COLORS.primaryColor}
-              fontFamily={Fonts.bold}
-              fontSize={16}
-              onPress={() => navigation.navigate("SeeAll")}
-            />
-
-            <Icons
-              family="Feather"
-              name="chevron-right"
-              color={COLORS.primaryColor}
-              size={20}
-            />
-          </View>
         </View>
         <View>
           <FlatList
@@ -133,7 +133,7 @@ const Home = ({ navigation }) => {
                 colors={[COLORS.primaryColor]}
               />
             }
-            data={filteredChannels}
+            data={RcomendedMusic}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, i) => i.toString()}
             renderItem={({ item }) => (
@@ -143,7 +143,13 @@ const Home = ({ navigation }) => {
                 image={item?.imageUrl}
                 marginRight={10}
                 item={item}
-                title={item?.title}
+                onPress={() =>
+                  navigation.navigate("PlayerScreen", {
+                    item: item?.Staredmusic[0],
+                    channel: item?.imageUrl,
+                  })
+                }
+                title={item?.Staredmusic[0]?.title}
               />
             )}
           />

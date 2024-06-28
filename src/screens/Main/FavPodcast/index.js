@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import React from "react";
+import React, { useEffect } from "react";
 import RNFetchBlob from "rn-fetch-blob";
 import {
   TouchableOpacity,
@@ -9,6 +9,7 @@ import {
   FlatList,
   View,
 } from "react-native";
+import firestore from "@react-native-firebase/firestore";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import BackHeader from "../../../components/BackHeader";
@@ -19,15 +20,41 @@ import Icons from "../../../components/Icons";
 import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
+import { useState } from "react";
+import Card from "../../../components/Card";
 
 const FavPodcast = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const channel = route?.params?.item;
   const recentMusic = useSelector((state) => state.recent.recentMusic);
   const userData = useSelector((state) => state.user.users);
-  console.log(userData);
+  const [PodcastData, setPodcastData] = useState([]);
+  const [loading, setloading] = useState(false);
+  const getUserData = async () => {
+    setloading(true);
+    try {
+      const userDocRef = firestore().collection("users").doc(userData?.userId);
+      const userDoc = await userDocRef.get();
 
-  const loading = false;
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        setPodcastData(userData);
+        setloading(false);
+
+        return userData; // Return user data for further processing
+      } else {
+        console.log("User document not found");
+        setloading(false);
+
+        return null; // Handle case where user document doesn't exist
+      }
+    } catch (error) {
+      setloading(false);
+
+      console.error("Error fetching user data:", error);
+      return null; // Handle error scenario
+    }
+  };
 
   const download = (data) => {
     const { config, fs } = RNFetchBlob;
@@ -50,6 +77,7 @@ const FavPodcast = ({ navigation, route }) => {
     const res = [{ channel, item: newData }, ...myArray];
     dispatch(setRecentMusic(res.slice(0, 4)));
   };
+
   const changedata = (timestamp) => {
     const date = new Date(timestamp);
     const dayMonth = date.toLocaleDateString("en-US", {
@@ -59,24 +87,23 @@ const FavPodcast = ({ navigation, route }) => {
 
     return dayMonth;
   };
+  useEffect(() => {
+    getUserData();
+  }, [""]);
+
   return (
     <ScreenWrapper
       scrollEnabled
       statusBarColor="transparent"
       transclucent
-      paddingHorizontal={0.1}
+      // paddingHorizontal={0.1}
       headerUnScrollable={() => (
         <View style={{ paddingVertical: 10 }}>
-          <BackHeader title="Favorite Podcast" />
+          <BackHeader title="Downloads" />
         </View>
       )}
     >
-      <ScrollView
-        horizontal
-        contentContainerStyle={{ width: "100%" }}
-        scrollEnabled={false}
-      >
-        <FlatList
+      {/* <FlatList
           refreshControl={
             <RefreshControl
               refreshing={loading}
@@ -84,7 +111,7 @@ const FavPodcast = ({ navigation, route }) => {
               colors={[COLORS.primaryColor]}
             />
           }
-          data={userData?.musics}
+          data={PodcastData?.musics}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(_, i) => i.toString()}
           renderItem={({ item }) => (
@@ -100,58 +127,36 @@ const FavPodcast = ({ navigation, route }) => {
                 fontFamily={Fonts.bold}
                 fontSize={18}
               />
-              <CustomText
-                label={item?.description}
-                color={COLORS.gray}
-                numberOfLines={2}
-              />
-              <View style={styles.row}>
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  onPress={() => {
-                    createRecent(item);
-                    navigation.navigate("PlayerScreen", { item, channel });
-                  }}
-                  style={styles.playContainer}
-                >
-                  <Icons
-                    family="AntDesign"
-                    name="caretright"
-                    size={22}
-                    color={COLORS.primaryColor}
-                  />
-                  <CustomText
-                    label={item?.["itunes:duration"]}
-                    fontFamily={Fonts.semiBold}
-                    marginTop={4}
-                    marginLeft={5}
-                  />
-                </TouchableOpacity>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <TouchableOpacity
-                    style={styles.downloadsIcon}
-                    onPress={() => download(item)}
-                  >
-                    <Icons
-                      family="Ionicons"
-                      name="arrow-down-circle"
-                      size={22}
-                      color={COLORS.primaryColor}
-                    />
-                  </TouchableOpacity>
-                  <MenuOptios ItemData={item} chanalData={channel} />
-                </View>
-              </View>
+
+             
             </View>
           )}
-        />
-      </ScrollView>
+        /> */}
+
+      <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={getUserData}
+            colors={[COLORS.primaryColor]}
+          />
+        }
+        data={PodcastData?.musics}
+        showsHorizontalScrollIndicator={false}
+        numColumns={2}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(_, i) => i.toString()}
+        renderItem={({ item, index }) => (
+          <Card
+            imageHeight={180}
+            marginRight={(2 % index) + 1 !== 0 ? "4%" : 0}
+            image={item.imageUrl}
+            item={item}
+            title={item.title}
+            onPress={() => navigation.navigate("PlayerScreen", { item: item })}
+          />
+        )}
+      />
     </ScreenWrapper>
   );
 };
