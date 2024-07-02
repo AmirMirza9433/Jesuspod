@@ -22,4 +22,5 @@ export const images = {
   news: require("./news.png"),
   warning: require("./warning.png"),
   down: require("./downloading.png"),
+  podcast: require("./podcast.png"),
 };

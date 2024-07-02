@@ -161,7 +161,9 @@ const Profile = ({ navigation }) => {
           fontFamily={Fonts.medium}
           marginTop={10}
         />
-        <TouchableOpacity onPress={Linking.openURL("fpgchurch.com")}>
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://fpgchurch.com/")}
+        >
           <CustomText
             label={"fpgchurch.com"}
             color={COLORS.primaryColor}

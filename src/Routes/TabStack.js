@@ -21,7 +21,7 @@ const Tab = createBottomTabNavigator();
 const TabStack = () => {
   return (
     <Tab.Navigator
-      screenOptions={() => ({
+      screenOptions={(route) => ({
         tabBarStyle: styles.tabBarStyle,
         tabBarLabelStyle: styles.tabBarLabelStyle,
         tabBarShowLabel: true,
@@ -54,7 +54,7 @@ const TabStack = () => {
             <View>
               {focused ? <View style={styles.emptyView} /> : null}
               <Image
-                source={images.tabDiscover}
+                source={images.podcast}
                 style={[
                   styles.icon,
                   { tintColor: focused ? COLORS.primaryColor : COLORS.gray },
@@ -63,7 +63,7 @@ const TabStack = () => {
             </View>
           ),
         }}
-        name="Discover"
+        name="Podcasts"
         component={DiscoverStack}
       />
       <Tab.Screen
@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: Fonts.medium,
     marginBottom: Platform.OS == "ios" ? 12 : 5,
+    color: COLORS.black,
   },
   icon: {
     width: 22,

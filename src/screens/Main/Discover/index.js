@@ -72,10 +72,13 @@ import CatCard from "../../../components/CatCard";
 import { getCategories } from "../../../Firebase";
 import { useNavigation } from "@react-navigation/native";
 import SearchInput from "../../../components/SearchInput";
+import { useSelector } from "react-redux";
 
 const Discover = () => {
   const navigation = useNavigation();
   const [Cat, setCat] = useState([]);
+
+  const isPlayer = useSelector((state) => state.player.isPlayer);
 
   const [referesh, setrefresh] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,6 +105,7 @@ const Discover = () => {
     setrefresh(true);
     try {
       const res = await getCategories();
+      console.log(res);
       setCat(res);
       setrefresh(false);
     } catch (error) {
@@ -125,6 +129,7 @@ const Discover = () => {
 
   return (
     <ScreenWrapper
+      paddingBottom={isPlayer ? 85 : 0}
       headerUnScrollable={() => (
         <>
           <View style={{ padding: 20, paddingBottom: 0 }}>

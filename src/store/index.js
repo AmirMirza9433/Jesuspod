@@ -12,11 +12,13 @@ import {
 } from "redux-persist";
 
 import { rootReducer } from "./reducer";
+import { playerSlice } from "./reducer/PlayerSlice";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage: AsyncStorage,
+  // whitelist: [playerSlice],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

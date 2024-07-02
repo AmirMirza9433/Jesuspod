@@ -3,22 +3,22 @@ import React from "react";
 
 import CustomText from "./CustomText";
 
-import { noDataFound } from "../assets/images/pngs";
-import Fonts from "../utils/fonts";
+import { noDataFound } from "../assets/images/noShow.png";
+import { Fonts } from "../utils/fonts";
 
 const NoDataFound = ({ title, marginTop }) => {
   return (
     <View style={styles.mainContainer}>
       <Image
         style={[styles.image, { marginTop: marginTop || 100 }]}
-        source={noDataFound}
+        source={require("../assets/images/noShow.png")}
       />
       <CustomText
-        label={title || "noDataFound"}
-        fontFamily={Fonts.medium}
+        label={title || "No Data Found"}
+        fontFamily={Fonts.bold}
         fontSize={18}
         textAlign="center"
-        marginTop={5}
+        marginTop={10}
       />
     </View>
   );
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 400,
-    width: Dimensions.get("window").width - 40,
+    width: Dimensions.get("window").width - 10,
   },
   image: {
     width: 180,

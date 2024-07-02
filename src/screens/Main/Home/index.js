@@ -21,6 +21,8 @@ const Home = ({ navigation }) => {
   const isFocused = useIsFocused();
   const userData = useSelector((state) => state.user.users);
   const recentMusic = useSelector((state) => state.recent.recentMusic);
+  const isPlayer = useSelector((state) => state.player.isPlayer);
+  console.log(isPlayer);
 
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
@@ -83,6 +85,7 @@ const Home = ({ navigation }) => {
     <>
       <ScreenWrapper
         scrollEnabled
+        paddingBottom={isPlayer ? 85 : 0}
         paddingHorizontal={15}
         headerUnScrollable={() => (
           <View style={{ padding: 20 }}>
@@ -91,7 +94,7 @@ const Home = ({ navigation }) => {
               hideBackArrowr
               userProfile={userData?.userImage}
               title={userData?.userName}
-              subTitle="Enjoy your favorite podcast!"
+              subTitle="Faith comes by hearing"
               notiIcon
             />
             <SearchInput

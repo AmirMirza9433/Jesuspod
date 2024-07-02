@@ -18,13 +18,19 @@ import Icons from "../../../components/Icons";
 
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useIsFocused,
+  useNavigation,
+} from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { setPlayer } from "../../../store/reducer/PlayerSlice";
 import Card from "../../../components/Card";
 import { FlatList } from "react-native";
 
 const PlayerScreen = ({ route }) => {
+  const navigation = useNavigation();
+
   const item = route.params?.item;
   const channel = route.params?.channel;
 
@@ -49,7 +55,7 @@ const PlayerScreen = ({ route }) => {
 
   useEffect(() => {
     setupTrack();
-  }, []);
+  }, [item, channel]);
 
   useEffect(() => {
     starMusic();
@@ -269,7 +275,7 @@ const PlayerScreen = ({ route }) => {
           />
         </View>
         <View style={styles.row}>
-          <Icons family="Feather" name="repeat" size={32} color={COLORS.gray} />
+          {/* <Icons family="Feather" name="repeat" size={32} color={COLORS.gray} /> */}
           <Icons
             family="MaterialIcons"
             name="replay-10"
@@ -291,12 +297,12 @@ const PlayerScreen = ({ route }) => {
             color={COLORS.black}
             onPress={skipForward}
           />
-          <Icons
+          {/* <Icons
             family="Feather"
             name="shuffle"
             size={32}
             color={COLORS.gray}
-          />
+          /> */}
         </View>
       </View>
 
@@ -361,7 +367,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "100%",
+    width: "80%",
     marginBottom: 20,
   },
   sliderContainer: {

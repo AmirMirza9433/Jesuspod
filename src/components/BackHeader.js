@@ -39,7 +39,10 @@ const BackHeader = ({
     })
       .fetch(
         "GET",
-        ItemData?.channel?.imageUrl || ItemData?.imageUrl || chanalData
+        ItemData?.channel?.imageUrl ||
+          ItemData?.imageUrl ||
+          chanalData?.imageUrl ||
+          chanalData
       )
       .then((resp) => {
         return resp.readFile("base64");

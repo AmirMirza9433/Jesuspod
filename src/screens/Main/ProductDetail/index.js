@@ -28,6 +28,7 @@ import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 import Icons from "../../../components/Icons";
 import { ToastMessage } from "../../../utils/ToastMessage";
+import { useIsFocused } from "@react-navigation/native";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -38,8 +39,11 @@ const ProductDetail = ({ navigation, route }) => {
   const recentMusic = useSelector((state) => state.recent.recentMusic);
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
-
-  const [DownloadLoading, setDownloadLoading] = useState(false);
+  const isfocused = useIsFocused();
+  const [downloadLoading, setDownloadLoading] = useState(
+    podcasts.map(() => false)
+  ); // Initialize loading state for each podcast item
+  const [sDownload, setSDownload] = useState(podcasts.map(() => false));
 
   const [subButton, setSubButton] = useState(
     channel?.sub?.filter((item) => item == token)?.length
@@ -56,12 +60,46 @@ const ProductDetail = ({ navigation, route }) => {
     try {
       const xmlData = response.data;
       parseString(xmlData, (err, res) => {
+        console.log(res.rss.channel[0].item);
         setPodcasts(res.rss.channel[0].item);
       });
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.error("Error fetching data:", errror);
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (podcasts.length > 0) {
+      getUserData();
+    }
+  }, [podcasts]);
+
+  const getUserData = async () => {
+    try {
+      const userDocRef = firestore().collection("users").doc(userData?.userId);
+      const userDoc = await userDocRef.get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        const userMusics = userData?.musics || [];
+        // Update the sDownload state based on liked podcasts
+        const newSDownload = podcasts.map((podcast) =>
+          userMusics.some((music) => music.title[0] === podcast.title[0])
+        );
+
+        console.log(newSDownload);
+
+        setSDownload(newSDownload);
+
+        return userData; // Return user data for further processing
+      } else {
+        console.log("User document not found");
+        return null; // Handle case where user document doesn't exist
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null; // Handle error scenario
     }
   };
 
@@ -78,6 +116,10 @@ const ProductDetail = ({ navigation, route }) => {
   useEffect(() => {
     get();
   }, [channel?.url || channel?.channel?.url]);
+
+  // useEffect(() => {
+  //   getUserData();
+  // }, []);
 
   const createRecent = (newData) => {
     let myArray = [];
@@ -123,7 +165,7 @@ const ProductDetail = ({ navigation, route }) => {
     }
   };
 
-  const downloadData = (item, index) => {
+  const downloadData = (item) => {
     const { config, fs } = RNFetchBlob;
     const downloads = fs.dirs.DownloadDir;
     return config({
@@ -136,7 +178,14 @@ const ProductDetail = ({ navigation, route }) => {
     }).fetch("GET", item?.enclosure[0].$.url);
   };
 
-  const onLike = async (ItemData) => {
+  const onLike = async (ItemData, index) => {
+    // Set the loading state for the specific item
+    setDownloadLoading((prevLoading) => {
+      const newLoading = [...prevLoading];
+      newLoading[index] = true;
+      return newLoading;
+    });
+
     try {
       // Fetch user document from Firestore
       const userDocRef = firestore().collection("users").doc(userData?.userId);
@@ -145,10 +194,11 @@ const ProductDetail = ({ navigation, route }) => {
       if (userDoc.exists) {
         const userData = userDoc.data();
         const musics = userData.musics || [];
+        downloadData(ItemData);
 
         // Check if ItemData's title is already in the musics array
         const alreadyLiked = musics.some(
-          (item) => item.title[0] === ItemData.title[0]
+          (item) => item.title === ItemData.title
         );
 
         if (!alreadyLiked) {
@@ -159,8 +209,16 @@ const ProductDetail = ({ navigation, route }) => {
           await userDocRef.update({
             musics: musics,
           });
+          // downloadData();
 
           console.log("Item liked and updated in Firestore");
+
+          // Update the local state to reflect the like status
+          setSDownload((prevSDownload) => {
+            const updatedSDownload = [...prevSDownload];
+            updatedSDownload[index] = true;
+            return updatedSDownload;
+          });
         } else {
           console.log("Item is already liked, no update needed");
         }
@@ -169,6 +227,13 @@ const ProductDetail = ({ navigation, route }) => {
       }
     } catch (error) {
       console.error("Error liking item:", error);
+    } finally {
+      // Reset the loading state for the specific item
+      setDownloadLoading((prevLoading) => {
+        const newLoading = [...prevLoading];
+        newLoading[index] = false;
+        return newLoading;
+      });
     }
   };
 
@@ -288,74 +353,19 @@ const ProductDetail = ({ navigation, route }) => {
                         numberOfLines={1}
                       />
                     </View>
-                    {/* <View
-                      style={{
-                        paddingHorizontal: 15,
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    > */}
-
-                    {/* </View> */}
-                    {/* <RenderHTML
-                  contentWidth={3000}
-                  source={{ html: `<div>${item?.description || ""}</div>` }}
-                  tagsStyles={tagsStyles}
-                /> */}
-
-                    {/* <View style={styles.row}>
-                  <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={() => {
-                      openEpisoseModal(item);
-                    }}
-                    style={styles.playContainer}
-                  >
-                    <Icons
-                      family="AntDesign"
-                      name="caretright"
-                      size={22}
-                      color={COLORS.primaryColor}
-                    />
-                    <CustomText
-                      label={formatTime(item?.["itunes:duration"])}
-                      fontFamily={Fonts.semiBold}
-                      marginTop={4}
-                      marginLeft={5}
-                    />
-                  </TouchableOpacity>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 10,
-                    }}
-                  >
-                    <TouchableOpacity
-                      style={styles.downloadsIcon}
-                      onPress={() => downloaddata(item)}
-                    >
-                      <Icons
-                        family="Ionicons"
-                        name="arrow-down-circle"
-                        size={22}
-                        color={COLORS.primaryColor}
-                      />
-                    </TouchableOpacity>
-                    <MenuOptios ItemData={item} chanalData={channel} />
-                  </View>
-                </View> */}
                   </TouchableOpacity>
 
                   <CustomButton
                     onPress={() => {
-                      onLike(item, index);
+                      if (!sDownload[index]) {
+                        onLike(item, index);
+                      }
                     }}
-                    loading={DownloadLoading}
+                    loading={downloadLoading[index]}
                     icon={true}
                     iconfamily={"MaterialCommunityIcons"}
                     iconname={
-                      donloadbtn
+                      sDownload[index]
                         ? "check-circle-outline"
                         : "download-circle-outline"
                     }
@@ -365,15 +375,6 @@ const ProductDetail = ({ navigation, route }) => {
                     width={100}
                     indicatorcolor={true}
                   />
-                  {/* <TouchableOpacity onPress={() => onDownload(item)}>
-                    <Icons
-                      family="MaterialCommunityIcons"
-                      name="download-circle-outline"
-                      size={30}
-                      color={COLORS.primaryColor}
-                      marginLeft={10}
-                    />
-                  </TouchableOpacity> */}
                 </View>
               )}
             />
@@ -435,3 +436,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+9;

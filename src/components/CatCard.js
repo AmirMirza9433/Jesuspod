@@ -6,6 +6,7 @@ import ImageFast from "./ImageFast";
 
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
+import { View } from "react-native";
 
 const CatCard = ({ title, onPress, backgroundImage }) => {
   return (
@@ -15,6 +16,8 @@ const CatCard = ({ title, onPress, backgroundImage }) => {
       style={styles.container}
     >
       <ImageFast source={backgroundImage} style={styles.image} />
+      <View style={styles.overlay} />
+
       <CustomText
         label={title}
         fontFamily={Fonts.bold}
@@ -40,5 +43,11 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position: "absolute",
+    overlayColor: "black", // Adjust the alpha (last value) for darkness intensity
+  },
+
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.2)", // Adjust opacity as needed
   },
 });

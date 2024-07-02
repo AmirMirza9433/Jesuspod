@@ -9,6 +9,7 @@ import Card from "../../../components/Card";
 
 import { getDocWithQuery } from "../../../Firebase";
 import { COLORS } from "../../../utils/COLORS";
+import NoDataFound from "../../../components/NoDataFound";
 
 const Subscription = () => {
   const isFocused = useIsFocused();
@@ -53,6 +54,9 @@ const Subscription = () => {
         ) : (
           <FlatList
             data={channels}
+            ListEmptyComponent={() => (
+              <NoDataFound title="No Subscription Available" />
+            )}
             numColumns={2}
             keyExtractor={(_, i) => i.toString()}
             renderItem={({ item, index }) => (
