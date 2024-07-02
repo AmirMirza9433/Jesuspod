@@ -34,6 +34,7 @@ const ScreenWrapper = ({
   barStyle = "dark-content",
   refreshControl,
   paddingBottom,
+  marginBottom,
   nestedScrollEnabled = true,
   paddingHorizontal,
 }) => {
@@ -46,6 +47,7 @@ const ScreenWrapper = ({
           styles.container,
           {
             paddingBottom: paddingBottom,
+            // marginBottom: marginBottom,
             backgroundColor: backgroundImage ? "transparent" : backgroundColor,
           },
         ]}

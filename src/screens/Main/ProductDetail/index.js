@@ -60,7 +60,6 @@ const ProductDetail = ({ navigation, route }) => {
     try {
       const xmlData = response.data;
       parseString(xmlData, (err, res) => {
-        console.log(res.rss.channel[0].item);
         setPodcasts(res.rss.channel[0].item);
       });
       setLoading(false);
@@ -87,8 +86,6 @@ const ProductDetail = ({ navigation, route }) => {
         const newSDownload = podcasts.map((podcast) =>
           userMusics.some((music) => music.title[0] === podcast.title[0])
         );
-
-        console.log(newSDownload);
 
         setSDownload(newSDownload);
 
@@ -153,7 +150,6 @@ const ProductDetail = ({ navigation, route }) => {
           ...channel,
           sub: finalArray,
         });
-        console.log("===============res", res);
       } else {
         console.log("No document found with the given _id");
       }

@@ -29,6 +29,7 @@ const BackHeader = ({
   const navigation = useNavigation();
   const userData = useSelector((state) => state.user.users);
   const [Starepod, setStared] = useState(false);
+
   useEffect(() => {
     setStared(stared);
   }, [stared]);
@@ -76,7 +77,7 @@ const BackHeader = ({
   const starMusic = async () => {
     const userId = userData?.userId;
 
-    const musicTitle = ItemData?.title[0] || ItemData?.channel?.title;
+    const musicTitle = ItemData?.title[0] || ItemData?.channel?.title[0];
 
     if (!userId || !musicTitle) {
       console.error("User ID or music title is missing.");

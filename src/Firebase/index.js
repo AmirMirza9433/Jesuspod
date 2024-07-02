@@ -96,7 +96,9 @@ export const checkUserExist = async (email) => {
 
 export const getCategories = async () => {
   try {
-    const categoryCollection = firestore().collection("category");
+    const categoryCollection = firestore()
+      .collection("category")
+      .orderBy("name");
     const categorySnapshot = await categoryCollection.get();
     const categories = categorySnapshot.docs.map((doc) => ({
       id: doc.id,

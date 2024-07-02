@@ -129,7 +129,6 @@ const Discover = () => {
 
   return (
     <ScreenWrapper
-      paddingBottom={isPlayer ? 85 : 0}
       headerUnScrollable={() => (
         <>
           <View style={{ padding: 20, paddingBottom: 0 }}>
@@ -149,6 +148,7 @@ const Discover = () => {
       <View style={{ height: 20 }} />
       <FlatList
         data={filteredData || Cat}
+        contentContainerStyle={{ paddingBottom: 100 }} // Adjust the value as needed
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         refreshControl={

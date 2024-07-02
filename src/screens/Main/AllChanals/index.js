@@ -38,7 +38,7 @@ const SeeAll = () => {
         <View style={{ padding: 20 }}>
           <Header
             hideBackArrow
-            title="All Podcast"
+            title="All Podcasts"
             subTitle="What are you listening to today?"
             profile
           />

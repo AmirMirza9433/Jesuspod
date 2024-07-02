@@ -26,9 +26,7 @@ const Subscription = () => {
         "array-contains",
         token,
       ]);
-      console.log("====================================");
-      console.log(res);
-      console.log("====================================");
+
       setChannels(res);
       setLoading(false);
     } catch (error) {

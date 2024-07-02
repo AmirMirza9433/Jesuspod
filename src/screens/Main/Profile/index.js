@@ -182,6 +182,7 @@ export default Profile;
 const styles = StyleSheet.create({
   mainContainer: {
     alignItems: "center",
+    marginBottom: 100,
   },
   userImage: {
     backgroundColor: COLORS.gray,

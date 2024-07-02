@@ -111,7 +111,6 @@ const PlayerScreen = ({ route }) => {
       await TrackPlayer.updateOptions({
         stopWithApp: true,
         // android: {
-        //   // This is the default behavior
         //   appKilledPlaybackBehavior: AppKilledPlaybackBehavior.ContinuePlayback,
         // },
         capabilities: [
@@ -195,7 +194,6 @@ const PlayerScreen = ({ route }) => {
     try {
       const snapshot = await firestore().collection("stared").get();
       const starredMusic = snapshot.docs.map((doc) => doc.data());
-      console.log(starredMusic[0]?.Staredmusic[0]?.title);
       setRcomendedMusic(starredMusic);
       setstarLoading(false);
       return starredMusic;
