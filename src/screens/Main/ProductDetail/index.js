@@ -1,9 +1,10 @@
+import { useIsFocused } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
+import firestore from "@react-native-firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { parseString } from "react-native-xml2js";
-import axios from "axios";
-import firestore from "@react-native-firebase/firestore";
 import RNFetchBlob from "rn-fetch-blob";
+import axios from "axios";
 
 import {
   ActivityIndicator,
@@ -27,8 +28,6 @@ import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 import Icons from "../../../components/Icons";
-import { ToastMessage } from "../../../utils/ToastMessage";
-import { useIsFocused } from "@react-navigation/native";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -40,6 +39,7 @@ const ProductDetail = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
   const isfocused = useIsFocused();
+
   const [downloadLoading, setDownloadLoading] = useState(
     podcasts.map(() => false)
   ); // Initialize loading state for each podcast item
@@ -161,15 +161,22 @@ const ProductDetail = ({ navigation, route }) => {
     }
   };
 
-  const downloadData = (item) => {
+  const downloadData = async (item) => {
     const { config, fs } = RNFetchBlob;
-    const downloads = fs.dirs.DownloadDir;
+    const downloads = fs.dirs.DownloadDir + "/jesusDownload";
+
+    // Check if directory exists
+    const exists = await fs.exists(downloads);
+    if (!exists) {
+      await fs.mkdir(downloads);
+    }
+
     return config({
       fileCache: true,
       addAndroidDownloads: {
         useDownloadManager: true,
         notification: true,
-        path: downloads + "/" + item?.title[0] + ".mp3",
+        path: `${downloads}/${item?.title[0]}.mp3`,
       },
     }).fetch("GET", item?.enclosure[0].$.url);
   };
@@ -350,13 +357,13 @@ const ProductDetail = ({ navigation, route }) => {
                       />
                     </View>
                   </TouchableOpacity>
-
                   <CustomButton
-                    onPress={() => {
-                      if (!sDownload[index]) {
-                        onLike(item, index);
-                      }
-                    }}
+                    onPress={() => downloadData(item)}
+                    // onPress={() => {
+                    //   if (!sDownload[index]) {
+                    //     onLike(item, index);
+                    //   }
+                    // }}
                     loading={downloadLoading[index]}
                     icon={true}
                     iconfamily={"MaterialCommunityIcons"}

@@ -28,160 +28,180 @@ import { images } from "../../../assets/images";
 import ImageFast from "../../../components/ImageFast";
 import CustomButton from "../../../components/CustomButton";
 import NoDataFound from "../../../components/NoDataFound";
+import Video from "react-native-video";
 
+const listDownloadedFiles = async () => {
+  const downloads = RNFetchBlob.fs.dirs.DownloadDir + "/jesusDownload";
+
+  try {
+    const files = await RNFetchBlob.fs.ls(downloads);
+    return files
+      .filter((file) => file.endsWith(".mp3"))
+      .map((file) => `${downloads}/${file}`);
+  } catch (error) {
+    console.log("Error listing files:", error);
+    return [];
+  }
+};
 const FavPodcast = ({ navigation, route }) => {
-  const dispatch = useDispatch();
-  const channel = route?.params?.item;
-  const recentMusic = useSelector((state) => state.recent.recentMusic);
-  const userData = useSelector((state) => state.user.users);
-  const [PodcastData, setPodcastData] = useState([]);
-  const [loading, setloading] = useState(false);
-  const [DownloadLoading, setDownloadLoading] = useState(false);
-  const [deletmodalOpenClose, setdeletmodalOpenClose] = useState(false);
-  const [btnloading, setbtnloading] = useState(false);
-  const [delteMusic, setdelteMusic] = useState("");
-  const [deletLodinh, setdeletLodinh] = useState(false);
+  // const dispatch = useDispatch();
+  // const channel = route?.params?.item;
+  // const recentMusic = useSelector((state) => state.recent.recentMusic);
+  // const userData = useSelector((state) => state.user.users);
+  // const [PodcastData, setPodcastData] = useState([]);
+  // const [loading, setloading] = useState(false);
+  // const [DownloadLoading, setDownloadLoading] = useState(false);
+  // const [deletmodalOpenClose, setdeletmodalOpenClose] = useState(false);
+  // const [btnloading, setbtnloading] = useState(false);
+  // const [delteMusic, setdelteMusic] = useState("");
+  // const [deletLodinh, setdeletLodinh] = useState(false);
 
-  const getUserData = async () => {
-    setloading(true);
-    try {
-      const userDocRef = firestore().collection("users").doc(userData?.userId);
-      const userDoc = await userDocRef.get();
+  // const getUserData = async () => {
+  //   setloading(true);
+  //   try {
+  //     const userDocRef = firestore().collection("users").doc(userData?.userId);
+  //     const userDoc = await userDocRef.get();
 
-      if (userDoc.exists) {
-        const userData = userDoc.data();
+  //     if (userDoc.exists) {
+  //       const userData = userDoc.data();
 
-        setPodcastData(userData);
-        setloading(false);
+  //       setPodcastData(userData);
+  //       setloading(false);
 
-        return userData; // Return user data for further processing
-      } else {
-        console.log("User document not found");
-        setloading(false);
+  //       return userData; // Return user data for further processing
+  //     } else {
+  //       console.log("User document not found");
+  //       setloading(false);
 
-        return null; // Handle case where user document doesn't exist
-      }
-    } catch (error) {
-      setloading(false);
+  //       return null; // Handle case where user document doesn't exist
+  //     }
+  //   } catch (error) {
+  //     setloading(false);
 
-      console.error("Error fetching user data:", error);
-      return null; // Handle error scenario
-    }
-  };
+  //     console.error("Error fetching user data:", error);
+  //     return null; // Handle error scenario
+  //   }
+  // };
 
-  const deleteAllMusic = async () => {
-    setdeletLodinh(true); // Set loading state
+  // const deleteAllMusic = async () => {
+  //   setdeletLodinh(true); // Set loading state
 
-    try {
-      const userDocRef = firestore().collection("users").doc(userData?.userId);
-      const userDoc = await userDocRef.get();
+  //   try {
+  //     const userDocRef = firestore().collection("users").doc(userData?.userId);
+  //     const userDoc = await userDocRef.get();
 
-      if (userDoc.exists) {
-        const userData = userDoc.data();
-        const musics = userData.musics || [];
+  //     if (userDoc.exists) {
+  //       const userData = userDoc.data();
+  //       const musics = userData.musics || [];
 
-        await userDocRef.update({
-          musics: [],
-        });
+  //       await userDocRef.update({
+  //         musics: [],
+  //       });
 
-        console.log("Item unliked and updated in Firestore");
-        setdeletLodinh(false);
-        getUserData(); // Update local data if needed
-        setdeletmodalOpenClose(false); // Close modal or update local state
-      } else {
-        console.log("Item is not liked, no update needed");
-        setdeletLodinh(false);
-      }
-    } catch (error) {
-      console.error("Error unliking item:", error);
-      setdeletLodinh(false);
-    } finally {
-      setdeletLodinh(false); // Ensure loading state is reset
-    }
-  };
+  //       console.log("Item unliked and updated in Firestore");
+  //       setdeletLodinh(false);
+  //       getUserData(); // Update local data if needed
+  //       setdeletmodalOpenClose(false); // Close modal or update local state
+  //     } else {
+  //       console.log("Item is not liked, no update needed");
+  //       setdeletLodinh(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error unliking item:", error);
+  //     setdeletLodinh(false);
+  //   } finally {
+  //     setdeletLodinh(false); // Ensure loading state is reset
+  //   }
+  // };
+  // const download = (data) => {
+  //   const { config, fs } = RNFetchBlob;
+  //   const downloads = fs.dirs.DownloadDir;
+  //   return config({
+  //     fileCache: true,
+  //     addAndroidDownloads: {
+  //       useDownloadManager: true,
+  //       notification: true,
+  //       path: downloads + "/" + data?.title[0] + ".png",
+  //     },
+  //   }).fetch("GET", data?.enclosure[0].$.url);
+  // };
+  // const createRecent = (newData) => {
+  //   let myArray = [];
+  //   if (Array.isArray(recentMusic)) {
+  //     myArray = [...recentMusic];
+  //   }
+  //   const res = [{ channel, item: newData }, ...myArray];
+  //   dispatch(setRecentMusic(res.slice(0, 4)));
+  // };
+  // const changedata = (timestamp) => {
+  //   const date = new Date(timestamp);
+  //   const dayMonth = date.toLocaleDateString("en-US", {
+  //     day: "2-digit",
+  //     month: "short",
+  //   });
 
-  const download = (data) => {
-    const { config, fs } = RNFetchBlob;
-    const downloads = fs.dirs.DownloadDir;
-    return config({
-      fileCache: true,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path: downloads + "/" + data?.title[0] + ".png",
-      },
-    }).fetch("GET", data?.enclosure[0].$.url);
-  };
+  //   return dayMonth;
+  // };
+  // useEffect(() => {
+  //   getUserData();
+  // }, []);
+  // const openDeleteModal = (item) => {
+  //   setdelteMusic(item);
+  //   setdeletmodalOpenClose(true);
+  // };
+  // const onUnlike = async () => {
+  //   setbtnloading(true); // Set loading state
 
-  const createRecent = (newData) => {
-    let myArray = [];
-    if (Array.isArray(recentMusic)) {
-      myArray = [...recentMusic];
-    }
-    const res = [{ channel, item: newData }, ...myArray];
-    dispatch(setRecentMusic(res.slice(0, 4)));
-  };
+  //   try {
+  //     const userDocRef = firestore().collection("users").doc(userData?.userId);
+  //     const userDoc = await userDocRef.get();
 
-  const changedata = (timestamp) => {
-    const date = new Date(timestamp);
-    const dayMonth = date.toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "short",
-    });
+  //     if (userDoc.exists) {
+  //       const userData = userDoc.data();
+  //       const musics = userData.musics || [];
 
-    return dayMonth;
-  };
+  //       const alreadyLikedIndex = musics.findIndex(
+  //         (item) => item.title[0] === delteMusic?.title[0] // Corrected typo
+  //       );
+
+  //       if (alreadyLikedIndex !== -1) {
+  //         musics.splice(alreadyLikedIndex, 1); // Remove item from array
+
+  //         await userDocRef.update({
+  //           musics: musics,
+  //         });
+
+  //         console.log("Item unliked and updated in Firestore");
+  //         setbtnloading(false);
+  //         getUserData(); // Update local data if needed
+  //         setdeletmodalOpenClose(false); // Close modal or update local state
+  //       } else {
+  //         console.log("Item is not liked, no update needed");
+  //         setbtnloading(false);
+  //       }
+  //     } else {
+  //       console.log("User document not found");
+  //       setbtnloading(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error unliking item:", error);
+  //     setbtnloading(false);
+  //   } finally {
+  //     setbtnloading(false); // Ensure loading state is reset
+  //   }
+  // };
+  const [musicFiles, setMusicFiles] = useState([]);
+  const [select, setSelect] = useState("");
+  console.log("===========,", musicFiles);
+
   useEffect(() => {
-    getUserData();
-  }, [""]);
+    const fetchFiles = async () => {
+      const files = await listDownloadedFiles();
+      setMusicFiles(files);
+    };
 
-  const openDeleteModal = (item) => {
-    setdelteMusic(item);
-    setdeletmodalOpenClose(true);
-  };
-
-  const onUnlike = async () => {
-    setbtnloading(true); // Set loading state
-
-    try {
-      const userDocRef = firestore().collection("users").doc(userData?.userId);
-      const userDoc = await userDocRef.get();
-
-      if (userDoc.exists) {
-        const userData = userDoc.data();
-        const musics = userData.musics || [];
-
-        const alreadyLikedIndex = musics.findIndex(
-          (item) => item.title[0] === delteMusic?.title[0] // Corrected typo
-        );
-
-        if (alreadyLikedIndex !== -1) {
-          musics.splice(alreadyLikedIndex, 1); // Remove item from array
-
-          await userDocRef.update({
-            musics: musics,
-          });
-
-          console.log("Item unliked and updated in Firestore");
-          setbtnloading(false);
-          getUserData(); // Update local data if needed
-          setdeletmodalOpenClose(false); // Close modal or update local state
-        } else {
-          console.log("Item is not liked, no update needed");
-          setbtnloading(false);
-        }
-      } else {
-        console.log("User document not found");
-        setbtnloading(false);
-      }
-    } catch (error) {
-      console.error("Error unliking item:", error);
-      setbtnloading(false);
-    } finally {
-      setbtnloading(false); // Ensure loading state is reset
-    }
-  };
-
+    fetchFiles();
+  }, []);
   return (
     <ScreenWrapper
       scrollEnabled
@@ -194,7 +214,40 @@ const FavPodcast = ({ navigation, route }) => {
         </View>
       )}
     >
-      <Modal
+      <FlatList
+        data={musicFiles}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            onPress={() => setSelect(item)}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <View
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                backgroundColor: "red",
+              }}
+            />
+            <CustomText label={index + 1} marginLeft={10} />
+          </TouchableOpacity>
+        )}
+      />
+      {select ? (
+        <Video
+          source={{ uri: select }}
+          audioOnly={true}
+          controls={true}
+          style={{ height: 0 }} // Hide video player
+          onError={(e) => console.log(e)}
+        />
+      ) : null}
+
+      {/* <Modal
         animationType="slide"
         transparent={true}
         visible={deletmodalOpenClose}
@@ -360,7 +413,7 @@ const FavPodcast = ({ navigation, route }) => {
             </TouchableOpacity>
           )}
         />
-      </ScrollView>
+      </ScrollView> */}
     </ScreenWrapper>
   );
 };

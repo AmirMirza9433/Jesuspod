@@ -48,9 +48,9 @@ const App = () => {
         <PersistGate loading={null} persistor={persistor}>
           <NavigationContainer>
             <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
-            <NetworkIssue>
-              <Routes />
-            </NetworkIssue>
+            {/* <NetworkIssue> */}
+            <Routes />
+            {/* </NetworkIssue> */}
             {isVisible && (
               <Notification
                 isVisible={isVisible}
