@@ -1,18 +1,16 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
 import firestore from "@react-native-firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import RNFetchBlob from "rn-fetch-blob";
+import Share from "react-native-share";
 
 import CustomText from "./CustomText";
 import Icons from "./Icons";
 
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
-import MenuOptios from "./Menu";
-import RNFetchBlob from "rn-fetch-blob";
-import Share from "react-native-share";
-import { useSelector } from "react-redux";
-import { useState } from "react";
 
 const BackHeader = ({
   title,
