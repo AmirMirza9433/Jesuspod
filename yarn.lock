@@ -1842,6 +1842,11 @@
   dependencies:
     plist "^3.1.0"
 
+"@react-native-firebase/dynamic-links@^20.1.0":
+  version "20.1.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/dynamic-links/-/dynamic-links-20.1.0.tgz#831821e821fdbb527fe62c613852e9aa54604c0e"
+  integrity sha512-7pStvtln1UI1D76hvtl2uPG+RZaPE/+kDI6v4JrUba4rDxUx8n4UWX/4B7/8zrY+JXcdUiRk2KMnD3k0lPmnLA==
+
 "@react-native-firebase/firestore@^19.2.2":
   version "19.2.2"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-19.2.2.tgz#15eb2be51af6b7c8e406f3c6d1444c99c43b8048"

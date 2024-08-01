@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import React, { useEffect, useState } from "react";
@@ -16,13 +16,16 @@ import Swiper from "./molecules/Swiper";
 import { COLORS } from "../../../utils/COLORS";
 import { getAllDocs } from "../../../Firebase";
 import { Fonts } from "../../../utils/fonts";
+import { ImageBackground } from "react-native";
+import { images } from "../../../assets/images";
+import { TouchableOpacity } from "react-native";
+import ImageFast from "../../../components/ImageFast";
 
 const Home = ({ navigation }) => {
   const isFocused = useIsFocused();
   const userData = useSelector((state) => state.user.users);
   const recentMusic = useSelector((state) => state.recent.recentMusic);
   const isPlayer = useSelector((state) => state.player.isPlayer);
-  console.log(isPlayer);
 
   const [loading, setLoading] = useState(false);
   const [channels, setChannels] = useState([]);
@@ -111,12 +114,30 @@ const Home = ({ navigation }) => {
             array={recentMusic?.length ? recentMusic : channels?.slice(0, 5)}
           />
 
+          <TouchableOpacity
+            style={styles.radio}
+            onPress={() => navigation.navigate("RadioPlayer")}
+          >
+            <ImageFast
+              source={images.radio}
+              style={{ width: "100%", height: "100%", position: "absolute" }}
+              resizeMode={"cover"}
+            />
+            <CustomText
+              label={"Radio"}
+              color={COLORS.white}
+              fontFamily={Fonts.bold}
+              marginLeft={30}
+              fontSize={25}
+            />
+          </TouchableOpacity>
+
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
-              marginTop: 20,
+              marginTop: 10,
             }}
           >
             <CustomText
@@ -126,6 +147,7 @@ const Home = ({ navigation }) => {
               fontSize={16}
             />
           </View>
+
           <View>
             <FlatList
               horizontal
@@ -221,3 +243,14 @@ const Home = ({ navigation }) => {
 };
 
 export default Home;
+
+const styles = StyleSheet.create({
+  radio: {
+    height: 120,
+    overflow: "hidden",
+    borderRadius: 10,
+    marginTop: 10,
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+});

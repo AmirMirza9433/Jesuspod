@@ -22,7 +22,7 @@ const DiscoverStack = () => {
 
   useEffect(() => {
     const updateTrack = async () => {
-      const track = await TrackPlayer.getCurrentTrack();
+      const track = await TrackPlayer.getActiveTrack();
       const trackObject = await TrackPlayer.getTrack(track);
       setCurrentTrack(trackObject);
     };

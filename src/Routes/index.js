@@ -5,6 +5,7 @@ import React from "react";
 //screens
 import AuthStack from "./AuthStack";
 import MainStack from "./MainStack";
+import NewsDetails from "../screens/Main/NewsDetails";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,7 @@ const Routes = () => {
       {token ? (
         <>
           <Stack.Screen name="MainStack" component={MainStack} />
+          <Stack.Screen name="NewsDetails" component={NewsDetails} />
         </>
       ) : (
         <Stack.Screen name="AuthStack" component={AuthStack} />

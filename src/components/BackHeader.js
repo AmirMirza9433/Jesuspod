@@ -204,13 +204,13 @@ const styles = StyleSheet.create({
   mainContainer: {
     flexDirection: "row",
     alignItems: "center",
-    width: "95%",
-    padding: 10,
-    paddingBottom: 15,
-    marginLeft: "2.5%",
+    width: "100%",
+    paddingHorizontal: 15,
+    paddingVertical: 25,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    borderBottomWidth: 0.6,
+    borderBottomColor: COLORS.gray,
   },
 
   profile: {

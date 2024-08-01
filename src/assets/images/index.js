@@ -23,4 +23,5 @@ export const images = {
   warning: require("./warning.png"),
   down: require("./downloading.png"),
   podcast: require("./podcast.png"),
+  radio: require("./radio.png"),
 };

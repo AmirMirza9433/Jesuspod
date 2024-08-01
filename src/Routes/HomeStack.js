@@ -7,6 +7,7 @@ import PlayerScreen from "../screens/Main/PlayerScreen";
 import SeeAll from "../screens/Main/AllChanals";
 import Home from "../screens/Main/Home";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import RadioPalyer from "../screens/Main/Radio";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +39,7 @@ const HomeStack = () => {
       <Stack.Screen name="ProductDetail" component={ProductDetail} />
       <Stack.Screen name="SeeAll" component={SeeAll} />
       <Stack.Screen name="PlayerScreen" component={PlayerScreen} />
+      <Stack.Screen name="RadioPlayer" component={RadioPalyer} />
     </Stack.Navigator>
   );
 };

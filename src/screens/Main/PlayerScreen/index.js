@@ -86,7 +86,7 @@ const PlayerScreen = ({ route }) => {
   const setupTrack = async () => {
     let isSetup = false;
     try {
-      await TrackPlayer.getCurrentTrack();
+      await TrackPlayer.getActiveTrack();
       await TrackPlayer.stop();
       await TrackPlayer.reset();
       isSetup = true;

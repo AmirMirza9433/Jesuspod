@@ -56,7 +56,15 @@ const ProductDetail = ({ navigation, route }) => {
 
   const get = async () => {
     setLoading(true);
-    const response = await axios.get(channel?.url || channel?.channel?.url);
+    // const response = await axios.get(channel?.url || channel?.channel?.url);
+    const response = await axios.get(channel?.url || channel?.channel?.url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        Accept: "application/xml",
+      },
+    });
+
     try {
       const xmlData = response.data;
       parseString(xmlData, (err, res) => {

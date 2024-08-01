@@ -148,7 +148,7 @@ const Discover = () => {
       <View style={{ height: 20 }} />
       <FlatList
         data={filteredData || Cat}
-        contentContainerStyle={{ paddingBottom: 100 }} // Adjust the value as needed
+        contentContainerStyle={{ paddingBottom: 100 }}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         refreshControl={
