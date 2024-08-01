@@ -1,11 +1,9 @@
-import { useIsFocused } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import firestore from "@react-native-firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { parseString } from "react-native-xml2js";
 import RNFetchBlob from "rn-fetch-blob";
 import axios from "axios";
-
 import {
   ActivityIndicator,
   TouchableOpacity,
@@ -23,6 +21,7 @@ import CustomText from "../../../components/CustomText";
 import ImageFast from "../../../components/ImageFast";
 
 import { setRecentMusic } from "../../../store/reducer/recentSlice";
+import { ToastMessage } from "../../../utils/ToastMessage";
 import { updateCollection } from "../../../Firebase";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
@@ -32,28 +31,17 @@ import Icons from "../../../components/Icons";
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const channel = route?.params?.item;
-  const channelId = channel?._id;
   const token = useSelector((state) => state.authConfig.token);
   const userData = useSelector((state) => state.user.users);
   const recentMusic = useSelector((state) => state.recent.recentMusic);
+
   const [loading, setLoading] = useState(false);
   const [podcasts, setPodcasts] = useState([]);
-  const isfocused = useIsFocused();
-
-  const [downloadLoading, setDownloadLoading] = useState(
-    podcasts.map(() => false)
-  ); // Initialize loading state for each podcast item
-  const [sDownload, setSDownload] = useState(podcasts.map(() => false));
-
+  const [downloadLoading, setDownloadLoading] = useState(null);
   const [subButton, setSubButton] = useState(
     channel?.sub?.filter((item) => item == token)?.length
   );
-
-  const [donloadbtn, setDownloadbtn] = useState(
-    channel?.download?.filter((item) => item == token)?.length
-  );
   const [subLoading, setSubLoading] = useState(false);
-
   const get = async () => {
     setLoading(true);
     const response = await axios.get(channel?.url || channel?.channel?.url);
@@ -74,7 +62,6 @@ const ProductDetail = ({ navigation, route }) => {
       getUserData();
     }
   }, [podcasts]);
-
   const getUserData = async () => {
     try {
       const userDocRef = firestore().collection("users").doc(userData?.userId);
@@ -82,24 +69,19 @@ const ProductDetail = ({ navigation, route }) => {
       if (userDoc.exists) {
         const userData = userDoc.data();
         const userMusics = userData?.musics || [];
-        // Update the sDownload state based on liked podcasts
         const newSDownload = podcasts.map((podcast) =>
           userMusics.some((music) => music.title[0] === podcast.title[0])
         );
-
-        setSDownload(newSDownload);
-
-        return userData; // Return user data for further processing
+        return userData;
       } else {
         console.log("User document not found");
-        return null; // Handle case where user document doesn't exist
+        return null;
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
-      return null; // Handle error scenario
+      return null;
     }
   };
-
   const changedata = (timestamp) => {
     const date = new Date(timestamp);
     const dayMonth = date.toLocaleDateString("en-US", {
@@ -109,15 +91,9 @@ const ProductDetail = ({ navigation, route }) => {
 
     return dayMonth;
   };
-
   useEffect(() => {
     get();
   }, [channel?.url || channel?.channel?.url]);
-
-  // useEffect(() => {
-  //   getUserData();
-  // }, []);
-
   const createRecent = (newData) => {
     let myArray = [];
     if (Array.isArray(recentMusic)) {
@@ -126,7 +102,6 @@ const ProductDetail = ({ navigation, route }) => {
     const res = [{ channel, item: newData }, ...myArray];
     dispatch(setRecentMusic(res.slice(0, 4)));
   };
-
   const onSubscribe = async () => {
     setSubLoading(true);
     let finalArray;
@@ -160,83 +135,37 @@ const ProductDetail = ({ navigation, route }) => {
       console.log("==============error", error);
     }
   };
-
   const downloadData = async (item) => {
-    const { config, fs } = RNFetchBlob;
-    const downloads = fs.dirs.DownloadDir + "/jesusDownload";
-
-    // Check if directory exists
-    const exists = await fs.exists(downloads);
-    if (!exists) {
-      await fs.mkdir(downloads);
-    }
-
-    return config({
-      fileCache: true,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path: `${downloads}/${item?.title[0]}.mp3`,
-      },
-    }).fetch("GET", item?.enclosure[0].$.url);
-  };
-
-  const onLike = async (ItemData, index) => {
-    // Set the loading state for the specific item
-    setDownloadLoading((prevLoading) => {
-      const newLoading = [...prevLoading];
-      newLoading[index] = true;
-      return newLoading;
-    });
-
     try {
-      // Fetch user document from Firestore
-      const userDocRef = firestore().collection("users").doc(userData?.userId);
-      const userDoc = await userDocRef.get();
-
-      if (userDoc.exists) {
-        const userData = userDoc.data();
-        const musics = userData.musics || [];
-        downloadData(ItemData);
-
-        // Check if ItemData's title is already in the musics array
-        const alreadyLiked = musics.some(
-          (item) => item.title === ItemData.title
-        );
-
-        if (!alreadyLiked) {
-          // If not already liked, add it to musics array with additional data
-          musics.push({ ...ItemData, imageUrl: channel.imageUrl });
-
-          // Update Firestore document with the updated musics array
-          await userDocRef.update({
-            musics: musics,
-          });
-          // downloadData();
-
-          console.log("Item liked and updated in Firestore");
-
-          // Update the local state to reflect the like status
-          setSDownload((prevSDownload) => {
-            const updatedSDownload = [...prevSDownload];
-            updatedSDownload[index] = true;
-            return updatedSDownload;
-          });
-        } else {
-          console.log("Item is already liked, no update needed");
-        }
-      } else {
-        console.log("User document not found");
+      const { title, enclosure } = item;
+      const fileName = `${title[0]}.mp3`;
+      const { config, fs } = RNFetchBlob;
+      const downloads = fs.dirs.DownloadDir + "/jesusDownload";
+      const filePath = `${downloads}/${fileName}`;
+      const fileExists = await fs.exists(filePath);
+      if (fileExists) {
+        ToastMessage("File Already Downloaded");
+        return;
       }
+      setDownloadLoading(title[0]);
+      ToastMessage("Downloading...");
+      const dirExists = await fs.exists(downloads);
+      if (!dirExists) {
+        await fs.mkdir(downloads);
+      }
+      await config({
+        fileCache: true,
+        addAndroidDownloads: {
+          useDownloadManager: true,
+          notification: true,
+          path: filePath,
+        },
+      }).fetch("GET", enclosure[0].$.url);
+      ToastMessage("Download Complete!");
+      setDownloadLoading(null);
     } catch (error) {
-      console.error("Error liking item:", error);
-    } finally {
-      // Reset the loading state for the specific item
-      setDownloadLoading((prevLoading) => {
-        const newLoading = [...prevLoading];
-        newLoading[index] = false;
-        return newLoading;
-      });
+      ToastMessage("Download Complete!");
+      setDownloadLoading(null);
     }
   };
 
@@ -325,60 +254,50 @@ const ProductDetail = ({ navigation, route }) => {
               data={podcasts}
               showsHorizontalScrollIndicator={false}
               keyExtractor={(_, i) => i.toString()}
-              renderItem={({ item, index }) => (
-                <View style={styles.mapListContainer}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      createRecent(item);
-                      navigation.navigate("PlayerScreen", { item, channel });
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    createRecent(item);
+                    navigation.navigate("PlayerScreen", { item, channel });
+                  }}
+                  style={styles.mapListContainer}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      width: "90%",
                     }}
                   >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <CustomText
-                        label={changedata(item?.pubDate)}
-                        fontFamily={Fonts.regular}
-                        fontSize={15}
-                        marginBottom={10}
-                        width={40}
-                        textAlign={"center"}
-                      />
-                      <CustomText
-                        label={item?.title}
-                        fontFamily={Fonts.medium}
-                        fontSize={16}
-                        marginLeft={5}
-                        width={250}
-                        numberOfLines={1}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                  <CustomButton
-                    onPress={() => downloadData(item)}
-                    // onPress={() => {
-                    //   if (!sDownload[index]) {
-                    //     onLike(item, index);
-                    //   }
-                    // }}
-                    loading={downloadLoading[index]}
-                    icon={true}
-                    iconfamily={"MaterialCommunityIcons"}
-                    iconname={
-                      sDownload[index]
-                        ? "check-circle-outline"
-                        : "download-circle-outline"
-                    }
-                    iconFontSize={25}
-                    iconColor={COLORS.black}
-                    backgroundColor={"transparent"}
-                    width={100}
-                    indicatorcolor={true}
-                  />
-                </View>
+                    <CustomText
+                      label={changedata(item?.pubDate)}
+                      fontFamily={Fonts.regular}
+                      fontSize={15}
+                      marginBottom={10}
+                      width={40}
+                      textAlign={"center"}
+                    />
+                    <CustomText
+                      label={item?.title}
+                      fontFamily={Fonts.medium}
+                      fontSize={16}
+                      marginLeft={5}
+                      width={250}
+                      numberOfLines={1}
+                    />
+                  </View>
+                  {downloadLoading == item?.title[0] ? (
+                    <ActivityIndicator size={28} color={COLORS.primaryColor} />
+                  ) : (
+                    <Icons
+                      family="MaterialCommunityIcons"
+                      name="download-circle-outline"
+                      size={25}
+                      color={COLORS.black}
+                      onPress={() => downloadData(item)}
+                    />
+                  )}
+                </TouchableOpacity>
               )}
             />
           )}
