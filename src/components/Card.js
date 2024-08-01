@@ -3,12 +3,12 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 
 import CustomText from "./CustomText";
+import ImageFast from "./ImageFast";
 import Icons from "./Icons";
 
+import { images } from "../assets/images";
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
-import ImageFast from "./ImageFast";
-import { images } from "../assets/images";
 
 const Card = ({
   imageHeight,

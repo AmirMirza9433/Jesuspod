@@ -19,6 +19,7 @@ import CustomButton from "../../../components/CustomButton";
 import BackHeader from "../../../components/BackHeader";
 import CustomText from "../../../components/CustomText";
 import ImageFast from "../../../components/ImageFast";
+import Icons from "../../../components/Icons";
 
 import { setRecentMusic } from "../../../store/reducer/recentSlice";
 import { ToastMessage } from "../../../utils/ToastMessage";
@@ -26,7 +27,6 @@ import { updateCollection } from "../../../Firebase";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import Icons from "../../../components/Icons";
 
 const ProductDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -44,7 +44,6 @@ const ProductDetail = ({ navigation, route }) => {
   const [subLoading, setSubLoading] = useState(false);
   const get = async () => {
     setLoading(true);
-    // const response = await axios.get(channel?.url || channel?.channel?.url);
     const response = await axios.get(channel?.url || channel?.channel?.url, {
       headers: {
         "User-Agent":
@@ -120,7 +119,6 @@ const ProductDetail = ({ navigation, route }) => {
     }
 
     try {
-      // Fetch the document ID based on _id
       const querySnapshot = await firestore()
         .collection("Newchannels")
         .where("_id", "==", channel._id)
@@ -191,7 +189,7 @@ const ProductDetail = ({ navigation, route }) => {
             top: 20,
           }}
         >
-          <BackHeader color={COLORS.white} />
+          <BackHeader color={COLORS.white} hideBorder />
         </View>
       )}
     >

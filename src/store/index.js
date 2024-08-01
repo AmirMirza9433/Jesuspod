@@ -1,24 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { configureStore } from "@reduxjs/toolkit";
 import {
-  persistStore,
   persistReducer,
-  FLUSH,
+  persistStore,
   REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
   REGISTER,
+  PERSIST,
+  FLUSH,
+  PAUSE,
+  PURGE,
 } from "redux-persist";
 
 import { rootReducer } from "./reducer";
-import { playerSlice } from "./reducer/PlayerSlice";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage: AsyncStorage,
-  // whitelist: [playerSlice],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

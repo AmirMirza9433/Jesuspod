@@ -1,23 +1,18 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import TrackPlayer from "react-native-track-player";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
+import CategoryPodcast from "../screens/Main/CategoryPodcast";
 import ProductDetail from "../screens/Main/ProductDetail";
 import PlayerScreen from "../screens/Main/PlayerScreen";
-import SeeAll from "../screens/Main/AllChanals";
-import CategoryPodcast from "../screens/Main/CategoryPodcast";
-import Live from "../screens/Main/Collections";
 import Discover from "../screens/Main/Discover";
-import TrackPlayer from "react-native-track-player";
 
-import BottomPlayer from "../components/BottomPlayer";
-import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 const Stack = createNativeStackNavigator();
 
 const DiscoverStack = () => {
   const [currentTrack, setCurrentTrack] = useState(null);
-  const isPlayer = useSelector((state) => state.player.isPlayer);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -49,7 +44,7 @@ const DiscoverStack = () => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <Stack.Navigator
         initialRouteName="DiscoverPage"
         screenOptions={{
@@ -62,15 +57,8 @@ const DiscoverStack = () => {
         <Stack.Screen name="ProductDetail" component={ProductDetail} />
         <Stack.Screen name="PlayerScreen" component={PlayerScreen} />
       </Stack.Navigator>
-      {/* {currentTrack && isPlayer && <BottomPlayer currentTrack={currentTrack} />} */}
     </View>
   );
 };
 
 export default DiscoverStack;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

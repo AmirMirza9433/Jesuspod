@@ -1,17 +1,17 @@
-import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { StyleSheet, TextInput } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomButton from "../../../components/CustomButton";
 import BackHeader from "../../../components/BackHeader";
+import CustomText from "../../../components/CustomText";
+
 import Input from "../../Auth/OptionScreen/molecules/Input";
 
 import { ToastMessage } from "../../../utils/ToastMessage";
-import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import CustomText from "../../../components/CustomText";
 import { saveDoc } from "../../../Firebase";
 
 const HelpCenter = ({ navigation }) => {
@@ -65,7 +65,6 @@ const HelpCenter = ({ navigation }) => {
         message,
       };
       const res = await saveDoc(userData?.userId, data, "helpCenter");
-      console.log("=======================res", res);
       setMessage("");
       navigation.goBack();
       ToastMessage("Post Message Success");

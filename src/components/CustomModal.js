@@ -1,6 +1,6 @@
 import { Keyboard, StyleSheet, TouchableOpacity } from "react-native";
-import Modal from "react-native-modal";
 import React, { useEffect, useState } from "react";
+import Modal from "react-native-modal";
 
 const CustomModal = ({
   isVisible,

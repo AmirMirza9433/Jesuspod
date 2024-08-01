@@ -4,13 +4,13 @@ import React from "react";
 
 import CategoryPodcast from "../screens/Main/CategoryPodcast";
 import PrivacyPolicy from "../screens/Main/PrivacyPolicy";
+import ProductDetail from "../screens/Main/ProductDetail";
 import Subscription from "../screens/Main/Subscription";
+import PlayerScreen from "../screens/Main/PlayerScreen";
 import EditProfile from "../screens/Main/EditProfile";
 import FavPodcast from "../screens/Main/FavPodcast";
 import HelpCenter from "../screens/Main/HelpCenter";
 import Profile from "../screens/Main/Profile";
-import PlayerScreen from "../screens/Main/PlayerScreen";
-import ProductDetail from "../screens/Main/ProductDetail";
 
 const Stack = createNativeStackNavigator();
 

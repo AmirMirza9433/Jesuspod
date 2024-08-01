@@ -95,7 +95,6 @@ const FavPodcast = () => {
     setupPlayer();
   }, []);
 
-  // Update the playback state when the track changes
   useEffect(() => {
     if (playbackState === State.Playing && currentTrack) {
       setIsPlaying(true);
@@ -110,7 +109,7 @@ const FavPodcast = () => {
         data={musicFiles}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item}
-        extraData={currentTrack} // Ensure FlatList re-renders when currentTrack changes
+        extraData={currentTrack}
         renderItem={({ item }) => (
           <View style={styles.item}>
             <View style={{ width: "90%" }}>

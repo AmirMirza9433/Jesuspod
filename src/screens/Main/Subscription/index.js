@@ -5,11 +5,11 @@ import { useSelector } from "react-redux";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import BackHeader from "../../../components/BackHeader";
+import NoDataFound from "../../../components/NoDataFound";
 import Card from "../../../components/Card";
 
 import { getDocWithQuery } from "../../../Firebase";
 import { COLORS } from "../../../utils/COLORS";
-import NoDataFound from "../../../components/NoDataFound";
 
 const Subscription = () => {
   const isFocused = useIsFocused();

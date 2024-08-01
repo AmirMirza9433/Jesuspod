@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 import React from "react";
 
 //screens
+import NewsDetails from "../screens/Main/NewsDetails";
 import AuthStack from "./AuthStack";
 import MainStack from "./MainStack";
-import NewsDetails from "../screens/Main/NewsDetails";
 
 const Stack = createNativeStackNavigator();
 

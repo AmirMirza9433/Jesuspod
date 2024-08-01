@@ -1,13 +1,13 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
+import React, { useEffect } from "react";
 
 import ProductDetail from "../screens/Main/ProductDetail";
 import PlayerScreen from "../screens/Main/PlayerScreen";
 import SeeAll from "../screens/Main/AllChanals";
-import Home from "../screens/Main/Home";
-import { useNavigation, useRoute } from "@react-navigation/native";
 import RadioPalyer from "../screens/Main/Radio";
+import Home from "../screens/Main/Home";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +17,6 @@ const HomeStack = () => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      // Check if the current route is not the initial screen
       navigation.reset({
         index: 0,
         routes: [{ name: "HomePage" }],

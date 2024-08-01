@@ -56,7 +56,6 @@ const EditProfile = ({ navigation }) => {
         .collection("users")
         .doc(userData?.userId)
         .update(updatedData);
-      console.log("============res", res);
       dispatch(setUser(updatedData));
       navigation.goBack();
     } catch (error) {

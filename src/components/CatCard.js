@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import React from "react";
 
 import CustomText from "./CustomText";
@@ -6,7 +6,6 @@ import ImageFast from "./ImageFast";
 
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
-import { View } from "react-native";
 
 const CatCard = ({ title, onPress, backgroundImage }) => {
   return (
@@ -43,11 +42,11 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position: "absolute",
-    overlayColor: "black", // Adjust the alpha (last value) for darkness intensity
+    overlayColor: "black",
   },
 
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.2)", // Adjust opacity as needed
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
 });

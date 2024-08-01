@@ -2,20 +2,18 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet, Platform, View, Image } from "react-native";
 import React from "react";
 
-// screens
+import Icons from "../components/Icons";
 
+// screens
 import Collections from "../screens/Main/Collections";
-import Discover from "../screens/Main/Discover";
-import Home from "../screens/Main/Home";
+import DiscoverStack from "./DiscoverStack";
+import ProfileStack from "./ProfileStack";
 import Live from "../screens/Main/Live";
+import HomeStack from "./HomeStack";
 
 import { images } from "../assets/images";
 import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
-import ProfileStack from "./ProfileStack";
-import Icons from "../components/Icons";
-import HomeStack from "./HomeStack";
-import DiscoverStack from "./DiscoverStack";
 
 const Tab = createBottomTabNavigator();
 const TabStack = () => {
@@ -112,15 +110,7 @@ const TabStack = () => {
                 name={"user-circle"}
                 size={22}
                 color={focused ? COLORS.primaryColor : COLORS.gray}
-                // style={[
-                //   styles.icon,
-                //   { tintColor: focused ? COLORS.primaryColor : COLORS.gray },
-                // ]}
               />
-              {/* <Image
-                source={images.placeholder}
-                
-              /> */}
             </View>
           ),
         }}

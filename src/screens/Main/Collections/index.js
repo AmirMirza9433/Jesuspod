@@ -1,24 +1,25 @@
+import React, { useEffect, useState } from "react";
+import { parseString } from "react-native-xml2js";
+import moment from "moment";
+import axios from "axios";
 import {
   ActivityIndicator,
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
   TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Text,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { parseString } from "react-native-xml2js";
-import { useSelector } from "react-redux";
-import CustomText from "../../../components/CustomText";
-import { Fonts } from "../../../utils/fonts";
-import ScreenWrapper from "../../../components/ScreenWrapper";
-import moment from "moment";
-import { useNavigation } from "@react-navigation/native";
 
-const Live = () => {
-  const navigation = useNavigation();
+import ScreenWrapper from "../../../components/ScreenWrapper";
+import CustomText from "../../../components/CustomText";
+import ImageFast from "../../../components/ImageFast";
+
+import { COLORS } from "../../../utils/COLORS";
+import { Fonts } from "../../../utils/fonts";
+import BackHeader from "../../../components/BackHeader";
+
+const Live = ({ navigation }) => {
   const fetchDataFromUrls = async (urls) => {
     const headers = {
       "User-Agent":
@@ -43,8 +44,6 @@ const Live = () => {
     return Promise.all(fetchPromises);
   };
 
-  const isPlayer = useSelector((state) => state.player.isPlayer);
-
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -61,7 +60,7 @@ const Live = () => {
       setLoading(true);
       try {
         const results = await fetchDataFromUrls(urls);
-        setData(results.flat()); // Flatten the array of arrays
+        setData(results.flat());
         setLoading(false);
       } catch (err) {
         setError(err);
@@ -73,7 +72,13 @@ const Live = () => {
   }, []);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <ActivityIndicator
+        size="large"
+        color={COLORS.primaryColor}
+        style={{ marginTop: 30 }}
+      />
+    );
   }
 
   if (error) {
@@ -83,12 +88,9 @@ const Live = () => {
   const renderItem2 = ({ item }) => {
     let imageUrl = null;
 
-    // Check if the image is in the <media:content> tag
     if (item["media:content"] && item["media:content"][0].$.url) {
       imageUrl = item["media:content"][0].$.url;
-    }
-    // Check if the image is in the <content:encoded> tag
-    else if (
+    } else if (
       item["content:encoded"] &&
       item["content:encoded"][0].match(/<img[^>]+src="([^">]+)"/)
     ) {
@@ -106,18 +108,17 @@ const Live = () => {
     return (
       <View style={styles.itemContainer2}>
         {imageUrl && (
-          <Image
+          <ImageFast
             source={{ uri: imageUrl }}
             style={styles.image2}
             resizeMode="cover"
           />
         )}
-        <View>
+        <View style={styles.position}>
           <CustomText
             label={formattedDate}
             fontFamily={Fonts.bold}
             numberOfLines={3}
-            color={"black"}
             marginTop={5}
             fontSize={15}
           />
@@ -125,7 +126,6 @@ const Live = () => {
             label={item.category[2]}
             fontFamily={Fonts.bold}
             numberOfLines={3}
-            color={"black"}
             marginTop={5}
             fontSize={15}
           />
@@ -134,7 +134,6 @@ const Live = () => {
             fontFamily={Fonts.bold}
             numberOfLines={3}
             width={200}
-            color={"black"}
             fontSize={12}
           />
         </View>
@@ -145,12 +144,9 @@ const Live = () => {
   const renderItem = ({ item }) => {
     let imageUrl = null;
 
-    // Check if the image is in the <media:content> tag
     if (item["media:content"] && item["media:content"][0].$.url) {
       imageUrl = item["media:content"][0].$.url;
-    }
-    // Check if the image is in the <content:encoded> tag
-    else if (
+    } else if (
       item["content:encoded"] &&
       item["content:encoded"][0].match(/<img[^>]+src="([^">]+)"/)
     ) {
@@ -162,26 +158,39 @@ const Live = () => {
 
     return (
       <TouchableOpacity
+        style={{
+          justifyContent: "flex-end",
+          alignItems: "center",
+          width: 200,
+          height: 200,
+          marginRight: 10,
+          borderRadius: 10,
+          overflow: "hidden",
+        }}
         onPress={() =>
           navigation.navigate("NewsDetails", {
             data: item,
           })
         }
-        style={styles.itemContainer}
       >
-        {imageUrl && (
-          <Image
-            source={{ uri: imageUrl }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        )}
-        <View style={styles.positon}>
+        <ImageFast
+          source={{ uri: imageUrl }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
+        />
+
+        <View style={{ padding: 10 }}>
           <CustomText
             label={item.title}
             fontFamily={Fonts.bold}
             numberOfLines={3}
-            color={"white"}
+            color={COLORS.white}
           />
         </View>
       </TouchableOpacity>
@@ -189,78 +198,76 @@ const Live = () => {
   };
 
   return (
-    <ScreenWrapper scrollEnabled>
-      <CustomText
-        label={"News"}
-        fontFamily={Fonts.bold}
-        fontSize={25}
-        marginTop={20}
-      />
-
-      <CustomText
-        label={"Latest news >"}
-        fontFamily={Fonts.bold}
-        fontSize={20}
-        marginTop={20}
-      />
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        horizontal
-        data={data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-      />
-
-      <CustomText
-        label={"World news >"}
-        fontFamily={Fonts.bold}
-        fontSize={20}
-        marginTop={10}
-        marginBottom={10}
-      />
-
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        data={data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem2}
-      />
+    <ScreenWrapper
+      scrollEnabled
+      paddingHorizontal={0.1}
+      headerUnScrollable={() => <BackHeader title="News" />}
+    >
+      <View
+        style={{
+          paddingLeft: 15,
+          borderBottomColor: COLORS.gray,
+          borderBottomWidth: 0.6,
+          paddingBottom: 20,
+        }}
+      >
+        <CustomText
+          label="Latest news >"
+          fontFamily={Fonts.bold}
+          fontSize={20}
+          marginTop={20}
+          marginBottom={20}
+        />
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          data={data}
+          keyExtractor={(_, i) => i.toString()}
+          renderItem={renderItem}
+        />
+      </View>
+      <View style={{ paddingHorizontal: 15 }}>
+        <CustomText
+          label="World news >"
+          fontFamily={Fonts.bold}
+          fontSize={20}
+          marginTop={20}
+          marginBottom={20}
+        />
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={data}
+          keyExtractor={(_, i) => i.toString()}
+          renderItem={renderItem2}
+        />
+      </View>
     </ScreenWrapper>
   );
 };
 
 const styles = StyleSheet.create({
-  itemContainer: {
-    padding: 10,
-    // marginBottom: 20,
-    // paddingLeft: 10,
-    // gap: 10,
-  },
   itemContainer2: {
     flexDirection: "row",
-    gap: 10,
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 10,
   },
   image: {
-    width: 200,
-    height: 200,
-    marginBottom: 10,
-    borderRadius: 8,
-    position: "relative",
+    width: "100%",
+    height: "100%",
+    backgroundColor: COLORS.gray,
+    position: "absolute",
   },
 
   image2: {
-    width: 150,
-    height: 150,
-    marginBottom: 10,
+    width: "40%",
+    height: 120,
     borderRadius: 8,
-    position: "relative",
   },
 
-  positon: {
-    position: "absolute",
-    bottom: 40,
-    width: 200,
-    marginLeft: 15,
+  position: {
+    width: "55%",
   },
 });
 

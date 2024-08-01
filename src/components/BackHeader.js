@@ -23,6 +23,7 @@ const BackHeader = ({
   ItemData,
   chanalData,
   stared,
+  hideBorder,
 }) => {
   const navigation = useNavigation();
   const userData = useSelector((state) => state.user.users);
@@ -83,30 +84,26 @@ const BackHeader = ({
     }
 
     const musicRef = firestore().collection("stared").doc(musicTitle);
-    setStared(true); // Set the stared state
+    setStared(true);
 
     try {
       const doc = await musicRef.get();
       if (doc.exists) {
         const { starredBy, starCount } = doc.data();
         if (starredBy.includes(userId)) {
-          // If userId is in starredBy, unstar the music
           const updatedStarredBy = starredBy.filter((id) => id !== userId);
           const newStarCount = starCount - 1;
-          setStared(false); // Set the stared state
+          setStared(false);
 
           if (newStarCount === 0) {
-            // Delete the document if no more stars
             await musicRef.delete();
           } else {
-            // Update the document with the new starredBy array and starCount
             await musicRef.update({
               starredBy: updatedStarredBy,
               starCount: newStarCount,
             });
           }
         } else {
-          // Manually update starredBy array
           const updatedStarredBy = [...starredBy, userId];
           await musicRef.update({
             starredBy: updatedStarredBy,
@@ -114,7 +111,6 @@ const BackHeader = ({
           });
         }
       } else {
-        // Create the document if it doesn't exist
         await musicRef.set({
           Staredmusic: [ItemData],
           imageUrl:
@@ -132,7 +128,12 @@ const BackHeader = ({
   };
 
   return (
-    <View style={[styles.mainContainer]}>
+    <View
+      style={[
+        styles.mainContainer,
+        { borderBottomColor: hideBorder ? "transparent" : COLORS.gray },
+      ]}
+    >
       <Icons
         family="Ionicons"
         name="arrow-back"
@@ -208,7 +209,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderBottomWidth: 0.6,
-    borderBottomColor: COLORS.gray,
   },
 
   profile: {

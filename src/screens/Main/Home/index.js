@@ -1,12 +1,19 @@
-import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import {
+  TouchableOpacity,
+  RefreshControl,
+  StyleSheet,
+  FlatList,
+  View,
+} from "react-native";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import SearchInput from "../../../components/SearchInput";
 import CustomText from "../../../components/CustomText";
+import ImageFast from "../../../components/ImageFast";
 import Header from "../../../components/Header";
 import Icons from "../../../components/Icons";
 import Card from "../../../components/Card";
@@ -16,10 +23,7 @@ import Swiper from "./molecules/Swiper";
 import { COLORS } from "../../../utils/COLORS";
 import { getAllDocs } from "../../../Firebase";
 import { Fonts } from "../../../utils/fonts";
-import { ImageBackground } from "react-native";
 import { images } from "../../../assets/images";
-import { TouchableOpacity } from "react-native";
-import ImageFast from "../../../components/ImageFast";
 
 const Home = ({ navigation }) => {
   const isFocused = useIsFocused();
@@ -36,7 +40,6 @@ const Home = ({ navigation }) => {
     try {
       const snapshot = await firestore().collection("stared").get();
       const starredMusic = snapshot.docs.map((doc) => doc.data());
-      console.log(starredMusic[0]?.Staredmusic[0]?.title);
       setRcomendedMusic(starredMusic);
       return starredMusic;
     } catch (error) {
@@ -48,18 +51,6 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     getAllStarredMusic();
   }, [isFocused]);
-
-  // const addKeyToFirestore = async (id, key, value) => {
-  //   try {
-  //     const res = await firestore()
-  //       .collection("Newchannels")
-  //       .doc(id)
-  //       .set({ [key]: value }, { merge: true });
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.error("Error adding key: ", error);
-  //   }
-  // };
   const getChannels = async () => {
     setLoading(true);
     try {
@@ -79,10 +70,6 @@ const Home = ({ navigation }) => {
   const filteredChannels = channels.filter((channel) =>
     channel.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const dattRetune = (data) => {
-    console.log(data);
-  };
 
   return (
     <>

@@ -1,8 +1,16 @@
-import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
+import {
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+  Image,
+  View,
+  Text,
+} from "react-native";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
+import CustomButton from "../../../components/CustomButton";
 import BackHeader from "../../../components/BackHeader";
 import CustomText from "../../../components/CustomText";
 import ImageFast from "../../../components/ImageFast";
@@ -14,25 +22,12 @@ import { logout } from "../../../store/reducer/AuthConfig";
 import { images } from "../../../assets/images";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import { Linking } from "react-native";
-import CustomButton from "../../../components/CustomButton";
 
 const Profile = ({ navigation }) => {
   const userData = useSelector((state) => state.user.users);
 
   const dispatch = useDispatch();
   const array = [
-    // {
-    //   id: 1,
-    //   title: "Favorite Podcast",
-    //   icon: images.tabLive,
-    //   onPress: () => navigation.navigate("FavPodcast"),
-    // },
-    // {
-    //   id: 2,
-    //   title: "Notification",
-    //   icon: images.notifications,
-    // },
     {
       id: 3,
       title: "Subscription",

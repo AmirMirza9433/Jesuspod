@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, View } from "react-native";
+import React, { useEffect, useState } from "react";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import SearchInput from "../../../components/SearchInput";

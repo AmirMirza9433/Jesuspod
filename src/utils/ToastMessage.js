@@ -1,4 +1,5 @@
 import Toast from "react-native-simple-toast";
+
 export const ToastMessage = (message) => {
   if (typeof message !== "string") {
     return console.log(

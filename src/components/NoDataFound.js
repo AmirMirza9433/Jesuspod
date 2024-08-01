@@ -3,7 +3,6 @@ import React from "react";
 
 import CustomText from "./CustomText";
 
-import { noDataFound } from "../assets/images/noShow.png";
 import { Fonts } from "../utils/fonts";
 
 const NoDataFound = ({ title, marginTop }) => {

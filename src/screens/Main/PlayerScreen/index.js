@@ -1,6 +1,9 @@
+import { RefreshControl, StyleSheet, View, FlatList } from "react-native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import React, { useCallback, useEffect, useState } from "react";
-import { RefreshControl, StyleSheet, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import firestore from "@react-native-firebase/firestore";
+import React, { useEffect, useState } from "react";
 import TrackPlayer, {
   usePlaybackState,
   useProgress,
@@ -8,25 +11,17 @@ import TrackPlayer, {
   RepeatMode,
   State,
 } from "react-native-track-player";
-import firestore from "@react-native-firebase/firestore";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import CustomText from "../../../components/CustomText";
 import BackHeader from "../../../components/BackHeader";
 import ImageFast from "../../../components/ImageFast";
 import Icons from "../../../components/Icons";
+import Card from "../../../components/Card";
 
+import { setPlayer } from "../../../store/reducer/PlayerSlice";
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
-import {
-  useFocusEffect,
-  useIsFocused,
-  useNavigation,
-} from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
-import { setPlayer } from "../../../store/reducer/PlayerSlice";
-import Card from "../../../components/Card";
-import { FlatList } from "react-native";
 
 const PlayerScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -48,7 +43,6 @@ const PlayerScreen = ({ route }) => {
   useEffect(() => {
     dispatch(setPlayer(false));
     return () => {
-      console.log("DetailsScreen is unfocused, state is true");
       dispatch(setPlayer(true));
     };
   }, [isFocused]);
@@ -66,7 +60,6 @@ const PlayerScreen = ({ route }) => {
       (item?.title?.[0] ?? item?.item?.title?.[0]) || "Default Title";
 
     const musicRef = firestore().collection("stared").doc(musicTitle);
-    // console.log(musicRef);
     try {
       const doc = await musicRef.get();
       console.log(doc);
@@ -110,9 +103,6 @@ const PlayerScreen = ({ route }) => {
       await TrackPlayer.setupPlayer();
       await TrackPlayer.updateOptions({
         stopWithApp: true,
-        // android: {
-        //   appKilledPlaybackBehavior: AppKilledPlaybackBehavior.ContinuePlayback,
-        // },
         capabilities: [
           Capability.Play,
           Capability.Pause,

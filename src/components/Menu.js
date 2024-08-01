@@ -1,22 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
 import RNFetchBlob from "rn-fetch-blob";
 import Share from "react-native-share";
+import { View } from "react-native";
 import React from "react";
-
-import Icons from "./Icons";
-
-import { COLORS } from "../utils/COLORS";
-import { updateCollection } from "../Firebase";
-import { setUser } from "../store/reducer/usersSlice";
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
 } from "react-native-popup-menu";
-import { View } from "react-native";
+
 import CustomText from "./CustomText";
+import Icons from "./Icons";
+
+import { setUser } from "../store/reducer/usersSlice";
+import { updateCollection } from "../Firebase";
+import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
+
 const MenuOptios = ({ ItemData, chanalData }) => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.authConfig.token);

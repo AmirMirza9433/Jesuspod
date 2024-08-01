@@ -1,53 +1,45 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
 import { useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
+import React from "react";
+
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import BackHeader from "../../../components/BackHeader";
 
-export default function NewsDetails({ route }) {
+const NewsDetails = ({ route }) => {
   const { width } = useWindowDimensions();
-
   const data = route?.params?.data;
-  console.log("====================================");
-  console.log(data["content:encoded"]);
-  console.log("====================================");
-
+  const content = data["content:encoded"]?.[0]?.trim();
+  const fallbackContent = data?.description?.[0];
   return (
     <ScreenWrapper
       scrollEnabled
-      headerUnScrollable={() => (
-        <View>
-          <BackHeader title={"News"} />
-        </View>
-      )}
+      headerUnScrollable={() => <BackHeader title="News" />}
     >
       <RenderHtml
         contentWidth={width}
-        source={{ html: data["content:encoded"][0] }}
+        source={{
+          html: content && content.length > 0 ? content : fallbackContent,
+        }}
         tagsStyles={tagsStyles}
         classesStyles={classesStyles}
       />
     </ScreenWrapper>
   );
-}
-
-const styles = StyleSheet.create({});
-
+};
+export default NewsDetails;
 const tagsStyles = {
   h1: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-    color: "black", // Customize as needed
+    color: "black",
   },
   h2: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-    color: "black", // Customize as needed
+    color: "black",
   },
-  // Add other heading styles as needed
 };
 
 const classesStyles = {

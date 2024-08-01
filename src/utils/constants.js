@@ -48,11 +48,9 @@ export const uploadAndGetUrl = async (file) => {
 };
 
 export const getToken = async () => {
-  // if (Platform.OS == "android") {
   await PermissionsAndroid.request(
     PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
   );
-  // }
   const fcmToken = await AsyncStorage.getItem("fcmToken");
   // console.log('=======fcmToken', fcmToken);
   if (!fcmToken) {

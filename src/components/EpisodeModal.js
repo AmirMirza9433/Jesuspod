@@ -1,18 +1,19 @@
+import React, { useEffect, useState } from "react";
+import Modal from "react-native-modal";
 import {
-  ImageBackground,
-  Keyboard,
-  StyleSheet,
-  Text,
   TouchableOpacity,
+  ImageBackground,
+  StyleSheet,
+  Keyboard,
   View,
 } from "react-native";
-import Modal from "react-native-modal";
-import React, { useEffect, useState } from "react";
-import { COLORS } from "../utils/COLORS";
-import Icons from "./Icons";
-import ImageFast from "./ImageFast";
-import { images } from "../assets/images";
+
 import CustomText from "./CustomText";
+import ImageFast from "./ImageFast";
+import Icons from "./Icons";
+
+import { images } from "../assets/images";
+import { COLORS } from "../utils/COLORS";
 import { Fonts } from "../utils/fonts";
 
 const EpisodeModal = ({
@@ -34,7 +35,6 @@ const EpisodeModal = ({
 }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-  console.log(episodeData);
   const changedata = (timestamp) => {
     const date = new Date(timestamp);
     const dayMonth = date.toLocaleDateString("en-US", {

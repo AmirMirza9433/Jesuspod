@@ -1,27 +1,29 @@
-import {
-  FlatList,
-  StyleSheet,
-  View,
-  RefreshControl,
-  ActivityIndicator,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import ScreenWrapper from "../../../components/ScreenWrapper";
-import { getAllDocs } from "../../../Firebase";
 import { useIsFocused } from "@react-navigation/native";
-import { COLORS } from "../../../utils/COLORS";
+import React, { useState, useEffect } from "react";
 import FastImage from "react-native-fast-image";
-import CustomText from "../../../components/CustomText";
-import { Fonts } from "../../../utils/fonts";
-import Icons from "../../../components/Icons";
-import BackHeader from "../../../components/BackHeader";
 import TrackPlayer, {
-  State,
-  Capability,
-  usePlaybackState,
   useTrackPlayerEvents,
+  usePlaybackState,
+  Capability,
+  State,
   Event,
 } from "react-native-track-player";
+import {
+  ActivityIndicator,
+  RefreshControl,
+  StyleSheet,
+  FlatList,
+  View,
+} from "react-native";
+
+import ScreenWrapper from "../../../components/ScreenWrapper";
+import CustomText from "../../../components/CustomText";
+import BackHeader from "../../../components/BackHeader";
+import Icons from "../../../components/Icons";
+
+import { getAllDocs } from "../../../Firebase";
+import { COLORS } from "../../../utils/COLORS";
+import { Fonts } from "../../../utils/fonts";
 
 const RadioPlayer = () => {
   const [Radio, setRadio] = useState([]);
@@ -80,14 +82,14 @@ const RadioPlayer = () => {
       }
     } catch (error) {
       console.log("Playback error:", error);
-      setLoadingPlay(false); // Ensure loading state is reset on error
+      setLoadingPlay(false);
     }
   };
 
   useTrackPlayerEvents([Event.PlaybackState], (event) => {
     if (event.state === State.Playing) {
       setIsPlaying(true);
-      setLoadingPlay(false); // Stop loading when playback starts
+      setLoadingPlay(false);
     } else {
       setIsPlaying(false);
     }
@@ -108,11 +110,7 @@ const RadioPlayer = () => {
     <ScreenWrapper
       paddingHorizontal={0.1}
       scrollEnabled
-      headerUnScrollable={() => (
-        <View>
-          <BackHeader title={"Radio"} />
-        </View>
-      )}
+      headerUnScrollable={() => <BackHeader title="Radio" />}
     >
       <FlatList
         refreshControl={

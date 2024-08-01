@@ -88,7 +88,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: 250,
-
-    // left: 10,
   },
 });

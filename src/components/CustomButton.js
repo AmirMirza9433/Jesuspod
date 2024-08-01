@@ -1,9 +1,11 @@
 import { TouchableOpacity, ActivityIndicator, View } from "react-native";
 import React from "react";
-import { COLORS } from "../utils/COLORS";
-import { Fonts } from "../utils/fonts";
+
 import CustomText from "./CustomText";
 import Icons from "./Icons";
+
+import { COLORS } from "../utils/COLORS";
+import { Fonts } from "../utils/fonts";
 
 const CustomButton = ({
   onPress,

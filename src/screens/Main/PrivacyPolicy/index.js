@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text } from "react-native";
 import React from "react";
-import CustomText from "../../../components/CustomText";
+
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import BackHeader from "../../../components/BackHeader";
-import CustomButton from "../../../components/CustomButton";
+
 import { COLORS } from "../../../utils/COLORS";
 import { Fonts } from "../../../utils/fonts";
 
-export default function PrivacyPolicy() {
+const PrivacyPolicy = () => {
   return (
     <ScreenWrapper
       scrollEnabled
@@ -190,6 +190,5 @@ export default function PrivacyPolicy() {
       </Text>
     </ScreenWrapper>
   );
-}
-
-const styles = StyleSheet.create({});
+};
+export default PrivacyPolicy;

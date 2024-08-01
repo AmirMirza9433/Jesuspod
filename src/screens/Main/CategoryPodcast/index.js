@@ -1,14 +1,11 @@
+import { FlatList, View, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
 
 import ScreenWrapper from "../../../components/ScreenWrapper";
-import SearchInput from "../../../components/SearchInput";
-import Header from "../../../components/Header";
+import BackHeader from "../../../components/BackHeader";
 import Card from "../../../components/Card";
 
-import { getAllDocs, getChannelsByCategoryName } from "../../../Firebase";
-import BackHeader from "../../../components/BackHeader";
-import { RefreshControl } from "react-native";
+import { getChannelsByCategoryName } from "../../../Firebase";
 import { COLORS } from "../../../utils/COLORS";
 
 const CategoryPodcast = ({ route }) => {
